@@ -93,6 +93,7 @@ module.exports.songsHandler = async (type, song, interaction) => {
 
 module.exports.basicEmbed = async (interaction, content, type, colour) => {
     let emojis = '';
+    let embed = new Discord.MessageEmbed();
     switch (colour) {
         case 'green':
             colour = colors.green;
@@ -107,8 +108,11 @@ module.exports.basicEmbed = async (interaction, content, type, colour) => {
     if (!colour) colour = colors.red;
     switch (type) {
         case 'no':
-            emojis = `${emoji.no}`;
-            break;
+            embed
+            .addField(`${emoji.no} Oopsie...!`, `> ${content}`)
+            .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
+            .setTimestamp()
+            return embed;
         case 'yes':
             emojis = `${emoji.yes}`;
             break;
@@ -119,13 +123,22 @@ module.exports.basicEmbed = async (interaction, content, type, colour) => {
             emojis = `${emoji.loading}`;
             break;
     }
-    let embed;
-    embed = new Discord.MessageEmbed()
+    embed
     .setColor(colour)
     .setTitle(`${emojis} ${content}`)
     .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
     .setTimestamp()
     return embed;
+}
+
+const checkUser = async (userId) => {
+    let user;
+    user = await Users.findOne({ userId: `${userId}` });
+    if (!user) user = Users.create({ 
+        userId: `${userId}`,
+        song_page: 1,
+    });
+    return user;
 }
 
 const steps = [
@@ -147,17 +160,11 @@ module.exports.songManager = async (type, interaction) => {
     let embed;
     switch (type) {
         case 'new':
-            let user;
-            user = await Users.findOne({ userId: interaction.user.id });
-            if (!user) user = Users.create({ 
-                userId: interaction.user.id,
-                song_page: 1,
-            });
+            const user = await checkUser(interaction.user.id);
+            console.log(user);
             if (!user.song_page || user.song_page <= 0) await Users.updateOne({ userId: interaction.user.id }, { $set: { song_page: 1 } });
             const page = user.song_page - 1;
-            // console.log(user.song_temp[page]);
-            embed = new Discord.MessageEmbed();
-            embed
+            embed = new Discord.MessageEmbed()
             .setColor(user.song_temp[steps[page]] ? colors.green : colors.red)
             .setTitle(`${steps[page].toUpperCase()} [${user.song_page}/${steps.length}]`)
             .addField(`🌺 Current song`, `> ${page > 0 ? user.song_temp[steps[page]] : `Please provide song's name`}`)
@@ -175,8 +182,6 @@ module.exports.songManager = async (type, interaction) => {
             return embed;
     }
 };
-
-module.exports.createEmbed = createEmbed;
 
 module.exports.checkMessage = async (queue, song, client) => {
     const base = await Message.findOne({ _id: queue.textChannel.guild.id });
@@ -227,3 +232,7 @@ module.exports.clearMessages = async (queue) => {
         console.log(`An error occured - couldn't clear messages:\n${e}`);
     }
 }
+
+module.exports.steps = steps;
+module.exports.checkUser = checkUser;
+module.exports.createEmbed = createEmbed;

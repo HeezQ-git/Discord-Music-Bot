@@ -1,7 +1,8 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-const { songManager, songsHandler, basicEmbed } = require('../handlers/embeds');
-const Songs = require('../models/songs');
+const { songManager, songsHandler, basicEmbed, checkUser, steps } = require('../handlers/embeds');
+const Songs = require('./../models/songs');
+const Users = require('./../models/users');
 const emoji = require('../config/emojis.json');
 
 const { MessageActionRow, MessageSelectMenu } = require('discord.js');
@@ -9,16 +10,23 @@ const { MessageActionRow, MessageSelectMenu } = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
     .setName('song')
-    .setDescription('Database <-> song connector and manager')
-    .addStringOption(option =>
+    .setDescription('Song manager')
+    .addStringOption(option => 
         option
-            .setName('argument')
-            .setDescription('an argument that has to be given')
+            .setName('option')
+            .setDescription('takes an option')
             .setRequired(true)
+            .addChoice('menu', 'menu')
+            .addChoice('add', 'add')
+    )
+    .addStringOption(option => 
+        option
+            .setName('value')
+            .setDescription('takes a specific value')
+            .setRequired(false)
     ),
     async execute(interaction) {
-        // interaction.reply(`Your content: ${interaction.options.getString('name')}`);
-        switch(interaction.options.getString('argument')) {
+        switch(interaction.options.getString('option')) {
             case 'example':
                 Songs.insertMany({ 
                     name: 'Calypso',
@@ -42,7 +50,6 @@ module.exports = {
                 await interaction.reply({ embeds: [embed] });
                 break;
             case 'menu':
-            case 'new':
                 const row = new MessageActionRow()
                 .addComponents(
                     new MessageSelectMenu()
@@ -62,9 +69,21 @@ module.exports = {
                         ]),
                 );
                 const _e = await songManager('menu', interaction);
-                if (_e) interaction.reply({embeds: [_e], components: [row]});
-                else interaction.reply(`${emoji.no} Couldn't execute this action!`)
+                if (_e) await interaction.reply({ embeds: [_e], components: [row] });
+                else return interaction.reply(`${emoji.no} Couldn't execute this action!`);
+                const message = await interaction.fetchReply();
+                Users.updateOne({ userId: interaction.user.id }, { $set: { messageId: `${message.id}` } });
+                console.log('updated?');
                 break;
+            case 'add':
+                const user = await checkUser(interaction.user.id);
+                const value = interaction.options.getString('value');
+                
+                if (!value || value.length <= 0) return interaction.reply({ embeds: [await basicEmbed(interaction, 'You have to provide a value which should be added!', 'no')], ephemeral: true });
+                if (!user.messageId || user.messageId.length <= 0) return interaction.reply({ embeds: [await basicEmbed(interaction, `Couldn't find the menu message ID, please resend the menu!`, 'no')], ephemeral: true })
+                if (!user.song_page || user.song_page <= 0) return interaction.reply({ embeds: [await basicEmbed(interaction, `Your page number is out of range, please resend the menu!`, 'no')], ephemeral: true })
+
+                interaction.reply({ content: 'Success', ephemeral: true });
         }
     }
 }
