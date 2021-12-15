@@ -153,10 +153,16 @@ module.exports.songManager = async (type, interaction) => {
                 userId: interaction.user.id,
                 song_page: 1,
             });
-            if (!user.song_page) user.song_page = 1;
-            embed = new Discord.MessageEmbed()
-            .setColor(colors.red)
-            .setTitle(`${steps[user.song_page]} [${user.song_page}/${steps.length}]`)
+            if (!user.song_page || user.song_page <= 0) await Users.updateOne({ userId: interaction.user.id }, { $set: { song_page: 1 } });
+            const page = user.song_page - 1;
+            // console.log(user.song_temp[page]);
+            embed = new Discord.MessageEmbed();
+            embed
+            .setColor(user.song_temp[steps[page]] ? colors.green : colors.red)
+            .setTitle(`${steps[page].toUpperCase()} [${user.song_page}/${steps.length}]`)
+            .addField(`🌺 Current song`, `> ${page > 0 ? user.song_temp[steps[page]] : `Please provide song's name`}`)
+            .addField(`${user.song_temp[steps[page]] ? emoji.yes : emoji.no} Current value`, `> ${user.song_temp[steps[page]] ? user.song_temp[steps[page]] : `None`}`)
+            .setAuthor(`TournamentBot`, interaction.guild.me.user.avatarURL())
             .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
             .setTimestamp()
             return embed;

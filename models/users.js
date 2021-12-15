@@ -8,6 +8,7 @@ const usersSchema = new Schema({
         name: {
             type: String,
             required: false,
+            default: "",
         },
         artist: {
             type: [{ type: String }],
@@ -16,30 +17,37 @@ const usersSchema = new Schema({
         game: {
             type: String,
             required: false,
+            default: "",
         },
         dancemode: {
             type: String,
             required: false,
+            default: "",
         },
         xboxbrokenlevel: {
             type: String,
             required: false,
+            default: "",
         },
         difficulty: {
             type: String,
             required: false,
+            default: "",
         },
         effort: {
             type: String,
             required: false,
+            default: "",
         },
         times: {
             type: String,
             required: false,
+            default: "",
         },
         genre: {
             type: String,
             required: false,
+            default: "",
         },
         tags: {
             type: [{ type: String }],
@@ -48,10 +56,12 @@ const usersSchema = new Schema({
         duration: {
             type: String,
             required: false,
+            default: "",
         },
         cover: {
             type: String,
             required: false,
+            default: "",
         }
     }
 });

@@ -12,13 +12,13 @@ module.exports = {
     .setDescription('Database <-> song connector and manager')
     .addStringOption(option =>
         option
-            .setName('name')
-            .setDescription('name of the song')
+            .setName('argument')
+            .setDescription('an argument that has to be given')
             .setRequired(true)
     ),
     async execute(interaction) {
         // interaction.reply(`Your content: ${interaction.options.getString('name')}`);
-        switch(interaction.options.getString('name')) {
+        switch(interaction.options.getString('argument')) {
             case 'example':
                 Songs.insertMany({ 
                     name: 'Calypso',
