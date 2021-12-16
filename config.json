@@ -2,6 +2,7 @@
     "prefix": ".",
     "token": "Nzk5ODMzMjg4NzY3NTY5OTUw.YAJUzA.YnFE9oSkljTWoWaMwJ9TUxXi5Ew",
     "MONGODB_SRV": "mongodb+srv://HeezQ:lodeplkoks@cluster0.kccye.mongodb.net/TournamentBot?retryWrites=true&w=majority",
+    "avatar": "https://cdn.discordapp.com/avatars/799833288767569950/53c8d6cd62b971f116b8338db7d95192.webp",
     "spotify_api": {
         "clientID": "9615ee7e4182471fb6945a82a704ac05",
         "clientSECRET": "677165fa045f4e30b5dd10771292f3ad"

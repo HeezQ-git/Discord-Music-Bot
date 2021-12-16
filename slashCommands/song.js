@@ -72,7 +72,7 @@ module.exports = {
                 if (_e) await interaction.reply({ embeds: [_e], components: [row] });
                 else return interaction.reply(`${emoji.no} Couldn't execute this action!`);
                 const message = await interaction.fetchReply();
-                Users.updateOne({ userId: interaction.user.id }, { $set: { messageId: `${message.id}` } });
+                await Users.updateOne({ userId: interaction.user.id }, { $set: { messageId: message.id } });
                 console.log('updated?');
                 break;
             case 'add':
@@ -83,7 +83,13 @@ module.exports = {
                 if (!user.messageId || user.messageId.length <= 0) return interaction.reply({ embeds: [await basicEmbed(interaction, `Couldn't find the menu message ID, please resend the menu!`, 'no')], ephemeral: true })
                 if (!user.song_page || user.song_page <= 0) return interaction.reply({ embeds: [await basicEmbed(interaction, `Your page number is out of range, please resend the menu!`, 'no')], ephemeral: true })
 
-                interaction.reply({ content: 'Success', ephemeral: true });
+                const page = user.song_page - 1;
+                user.song_temp[steps[page]].push(value);
+                await Users.updateOne({ userId: interaction.user.id }, user);
+
+                const msg = await interaction.channel.messages.fetch(user.messageId);
+                msg.edit({ embeds: [await songManager('new', interaction)] });
+                interaction.reply({ embeds: [await basicEmbed(interaction, `Successfully added \`${value}\` to current list.`, 'yes', 'green')], ephemeral: true })
         }
     }
 }

@@ -3,6 +3,7 @@ const Message = require('./../models/msg');
 const Users = require('./../models/users');
 const emoji = require('./../config/emojis.json');
 const colors = require('./../config/colors.json');
+const config = require('./../config.json');
 
 module.exports = client => {}
 
@@ -161,14 +162,25 @@ module.exports.songManager = async (type, interaction) => {
     switch (type) {
         case 'new':
             const user = await checkUser(interaction.user.id);
-            console.log(user);
             if (!user.song_page || user.song_page <= 0) await Users.updateOne({ userId: interaction.user.id }, { $set: { song_page: 1 } });
             const page = user.song_page - 1;
+            let value;
+            if (user.song_temp[steps[page]].length > 0) {
+                if (user.song_temp[steps[page]].length === 1) {
+                    value = user.song_temp[steps[page]][0];
+                } else {
+                    value = user.song_temp[steps[page]].map(el => `> - ${el}`);
+                    console.log(value);
+                    value = value.join('\n');
+                }
+            } else {
+                value = `> None`;
+            }
             embed = new Discord.MessageEmbed()
-            .setColor(user.song_temp[steps[page]] ? colors.green : colors.red)
+            .setColor(user.song_temp[steps[page]].length > 0 ? colors.green : colors.red)
             .setTitle(`${steps[page].toUpperCase()} [${user.song_page}/${steps.length}]`)
-            .addField(`🌺 Current song`, `> ${page > 0 ? user.song_temp[steps[page]] : `Please provide song's name`}`)
-            .addField(`${user.song_temp[steps[page]] ? emoji.yes : emoji.no} Current value`, `> ${user.song_temp[steps[page]] ? user.song_temp[steps[page]] : `None`}`)
+            .addField(`🌺 Current song`, `> ${page > 0 ? user.song_temp[steps[page]][0] : `Please provide song's name`}`)
+            .addField(`${user.song_temp[steps[page]].length > 0 ? emoji.yes : emoji.no} Current value`, `${value}`)
             .setAuthor(`TournamentBot`, interaction.guild.me.user.avatarURL())
             .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
             .setTimestamp()

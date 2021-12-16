@@ -10,50 +10,40 @@ const usersSchema = new Schema({
     song_page: Number,
     song_temp: {
         name: {
-            type: String,
-            default: "",
+            type: [{ type: String }],
         },
         artist: {
             type: [{ type: String }],
         },
         game: {
-            type: String,
-            default: "",
+            type: [{ type: String }],
         },
         dancemode: {
-            type: String,
-            default: "",
+            type: [{ type: String }],
         },
         xboxbrokenlevel: {
-            type: String,
-            default: "",
+            type: [{ type: String }],
         },
         difficulty: {
-            type: String,
-            default: "",
+            type: [{ type: String }],
         },
         effort: {
-            type: String,
-            default: "",
+            type: [{ type: String }],
         },
         times: {
-            type: String,
-            default: "",
+            type: [{ type: String }],
         },
         genre: {
-            type: String,
-            default: "",
+            type: [{ type: String }],
         },
         tags: {
             type: [{ type: String }],
         },
         duration: {
-            type: String,
-            default: "",
+            type: [{ type: String }],
         },
         cover: {
-            type: String,
-            default: "",
+            type: [{ type: String }],
         }
     }
 });
