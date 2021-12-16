@@ -167,10 +167,9 @@ module.exports.songManager = async (type, interaction) => {
             let value;
             if (user.song_temp[steps[page]].length > 0) {
                 if (user.song_temp[steps[page]].length === 1) {
-                    value = user.song_temp[steps[page]][0];
+                    value = `> ${user.song_temp[steps[page]][0]}`;
                 } else {
-                    value = user.song_temp[steps[page]].map(el => `> - ${el}`);
-                    console.log(value);
+                    value = user.song_temp[steps[page]].map((el, index) => `> ${index+1}. ${el}`);
                     value = value.join('\n');
                 }
             } else {
@@ -179,7 +178,7 @@ module.exports.songManager = async (type, interaction) => {
             embed = new Discord.MessageEmbed()
             .setColor(user.song_temp[steps[page]].length > 0 ? colors.green : colors.red)
             .setTitle(`${steps[page].toUpperCase()} [${user.song_page}/${steps.length}]`)
-            .addField(`🌺 Current song`, `> ${page > 0 ? user.song_temp[steps[page]][0] : `Please provide song's name`}`)
+            .addField(`🌺 Current song`, `> ${user.song_temp[steps[page]].length > 0 ? user.song_temp[steps[page]][0] : `Please provide song's name`}`)
             .addField(`${user.song_temp[steps[page]].length > 0 ? emoji.yes : emoji.no} Current value`, `${value}`)
             .setAuthor(`TournamentBot`, interaction.guild.me.user.avatarURL())
             .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
