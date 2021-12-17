@@ -1,12 +1,12 @@
-import { Routes, Route } from 'react-router-dom';
-import Subjects from './components/subjects';
+import './App.scss';
+import Header from './components/Header';
 
 function App() {
-  return (
-    <div className="App">
-      <Subjects></Subjects>
-    </div>
-  );
+    return (
+        <div className="App">
+            <Header></Header>
+        </div>
+    );
 }
 
 export default App;
