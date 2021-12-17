@@ -1,0 +1,22 @@
+.subjects-container {
+    .content {
+        padding: 0 40px;
+    }
+    input {
+        height: 20px;
+        padding: 4px 10px;
+    }
+    button {
+        height: 32px;
+        padding: 4px 10px;
+        background: #8bc34a;
+        border: none;
+        margin-left: 10px;
+        cursor: pointer;
+        color: white;
+
+        &:hover {
+            background: #5a9216;
+        }
+    }
+}
