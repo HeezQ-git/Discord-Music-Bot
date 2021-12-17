@@ -157,12 +157,15 @@ const steps = [
     'cover'
 ]
 
-module.exports.songManager = async (type, interaction) => {
+module.exports.songManager = async (type, option) => {
     let embed;
     switch (type) {
         case 'new':
-            const user = await checkUser(interaction.user.id);
-            if (!user.song_page || user.song_page <= 0) await Users.updateOne({ userId: interaction.user.id }, { $set: { song_page: 1 } });
+            let userid;
+            if (option.author) userid = option.author.id
+            else if (option.user) userid = option.user.id;
+            const user = await checkUser(userid);
+            if (!user.song_page || user.song_page <= 0) await Users.updateOne({ userId: userid }, { $set: { song_page: 1 } });
             const page = user.song_page - 1;
             let value;
             if (user.song_temp[steps[page]].length > 0) {
@@ -178,17 +181,17 @@ module.exports.songManager = async (type, interaction) => {
             embed = new Discord.MessageEmbed()
             .setColor(user.song_temp[steps[page]].length > 0 ? colors.green : colors.red)
             .setTitle(`${steps[page].toUpperCase()} [${user.song_page}/${steps.length}]`)
-            .addField(`🌺 Current song`, `> ${user.song_temp[steps[page]].length > 0 ? user.song_temp[steps[page]][0] : `Please provide song's name`}`)
+            .addField(`🌺 Current song`, `> ${user.song_temp[steps[0]][0] ? user.song_temp[0][0] : `Please provide song's name`}`)
             .addField(`${user.song_temp[steps[page]].length > 0 ? emoji.yes : emoji.no} Current value`, `${value}`)
-            .setAuthor(`TournamentBot`, interaction.guild.me.user.avatarURL())
-            .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
+            .setAuthor(`TournamentBot`, option.guild.me.user.avatarURL())
+            .setFooter(`💖 With love, tournament team`, option.guild.me.user.avatarURL())
             .setTimestamp()
             return embed;
         case 'menu':
             embed = new Discord.MessageEmbed()
             .setColor(colors.blue)
             .setTitle(`${emoji.yes} Select an action to execute`)
-            .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
+            .setFooter(`💖 With love, tournament team`, option.guild.me.user.avatarURL())
             .setTimestamp()
             return embed;
     }

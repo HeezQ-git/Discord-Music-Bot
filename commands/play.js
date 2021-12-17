@@ -1,4 +1,4 @@
-const { checkMessage, resendMessage } = require('./../handlers/embeds');
+const { checkMessage, basicEmbed } = require('./../handlers/embeds');
 const { formatTime, unformatTime } = require('./../handlers/functions');
 const emoji = require('./../config/emojis.json');
 const Message = require('./../models/msg');
@@ -15,6 +15,7 @@ module.exports = {
 
         try {
             if (!args[0]) return msg.channel.send(`${emoji.no} You need to input song's name.`);
+            if (!msg.member.voice.channel) return msg.channel.send({ embeds: [await basicEmbed(msg, `You need to join voice channel first!`, 'no')] });
 
             let newMsg;
             if (!args.join(' ').includes('spotify') && args.join(' ').includes('http')) newMsg = await msg.channel.send(`${emoji.loading} Searching for: \`${args.join(' ')}\``);
