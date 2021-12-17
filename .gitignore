@@ -5,8 +5,8 @@
 
 # Node artifact files
 node_modules/
-website/
-website/front/backoffice-api/
+website/node_modules/
+website/front/backoffice-api/node_modules/
 
 # Compiled Java class files
 *.class
