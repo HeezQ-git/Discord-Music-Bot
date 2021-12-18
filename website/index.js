@@ -4,13 +4,13 @@ const mongoose = require('mongoose');
 const config = require('./server/config');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-// const loginApi = require('./server/backoffice_api/login');
+const songsApi = require('./server/backoffice_api/songs');
 
 app.use('/', express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '2mb' }));
 app.use(cookieParser());
-// app.use(loginApi);
+app.use(songsApi);
 
 app.listen(process.env.PORT || 8080, () => {
   console.log(`Server up and running on port ${process.env.PORT || 8080}`);

@@ -1,7 +1,35 @@
 @import './../../colors';
 
-.content {
+.Header-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     height: 125px;
-    width: 100vh;
-    background-color: $primaryDark;
+    width: 100%;
+    background-color: $secondaryDark;
+    .logo {
+        margin-left: 100px;
+        width: 90px;
+        height: 90px;
+        cursor: pointer;
+    }
+    h1 {
+        font-size: 26px;
+    }
+    .buttons {
+        .button {
+            width: 150px;
+            height: 125px;
+            font-size: 1.2rem;
+            background: $secondaryDark;
+            border: 0;
+            color: white;
+            cursor: pointer;
+            transition: .3s cubic-bezier(0.23, 1, 0.320, 1);
+            &:hover {
+                background-color: $lightBlue;
+            }
+        }
+    }
 }
