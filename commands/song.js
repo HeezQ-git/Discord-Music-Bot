@@ -71,8 +71,7 @@ module.exports = {
             const _e = await songManager('menu', msg);
             if (_e) message = await msg.channel.send({ embeds: [_e], components: [row] });
             else return msg.channel.send(`${emoji.no} Couldn't execute this action!`);
-            await Users.updateOne({ userId: msg.author.id }, { $set: { messageId: message.id } });
-            console.log('updated?');
+            await Users.updateOne({ userId: msg.author.id }, { $set: { messageId: message.id, song_page: 1 } });
         } else if (args[0] === 'add') {
             user.song_temp[steps[page]].push(args[2]);
             await Users.updateOne({ userId: msg.author.id }, user);
@@ -80,9 +79,8 @@ module.exports = {
             _msg = await msg.channel.messages.fetch(user.messageId);
             _msg.edit({ embeds: [await songManager('new', msg)] });
         } else if (args[0] === 'remove') { 
-            let _tmp;
-            if (/^\d+$/.test(args[2])) _tmp = user.song_temp[steps[page]].splice(Number(args[2]-1), 1)
-            else _tmp = user.song_temp[steps[page]].splice(user.song_temp[steps[page]].indexOf(args[2]), 1);
+            if (/^\d+$/.test(args[2])) user.song_temp[steps[page]].splice(Number(args[2]-1), 1)
+            else user.song_temp[steps[page]].splice(user.song_temp[steps[page]].indexOf(args[2]), 1);
             await Users.updateOne({ userId: msg.author.id }, user);
 
             _msg = await msg.channel.messages.fetch(user.messageId);
@@ -96,13 +94,18 @@ module.exports = {
         } else if (args[0] === 'page' || args[0] === 'p') {
             let page = 1;
             if (args[1] != 'next' && args[1] != 'n' && args[1] != 'previous' && args[1] != 'p') {
-                if (/^\d+$/.test(args[1])) page = Number(args[1]);
+                if (/^\d+$/.test(args[1])) {
+                    page = Number(args[1]);
+                    if (page > steps.length) return;
+                }
             } else {
                 if (args[1] === 'next' || args[1] == 'n') page = user.song_page < steps.length ? user.song_page + 1 : user.song_page
                 else if (args[1] === 'previous' || args[1] === 'p') page = user.song_page > 1 ? user.song_page - 1 : user.song_page
             }
             await Users.updateOne({ userId: msg.author.id }, { $set: { song_page: page } });
             _msg = await msg.channel.messages.fetch(user.messageId);
+            let row;
+            if (page === steps.length) row = 0;
             if (_msg) _msg.edit({ embeds: [await songManager('new', msg)] });
         }
     }

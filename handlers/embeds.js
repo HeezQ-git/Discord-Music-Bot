@@ -161,9 +161,11 @@ module.exports.songManager = async (type, option) => {
     let embed;
     switch (type) {
         case 'new':
-            let userid;
-            if (option.author) userid = option.author.id
-            else if (option.user) userid = option.user.id;
+            let userid, avatar;
+            if (option.user) userid = option.user.id
+            else if (option.author) userid = option.author.id;
+            if (option.guild) avatar = option.guild.me.user.avatarURL()
+            else avatar = config.avatar;
             const user = await checkUser(userid);
             if (!user.song_page || user.song_page <= 0) await Users.updateOne({ userId: userid }, { $set: { song_page: 1 } });
             const page = user.song_page - 1;
@@ -181,10 +183,10 @@ module.exports.songManager = async (type, option) => {
             embed = new Discord.MessageEmbed()
             .setColor(user.song_temp[steps[page]].length > 0 ? colors.green : colors.red)
             .setTitle(`${steps[page].toUpperCase()} [${user.song_page}/${steps.length}]`)
-            .addField(`🌺 Current song`, `> ${user.song_temp[steps[0]][0] ? user.song_temp[0][0] : `Please provide song's name`}`)
+            .addField(`🌺 Current song`, `> ${user.song_temp[steps[0]][0] ? user.song_temp[steps[0]][0] : `Please provide song's name`}`)
             .addField(`${user.song_temp[steps[page]].length > 0 ? emoji.yes : emoji.no} Current value`, `${value}`)
-            .setAuthor(`TournamentBot`, option.guild.me.user.avatarURL())
-            .setFooter(`💖 With love, tournament team`, option.guild.me.user.avatarURL())
+            .setAuthor(`TournamentBot`, avatar)
+            .setFooter(`💖 With love, tournament team`, avatar)
             .setTimestamp()
             return embed;
         case 'menu':

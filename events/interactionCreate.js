@@ -1,4 +1,5 @@
 const { songManager } = require('../handlers/embeds');
+const emoji = require('./../config/emojis.json');
 
 const wait = require('util').promisify(setTimeout);
 
@@ -10,7 +11,10 @@ module.exports =  {
                 const embed = await songManager('new', interaction.member);
                 if (!embed) return;
                 await interaction.deferUpdate();
-                await interaction.editReply({ embeds: [embed], components: [] });
+                const msg = await interaction.editReply({ embeds: [embed], components: [] });
+                await msg.react("⏪");
+                await msg.react(`${emoji.no}`);
+                await msg.react("⏩");
             }
         }
         if (interaction.isCommand()) {
