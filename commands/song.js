@@ -3,7 +3,7 @@ const Songs = require('./../models/songs');
 const Users = require('./../models/users');
 const emoji = require('../config/emojis.json');
 
-const { MessageActionRow, MessageSelectMenu } = require('discord.js');
+const { MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
 
 module.exports = {
     name: 'song',
@@ -26,6 +26,9 @@ module.exports = {
             if (!args[2] || args[2].length <= 0) return msg.channel.send({ embeds: [await basicEmbed(msg, 'You have to provide a args[2] which should be added!', 'no')], ephemeral: true });
             if (!user.messageId || user.messageId.length <= 0) return msg.channel.send({ embeds: [await basicEmbed(msg, `Couldn't find the menu message ID, please resend the menu!`, 'no')], ephemeral: true })
             if (!user.song_page || user.song_page <= 0) return msg.channel.send({ embeds: [await basicEmbed(msg, `Your page number is out of range, please resend the menu!`, 'no')], ephemeral: true })
+            
+            const msgToCheck = await msg.channel.messages.fetch(user.messageId);
+            if (!msgToCheck) return msg.channel.send({ embeds: [await basicEmbed(msg, `Menu doesn't exist, please create a new one!`, 'no')], ephemeral: true });
 
             page = user.song_page - 1;
         }
@@ -105,8 +108,14 @@ module.exports = {
             await Users.updateOne({ userId: msg.author.id }, { $set: { song_page: page } });
             _msg = await msg.channel.messages.fetch(user.messageId);
             let row;
-            if (page === steps.length) row = 0;
-            if (_msg) _msg.edit({ embeds: [await songManager('new', msg)] });
+            if (page === steps.length) row = new MessageActionRow()
+			                .addComponents(new MessageButton()
+                                .setCustomId('submit')
+                                .setLabel('Submit')
+                                .setStyle('SUCCESS')
+                                .setEmoji(`${emoji.yes}`));
+            if (_msg && row) _msg.edit({ embeds: [await songManager('new', msg)], components: [row] })
+            else if (_msg) _msg.edit({ embeds: [await songManager('new', msg)], components: [] });
         }
     }
 }

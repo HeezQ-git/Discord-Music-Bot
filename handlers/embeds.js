@@ -142,24 +142,72 @@ const checkUser = async (userId) => {
     return user;
 }
 
-const steps = [
-    'name',
-    'artist',
-    'game',
-    'dancemode',
-    'xboxbrokenlevel',
-    'difficulty',
-    'effort',
-    'times',
-    'genre',
-    'tags',
-    'duration',
-    'cover'
-]
+const stepsDetails = [
+    { "name": "name",
+      "required": true },
+    { "name": "artist",
+      "required": true },
+    { "name": "game",
+      "required": true },
+    { "name": "dancemode",
+      "required": true },
+    { "name": "xboxbrokenlevel",
+      "required": true },
+    { "name": "difficulty",
+      "required": true },
+    { "name": "effort",
+      "required": true },
+    { "name": "times",
+      "required": false },
+    { "name": "genre",
+      "required": false },
+    { "name": "tags",
+      "required": false },
+    { "name": "duration",
+      "required": false },
+    { "name": "cover",
+      "required": true }
+];
 
-module.exports.songManager = async (type, option) => {
+const steps = stepsDetails.map(el => el.name);
+
+module.exports.songManager = async (type, option, err) => {
     let embed;
     switch (type) {
+        case 'save':
+            let msg = [];
+            if (option[0] === false) {
+                msg.push(`${emoji.loading} Establishing connection with database...`);
+            } else if (option[0] === true) {
+                msg.push(`${emoji.yes} Established connection with database!`);
+            } else if (option[0] === 'error') {
+                msg.push(`${emoji.no} **Couldn't establish connection with database!**`);
+            }
+
+            if (option[1] === false) {
+                msg.push(`${emoji.loading} Checking if all parameters match...`);
+            } else if (option[1] === true) {
+                msg.push(`${emoji.yes} All parameters match!`);
+            } else if (option[1] === 'error') {
+                msg.push(`${emoji.no} **Empty values:** ${err ? err.map(el=>` ${el}`) : 'Null'}`);
+            }
+
+            if (option[2] === false) {
+                msg.push(`${emoji.loading} Saving current changes...`);
+            } else if (option[2] === true) {
+                msg.push(`${emoji.yes} Successfully saved current changes!`);
+            } else if (option[2] === 'error') {
+                msg.push(`${emoji.no} **Couldn't save current changes!**`);
+            }
+
+            embed = new Discord.MessageEmbed()
+            .setColor(option[2] != 'error' && option[1] != 'error' && option[0] != 'error' ? option[2] === true ? colors.green : colors.yellow : colors.red)
+            .setTitle(`${option[2] != 'error' && option[1] != 'error' && option[0] != 'error' ? option[2] === true ? `${emoji.yes} You can now delete this message` : `${emoji.warning} DO NOT DELETE THIS MESSAGE` : `${emoji.no} Something went wrong!` }`)
+            .addField(`\u200b`, `${msg[0]}\n${msg[1]}\n${msg[2]}`)
+            .setAuthor(`TournamentBot`, config.avatar)
+            .setFooter(`💖 With love, tournament team`, config.avatar)
+            .setTimestamp()
+            return embed;
         case 'new':
             let userid, avatar;
             if (option.user) userid = option.user.id
@@ -250,5 +298,6 @@ module.exports.clearMessages = async (queue) => {
 }
 
 module.exports.steps = steps;
+module.exports.stepsDetails = stepsDetails;
 module.exports.checkUser = checkUser;
 module.exports.createEmbed = createEmbed;
