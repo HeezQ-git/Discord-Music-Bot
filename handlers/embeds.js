@@ -72,21 +72,55 @@ module.exports.songsHandler = async (type, song, interaction) => {
     let embed;
     switch(type) {
         case 'info':
+            let value = song.tags[0] ? song.tags.map(tag => `> ${tags[Number(tag-1)].emoji} ${tags[Number(tag-1)].name}`) : `No tags found`;
+            value = value.join('\n');
+            let artist = song.artist.map(artist => `> ${artist}`);
+            artist = artist.join('\n');
             embed = new Discord.MessageEmbed()
-            .setColor(`${song.name ? `#DB4437` : `#0F9D58`}`)
-            .addField(`📜 Name:`, `${song.name ? song.name : `Not found`}`, true)
-            .addField(`🎤 Artist(s):`, `${song.artist[0] ? song.artist.join('\n') : `Not found`}`, true)
-            .addField(`🕹 Game:`, `${song.game ? song.game : `Not found`}`, true)
-            .addField(`💃 Dance mode:`, `${song.dancemode ? song.dancemode : `Not found`}`, true)
-            .addField(`❌ Broken lvl:`, `${song.xboxbrokenlevel ? song.xboxbrokenlevel : `Not found`}`, true)
-            .addField(`⚖ Difficulty:`, `${song.difficulty ? song.difficulty : `Not found`}`, true)
-            .addField(`💦 Effort:`, `${song.effort ? song.effort : `Not found`}`, true)
-            .addField(`🎉 Tags:`, `${song.tags[0] ? song.tags.map(tag => ` ${tag}`) : `No tags found`}`, true)
-            .addField(`🔗 Cover URL:`, `[CLICK HERE](${song.cover})`)
+            .setColor(`${song.name ? colors.green : colors.red}`)
+            .addField(`📜 Name`, `> ${song.name ? song.name : `Not found`}`, true)
+            .addField(`🎤 Artist${song.artist.length > 0 ? 's' : ''}`, `${artist}`, true)
+            .addField(`🕹 Game`, `> ${song.game ? song.game : `Not found`}`, true)
+            .addField(`💃 Dance mode`, `> ${song.dancemode ? song.dancemode : `Not found`}`, true)
+            .addField(`❌ Broken lvl`, `> ${song.xboxbrokenlevel ? song.xboxbrokenlevel : `Not found`}`, true)
+            .addField(`🪓 Difficulty`, `> ${song.difficulty ? song.difficulty : `Not found`}`, true)
+            .addField(`💦 Effort`, `> ${song.effort ? song.effort : `Not found`}`, true)
+            .addField(`🎉 Tags`, `${value}`, true)
+            .addField(`🔗 Cover URL`, `> [CLICK HERE](${song.cover})`)
             .setThumbnail(`${song.cover.startsWith('http') ? song.cover : ''}`)
             .setTimestamp()
             .setAuthor(`${interaction.guild.me.user.username}`) //  msg.guild.me.user.avatarURL()
             .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
+            break;
+        case 'find': 
+            if (!song) {
+                embed = new Discord.MessageEmbed()
+                .setColor(colors.red)
+                .addField(`${emoji.no} Something went wrong!`, `> Couldn't find given song`)
+                .setTimestamp()
+                .setAuthor(`${interaction.guild.me.user.username}`) //  msg.guild.me.user.avatarURL()
+                .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
+            } else {
+                let value = song.tags[0] ? song.tags.map(tag => `> ${tags[Number(tag-1)].emoji} ${tags[Number(tag-1)].name}`) : `No tags found`;
+                value = value.join('\n');
+                let artist = song.artist.map(artist => `> ${artist}`);
+                artist = artist.join('\n');
+                embed = new Discord.MessageEmbed()
+                .setColor(`${song.name ? colors.green : colors.red}`)
+                .addField(`📜 Name:`, `> ${song.name ? song.name : `Not found`}`, true)
+                .addField(`🎤 Artist${song.artist.length > 0 ? 's' : ''}:`, `${artist}`, true)
+                .addField(`🕹 Game:`, `> ${song.game ? song.game : `Not found`}`, true)
+                .addField(`💃 Dance mode:`, `> ${song.dancemode ? song.dancemode : `Not found`}`, true)
+                .addField(`❌ Broken lvl:`, `> ${song.xboxbrokenlevel ? song.xboxbrokenlevel : `Not found`}`, true)
+                .addField(`🪓 Difficulty:`, `> ${song.difficulty ? song.difficulty : `Not found`}`, true)
+                .addField(`💦 Effort:`, `> ${song.effort ? song.effort : `Not found`}`, true)
+                .addField(`🎉 Tags:`, `${value}`, true)
+                .addField(`🔗 Cover URL:`, `> [CLICK HERE](${song.cover})`)
+                .setThumbnail(`${song.cover.startsWith('http') ? song.cover : ''}`)
+                .setTimestamp()
+                .setAuthor(`${interaction.guild.me.user.username}`) //  msg.guild.me.user.avatarURL()
+                .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
+            }
             break;
     }
     return embed;
@@ -110,6 +144,7 @@ module.exports.basicEmbed = async (interaction, content, type, colour) => {
     switch (type) {
         case 'no':
             embed
+            .setColor(colour)
             .addField(`${emoji.no} Oopsie...!`, `> ${content}`)
             .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
             .setTimestamp()
@@ -142,30 +177,90 @@ const checkUser = async (userId) => {
     return user;
 }
 
+const tags = [{emoji:"💃", name:"Sassy", id:"1"},
+            {emoji:"👒", name:"Latin", id:"2"},
+            {emoji:"💋", name:"K-Pop", id:"3"},
+            {emoji:"🌺", name:"BOP", id:"4"},
+            {emoji:"🎉", name:"Party", id:"5"},
+            {emoji:"🧪", name:"Not released", id:"6"},
+            {emoji:"🤡", name:"Troll", id:"7"},
+            {emoji:"❌", name:"Excluded", id:"8"},
+            {emoji:"🎤", name:"Cover", id:"9"},
+            {emoji:"💦", name:"Sweat", id:"10"},
+            {emoji:"🐼", name:"Panda", id:"11"},
+            {emoji:"📺", name:"Cartoon", id:"12"},
+            {emoji:"🌹", name:"Romantic", id:"13"},
+            {emoji:"🐢", name:"Animal", id:"14"},
+            {emoji:"⚔", name:"Battle", id:"15"},
+            {emoji:"🤖", name:"Robot", id:"16"},
+            {emoji:"🦇", name:"Halloween", id:"17"},
+            {emoji:"🎄", name:"Christmas", id:"18"},
+            {emoji:"😱", name:"Drama", id:"19"},
+            {emoji:"👪", name:"Family", id:"20"},
+            {emoji:"🥴", name:"Wacky", id:"21"},
+            {emoji:"🌞", name:"Summer", id:"22"},
+            {emoji:"⚽", name:"Brasilian", id:"23"},
+            {emoji:"🤠", name:"Western", id:"24"}];
+
 const stepsDetails = [
     { "name": "name",
+      "add": false,
+      "set": true,
       "required": true },
+
     { "name": "artist",
+      "add": true,
+      "set": true,
       "required": true },
+
     { "name": "game",
+      "add": false,
+      "set": true,
       "required": true },
+
     { "name": "dancemode",
+      "add": false,
+      "set": true,
       "required": true },
+
     { "name": "xboxbrokenlevel",
+      "add": false,
+      "set": true,
       "required": true },
+
     { "name": "difficulty",
+      "add": false,
+      "set": true,
       "required": true },
+
     { "name": "effort",
+      "add": false,
+      "set": true,
       "required": true },
+
     { "name": "times",
+      "add": false,
+      "set": true,
       "required": false },
+
     { "name": "genre",
+      "add": true,
+      "set": true,
       "required": false },
+
     { "name": "tags",
+      "add": false,
+      "set": false,
       "required": false },
+
     { "name": "duration",
+      "add": false,
+      "set": true,
       "required": false },
+
     { "name": "cover",
+      "add": false,
+      "set": true,
       "required": true }
 ];
 
@@ -197,7 +292,7 @@ module.exports.songManager = async (type, option, err) => {
             } else if (option[2] === true) {
                 msg.push(`${emoji.yes} Successfully saved current changes!`);
             } else if (option[2] === 'error') {
-                msg.push(`${emoji.no} **Couldn't save current changes!**`);
+                msg.push(`${emoji.no} **Couldn't save current changes!**\n${err[0]}`);
             }
 
             embed = new Discord.MessageEmbed()
@@ -219,10 +314,15 @@ module.exports.songManager = async (type, option, err) => {
             const page = user.song_page - 1;
             let value;
             if (user.song_temp[steps[page]].length > 0) {
-                if (user.song_temp[steps[page]].length === 1) {
-                    value = `> ${user.song_temp[steps[page]][0]}`;
+                if (steps[page] != 'tags') {
+                    if (user.song_temp[steps[page]].length === 1) {
+                        value = `> ${user.song_temp[steps[page]][0]}`;
+                    } else {
+                        value = user.song_temp[steps[page]].map((el, index) => `> ${index+1}. ${el}`);
+                        value = value.join('\n');
+                    }
                 } else {
-                    value = user.song_temp[steps[page]].map((el, index) => `> ${index+1}. ${el}`);
+                    value = user.song_temp[steps[page]].map(el => `> ${tags[Number(el-1)].emoji} ${tags[Number(el-1)].name}`);
                     value = value.join('\n');
                 }
             } else {
@@ -232,7 +332,7 @@ module.exports.songManager = async (type, option, err) => {
             .setColor(user.song_temp[steps[page]].length > 0 ? colors.green : colors.red)
             .setTitle(`${steps[page].toUpperCase()} [${user.song_page}/${steps.length}]`)
             .addField(`🌺 Current song`, `> ${user.song_temp[steps[0]][0] ? user.song_temp[steps[0]][0] : `Please provide song's name`}`)
-            .addField(`${user.song_temp[steps[page]].length > 0 ? emoji.yes : emoji.no} Current value`, `${value}`)
+            .addField(`${user.song_temp[steps[page]].length > 0 ? emoji.yes : emoji.no} Current value${user.song_temp[steps[page]].length > 0 ? 's' : ''}`, `${value}`)
             .setAuthor(`TournamentBot`, avatar)
             .setFooter(`💖 With love, tournament team`, avatar)
             .setTimestamp()
@@ -301,3 +401,4 @@ module.exports.steps = steps;
 module.exports.stepsDetails = stepsDetails;
 module.exports.checkUser = checkUser;
 module.exports.createEmbed = createEmbed;
+module.exports.tags = tags;

@@ -1,9 +1,11 @@
-const { songManager, songsHandler, basicEmbed, checkUser, steps } = require('../handlers/embeds');
+const { songManager, songsHandler, basicEmbed, checkUser, steps, stepsDetails, tags } = require('../handlers/embeds');
 const Songs = require('./../models/songs');
 const Users = require('./../models/users');
 const emoji = require('../config/emojis.json');
+const toImport = require('./../config/import.json');
 
 const { MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
+
 
 module.exports = {
     name: 'song',
@@ -21,9 +23,8 @@ module.exports = {
             args[0] === 'p'
         ) {
             user = await checkUser(msg.author.id);
-            args[2] = args[1];
             
-            if (!args[2] || args[2].length <= 0) return msg.channel.send({ embeds: [await basicEmbed(msg, 'You have to provide a args[2] which should be added!', 'no')], ephemeral: true });
+            if (!args[1] || args[1].length <= 0) return msg.channel.send({ embeds: [await basicEmbed(msg, 'You have to provide a value which should be added!', 'no')], ephemeral: true });
             if (!user.messageId || user.messageId.length <= 0) return msg.channel.send({ embeds: [await basicEmbed(msg, `Couldn't find the menu message ID, please resend the menu!`, 'no')], ephemeral: true })
             if (!user.song_page || user.song_page <= 0) return msg.channel.send({ embeds: [await basicEmbed(msg, `Your page number is out of range, please resend the menu!`, 'no')], ephemeral: true })
             
@@ -32,27 +33,17 @@ module.exports = {
 
             page = user.song_page - 1;
         }
-        if (args[0] === 'example') {
-            Songs.insertMany({ 
-                name: 'Calypso',
-                artist: ['Luis Fonsi', 'Stefflon Don'],
-                game: '2019',
-                dancemode: 'Solo',
-                xboxbrokenlevel: '9',
-                difficulty: 'Easy',
-                effort: 'Low',
-                times: '2010s',
-                genre: 'pop',
-                duration: '3:25',
-                tags: ['latin', 'summer', 'bop', 'sassy'],
-                cover: 'https://static.wikia.nocookie.net/justdance/images/a/af/Calypso_cover_generic.png',
-            });
-        } else if (args[0] === 'get') {
+        if (args[0] === 'get') {
             const song = await Songs.findOne({ name: 'Calypso' });
             const embed = await songsHandler('info', song, msg);
             if (!embed || embed == null) await msg.channel.send({ embeds: [await basicEmbed(msg, 'An unexpected error has occurred', 'no')] });
             await msg.channel.send({ embeds: [embed] });
         } else if (args[0] === 'menu') {
+            user = await checkUser(msg.author.id);
+            if (user.messageId) {
+                const _msg = await msg.channel.messages.fetch(user.messageId);
+                if (_msg) _msg.delete().catch(console.log);
+            }
             const row = new MessageActionRow()
             .addComponents(
                 new MessageSelectMenu()
@@ -76,20 +67,46 @@ module.exports = {
             else return msg.channel.send(`${emoji.no} Couldn't execute this action!`);
             await Users.updateOne({ userId: msg.author.id }, { $set: { messageId: message.id, song_page: 1 } });
         } else if (args[0] === 'add') {
-            user.song_temp[steps[page]].push(args[2]);
+            if (!stepsDetails[page].add) return msg.channel.send({ embeds: [await basicEmbed(msg, `You can't add a value on this page!`, 'no')] }).then(e => setTimeout(() => e.delete().catch(console.log), 4000));
+
+            let name = args;
+            name.splice(0, 1);
+            name = name.join(' ');
+
+            let songs = [];
+            if (name.includes(',')) (name.split(',')).map(el => el.length > 0 ? songs.push(el) : null)
+            else songs.push(name);
+
+            songs.map(el => user.song_temp[steps[page]].push(el));
             await Users.updateOne({ userId: msg.author.id }, user);
 
             _msg = await msg.channel.messages.fetch(user.messageId);
             _msg.edit({ embeds: [await songManager('new', msg)] });
         } else if (args[0] === 'remove') { 
-            if (/^\d+$/.test(args[2])) user.song_temp[steps[page]].splice(Number(args[2]-1), 1)
-            else user.song_temp[steps[page]].splice(user.song_temp[steps[page]].indexOf(args[2]), 1);
+            let name = args;
+            name.splice(0, 1);
+            name = name.join(' ');
+
+            let songs = [];
+            if (name.includes(',')) (name.split(',')).map(el => el.length > 0 ? songs.push(el) : null)
+            else songs.push(name);
+
+            songs.map(el => {
+                if (/^\d+$/.test(el)) delete user.song_temp[steps[page]][Number(el)-1]
+                else user.song_temp[steps[page]].splice(user.song_temp[steps[page]].indexOf(el), 1);
+            })
+            user.song_temp[steps[page]] = user.song_temp[steps[page]].filter(el => el != null);
             await Users.updateOne({ userId: msg.author.id }, user);
 
             _msg = await msg.channel.messages.fetch(user.messageId);
             _msg.edit({ embeds: [await songManager('new', msg)] });
         } else if (args[0] === 'set') {
-            user.song_temp[steps[page]] = [args[2]];
+            if (!stepsDetails[page].set) return msg.channel.send({ embeds: [await basicEmbed(msg, `You can't set a value on this page!`, 'no')] }).then(e => setTimeout(() => e.delete().catch(console.log), 4000));
+
+            let name = args;
+            name.splice(0, 1);
+            name = name.join(' ');
+            user.song_temp[steps[page]] = [name];
             await Users.updateOne({ userId: msg.author.id }, user);
 
             _msg = await msg.channel.messages.fetch(user.messageId);
@@ -114,8 +131,72 @@ module.exports = {
                                 .setLabel('Submit')
                                 .setStyle('SUCCESS')
                                 .setEmoji(`${emoji.yes}`));
+            if (steps[page-1] === 'tags') {
+                row = new MessageActionRow()
+                .addComponents(
+                    new MessageSelectMenu()
+                        .setCustomId('select_tags')
+                        .setPlaceholder('Select tags to add or remove')
+                        .addOptions([
+                            tags.map(el => {
+                                return {
+                                    label: `${el.emoji} ${el.name}`,
+                                    value: `${el.id}`,
+                                }
+                            }),
+                            {
+                                label: `❗ CLEAR ALL TAGS`,
+                                value: 'clear'
+                            }
+                        ]),
+                );
+            }
             if (_msg && row) _msg.edit({ embeds: [await songManager('new', msg)], components: [row] })
             else if (_msg) _msg.edit({ embeds: [await songManager('new', msg)], components: [] });
-        }
+        } else if (args[0] === 'find' || args[0] === 'f') {
+            if (!args[1]) return msg.channel.send({ embeds: [await basicEmbed(msg, `You need to provide song's name or ID!`, 'no')] }).then(e => setTimeout(() => e.delete().catch(console.log), 4000));
+
+            let song;
+            let name = args;
+            name.splice(0, 1);
+            name = name.join(' ');
+
+            song = await Songs.findOne({ name: name });
+            if (!song) {
+                if (/^\d+$/.test(name)) song = await Songs.findOne({ songId: Number(name) });
+            }
+
+            const embed = await songsHandler('find', song, msg);
+            if (embed) msg.channel.send({ embeds: [embed] })
+            else msg.channel.send(`${emoji.no} Couldn't send information about song!`);
+        } 
+        // else if (args[0] === 'import') {
+        //     for await (const song of toImport) {
+        //         let tagsSemiFinal = [], tagsFinal = [];
+        //         let _tags = song.tags.split('&&');
+        //         tags.map(tag => {
+        //             _tags.map(_tag => {
+        //                if (_tag.includes(tag.name.toLowerCase())) tagsSemiFinal.push(tag.id);
+        //             })
+        //         })
+        //         tagsSemiFinal.map(tag => {
+        //             if (/^\d+$/.test(tag)) tagsFinal.push(tag);
+        //         })
+        //         await Songs.insertMany({
+        //             name: song.name ? song.name : 'Undefined',
+        //             artist: song.artist ? song.artist.split('&&') : 'Undefined',
+        //             game: song.game ? song.game : 'Undefined',
+        //             dancemode: song.dancemode ? song.dancemode : 'Undefined',
+        //             xboxbrokenlevel: song.xboxbrokenlevel ? song.xboxbrokenlevel : 'Undefined',
+        //             difficulty: song.difficulty ? song.difficulty : 'Undefined',
+        //             effort: song.effort ? song.effort : 'Undefined',
+        //             times: song.times ? song.times : 'Undefined',
+        //             genre: song.genre ? song.genre.split('&&') : 'Undefined',
+        //             duration: song.duration ? song.duration : 'Undefined',
+        //             tags: song.tags ? tagsFinal : 'Undefined',
+        //             cover: song.cover ? song.cover : 'Undefined',
+        //         })
+        //     }
+        // }
     }
 }

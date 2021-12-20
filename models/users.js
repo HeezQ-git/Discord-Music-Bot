@@ -7,6 +7,10 @@ const usersSchema = new Schema({
         type: String,
         default: "",
     },
+    mode: {
+        type: String,
+        default: "new",
+    },
     song_page: Number,
     song_temp: {
         name: {
