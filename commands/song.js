@@ -38,7 +38,7 @@ module.exports = {
             name.splice(0, 1);
             name = name.join(' ');
             const song = await findSong(name);
-            const embed = await songsHandler('info', song[0][0], msg);
+            const embed = await songsHandler('info', song[0], msg);
             if (!embed || embed == null) await msg.channel.send({ embeds: [await basicEmbed(msg, 'An unexpected error has occurred', 'no')] });
             await msg.channel.send({ embeds: [embed] });
         } else if (args[0] === 'menu') {
@@ -176,7 +176,7 @@ module.exports = {
                 return msg.react(emoji.no); }
 
             msg.delete();
-            const embed = await songsHandler('find', song[0][0], msg);
+            const embed = await songsHandler('find', song[0], msg);
             if (embed) msg.channel.send({ content: song.length > 1 ? `Found ${song.length - 1} more results matching given query...` : null, embeds: [embed] })
             else msg.channel.send(`${emoji.no} Couldn't send information about song!`);
         } else if (args[0] === 'fillout' || args[0] === 'fo') {
