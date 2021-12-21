@@ -53,6 +53,10 @@ const songsSchema = new Schema({
     cover: {
         type: String,
         required: true,
+    },
+    preview: {
+        type: String,
+        required: false,
     }
 });
 

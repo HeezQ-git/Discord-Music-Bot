@@ -73,8 +73,8 @@ module.exports.songsHandler = async (type, song, interaction) => {
     let embed;
     switch(type) {
         case 'info':
-            let value = song.tags.length > 0 ? song.tags.map(tag => `> ${tags[Number(tag-1)].emoji} ${tags[Number(tag-1)].name}`) : `No tags found`;
-            value = value.join('\n');
+            let value = song.tags.length > 0 ? song.tags.map(tag => `> ${tags[Number(tag-1)].emoji} ${tags[Number(tag-1)].name}`) : `> No tags found`;
+            if (value != '> No tags found') value = value.join('\n');
             let artist = song.artist.map(artist => `> ${artist}`);
             artist = artist.join('\n');
             embed = new Discord.MessageEmbed()
@@ -103,8 +103,8 @@ module.exports.songsHandler = async (type, song, interaction) => {
                 .setAuthor(`${interaction.guild.me.user.username}`) //  msg.guild.me.user.avatarURL()
                 .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
             } else {
-                let value = song.tags.length > 0 ? song.tags.map(tag => `> ${tags[Number(tag-1)].emoji} ${tags[Number(tag-1)].name}`) : `No tags found`;
-                value = value.join('\n');
+                let value = song.tags.length > 0 ? song.tags.map(tag => `> ${tags[Number(tag-1)].emoji} ${tags[Number(tag-1)].name}`) : `> No tags found`;
+                if (value != '> No tags found') value = value.join('\n');
                 let artist = song.artist.map(artist => `> ${artist}`);
                 artist = artist.join('\n');
                 embed = new Discord.MessageEmbed()
@@ -269,7 +269,12 @@ const stepsDetails = [
     { "name": "cover",
       "add": false,
       "set": true,
-      "required": true }
+      "required": true },
+    
+    { "name": "preview",
+      "add": false,
+      "set": true,
+      "required": false }
 ];
 
 const steps = stepsDetails.map(el => el.name);
@@ -278,12 +283,12 @@ const findSong = async (name) => {
     let song = [];
     const songs = await Songs.find();
     songs.map(s => {
-        if (s.name.includes(name)) song.push(s);
+        if (s.name.toLowerCase().includes(name)) song.push(s);
     })
-    if (song.length <= 0) {
-        const find = await Songs.find({ _id: name });
-        if (find) song.push(find);
-    }
+    // if (song.length <= 0) {
+    //     const find = await Songs.find({ _id: name });
+    //     if (find) song.push(find);
+    // }
     return song;
 }
 

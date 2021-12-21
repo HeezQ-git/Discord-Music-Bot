@@ -7,7 +7,8 @@
     justify-content: space-between;
     height: 125px;
     width: 100%;
-    background-color: $secondaryDark;
+    // backdrop-filter: blur(150px);
+    background-color: rgba(0,0,0, 0.3);
     .logo {
         margin-left: 100px;
         width: 90px;
@@ -22,7 +23,8 @@
             width: 150px;
             height: 125px;
             font-size: 1.2rem;
-            background: $secondaryDark;
+            // background: $secondaryDark;
+            background: transparent;
             border: 0;
             color: white;
             cursor: pointer;

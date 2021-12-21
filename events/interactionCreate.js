@@ -1,4 +1,4 @@
-const { songsHandler, songManager, stepsDetails, checkUser } = require('../handlers/embeds');
+const { songsHandler, songManager, stepsDetails, checkUser, findSong } = require('../handlers/embeds');
 const emoji = require('./../config/emojis.json');
 const Users = require('./../models/users');
 const Songs = require('./../models/songs');
@@ -25,10 +25,8 @@ module.exports =  {
                         songInfo = m.content;
                         m.delete().catch(console.log);
 
-                        song = await Songs.findOne({ name: songInfo });
-                        if (!song) {
-                            if (/^\d+$/.test(songInfo)) song = await Songs.findOne({ songId: Number(songInfo) });
-                        }
+                        let song = await findSong(songInfo);
+                        song = song[0];
                         if (interaction.values[0] == 'edit_song') {
                             if (song) {
                                 _msg.delete().catch(console.log);
@@ -46,6 +44,7 @@ module.exports =  {
                                     duration: [song.duration],
                                     tags: song.tags,
                                     cover: [song.cover],
+                                    preview: [song.preview]
                                 }}});
                                 
                                 const embed = await songManager('new', interaction.member);
@@ -104,9 +103,6 @@ module.exports =  {
                                 version = 'alt';
                                 userProfile.song_temp['difficulty'] = ['extreme'];
                             };
-                            userProfile.song_temp['name'] = [song];
-                            userProfile.song_temp['game'] = [game];
-                            userProfile.song_temp['version'] = [version];
                             userProfile.song_temp['artist'] = [];
                             userProfile.song_temp['dancemode'] = [];
                             userProfile.song_temp['xboxbrokenlevel'] = [];
@@ -117,9 +113,13 @@ module.exports =  {
                             userProfile.song_temp['duration'] = [];
                             userProfile.song_temp['tags'] = [];
                             userProfile.song_temp['cover'] = [];
+                            userProfile.song_temp['preview'] = [];
+                            userProfile.song_temp['name'] = [song];
+                            userProfile.song_temp['game'] = [game];
+                            userProfile.song_temp['version'] = [version];
                             userProfile.isFilled = true;
                             await Users.updateOne({ userId: interaction.member.id }, userProfile);
-                            console.log(`SONG: ${song} | GAME: ${game} | VERSION: ${version}`);
+                            // console.log(`SONG: ${song} | GAME: ${game} | VERSION: ${version}`);
                         }
                     }
                     await Users.updateOne({ userId: interaction.member.id }, { $set: { mode: 'new' } });
@@ -153,7 +153,7 @@ module.exports =  {
                 await interaction.editReply({ embeds: [await songManager('save', options)], components: []});
 
                 options[0] = true;
-                await wait(Math.floor(Math.random() * (3000 - 1000 + 1)) + 1000);
+                await wait(Math.floor(Math.random() * (3000 - 1000 + 1)));
                 await interaction.editReply({ embeds: [await songManager('save', options)]});
 
                 let err = [];
@@ -166,7 +166,7 @@ module.exports =  {
 
                 if (options[1] != 'error') {
                     options[1] = true
-                    await wait(Math.floor(Math.random() * (3000 - 1000 + 1)) + 1000);
+                    await wait(Math.floor(Math.random() * (3000 - 1000 + 1)));
                     await interaction.editReply({ embeds: [await songManager('save', options)]});
 
                     let song;
@@ -191,25 +191,24 @@ module.exports =  {
                                     duration: userProfile.song_temp['duration'][0],
                                     tags: userProfile.song_temp['tags'],
                                     cover: userProfile.song_temp['cover'][0],
+                                    preview: userProfile.song_temp['preview'][0],
                                 });
-                                await Users.updateOne({ userId: interaction.member.id }, { $set: {
-                                    isFilled: false,
-                                    song_temp: {
-                                        name: [],
-                                        artist: [],
-                                        version: [],
-                                        game: [],
-                                        dancemode: [],
-                                        xboxbrokenlevel: [],
-                                        difficulty: [],
-                                        effort: [],
-                                        times: [],
-                                        genre: [],
-                                        duration: [],
-                                        tags: [],
-                                        cover: [],
-                                    }
-                                } })
+                                userProfile.song_temp['artist'] = [];
+                                userProfile.song_temp['dancemode'] = [];
+                                userProfile.song_temp['xboxbrokenlevel'] = [];
+                                userProfile.song_temp['difficulty'] = [];
+                                userProfile.song_temp['effort'] = [];
+                                userProfile.song_temp['times'] = [];
+                                userProfile.song_temp['genre'] = [];
+                                userProfile.song_temp['duration'] = [];
+                                userProfile.song_temp['tags'] = [];
+                                userProfile.song_temp['cover'] = [];
+                                userProfile.song_temp['preview'] = [];
+                                userProfile.song_temp['name'] = [];
+                                userProfile.song_temp['game'] = [];
+                                userProfile.song_temp['version'] = [];
+                                userProfile.isFilled = false;
+                                await Users.updateOne({ userId: interaction.member.id }, userProfile);
                                 options[2] = true;
                             } catch (e) {
                                 console.log(e);
@@ -236,6 +235,7 @@ module.exports =  {
                                         duration: userProfile.song_temp['duration'][0],
                                         tags: userProfile.song_temp['tags'],
                                         cover: userProfile.song_temp['cover'][0],
+                                        preview: userProfile.song_temp['preview'][0],
                                     }
                                 });
                                 options[2] = true;
@@ -250,7 +250,7 @@ module.exports =  {
                         };
                     }
                     
-                    await wait(Math.floor(Math.random() * (3000 - 1000 + 1)) + 1000);
+                    await wait(Math.floor(Math.random() * (3000 - 1000 + 1)));
                     await interaction.editReply({ embeds: [await songManager('save', options, err)]});
                 } else {
                     options[2] = 'error';

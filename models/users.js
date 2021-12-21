@@ -63,6 +63,9 @@ const usersSchema = new Schema({
         },
         cover: {
             type: [{ type: String }],
+        },
+        preview: {
+            type: [{ type: String }],
         }
     }
 });

@@ -4,40 +4,67 @@
     width: 7.5px;
 }
 ::-webkit-scrollbar-track {
-    background: transparent; 
+    background: rgba(255,255,255,0.1); 
+    // background: transparent; 
 }
 ::-webkit-scrollbar-thumb {
-    background: #555;
+    background: rgba(255,255,255,0.4); 
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: #666; 
+    background: rgba(255,255,255,0.5); 
 }
 
 .Songlist-content {
     .inside-content {
         max-width: 1800px;
         display: flex;
+        align-items: center;
+        justify-content: center;
         flex-direction: row;
         margin: auto;
-        margin-top: 100px;
+        margin-top: 50px;
+        gap: 50px;
         .songlist {
+            user-select: none;
+            position: relative;
             display: flex;
             flex-direction: column;
             overflow: scroll;
             overflow-x: hidden;
-            width: 50%;
-            height: 65vh;
-            background-color: $green;
+            width: 45%;
+            height: 77.5vh;
+            // background-color: $green;
+            .loading {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                height: 100%;
+                background: rgba(255,255,255,0.4);
+                img {
+                    width: 150px;
+                    aspect-ratio: 1;
+                    filter: brightness(2.5);
+                }
+                h1 {
+                    color: white;
+                    font-size: 2rem;
+                }
+            }
             .song {
                 display: flex;
+                align-items: center;
                 flex-direction: row;
                 justify-content: space-between;
+                align-self: center;
                 transition: .3s cubic-bezier(0.23, 1, 0.320, 1);
                 margin: 5px;
                 height: 75px;
                 padding: 10px;
-                background: $blue;
+                background: rgba(255,255,255,0.2);
+                border: 2px solid white;
                 border-radius: 7px;
+                width: 95%;
                 .left-side {
                     display: flex;
                     flex-direction: row;
@@ -52,10 +79,9 @@
                         color: white;
                         h1 {
                             font-size: 1.15rem;
-                            font-weight: 500;
+                            font-weight: 600;
                         }
                         h2 {
-                            margin-top: 3px;
                             opacity: 85%;
                         }
                     }
@@ -76,6 +102,7 @@
                         padding-right: 20px;
                         border: 2px solid rgba(255,255,255,0.7);
                         border-radius: 12px;
+                        min-width: 70px;
                         .bars {
                             display: flex;
                             flex-direction: row;
@@ -124,14 +151,369 @@
                 }
                 &:hover {
                     cursor: pointer;
-                    box-shadow: 0px 0px 8px 0px rgba(24,24,24,0.5);
+                    box-shadow: 0px 0px 12px 0px rgba(255,255,255,0.7);
                 }
             }
         }
         .details {
-            width: 50%;
-            height: 65vh;
-            background-color: $red;
+            transition: .3s cubic-bezier(0.86, 0, 0.07, 1);
+            user-select: none;
+            width: 45%;
+            height: 77.5vh;
+            .select {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                height: 100%;
+                background: rgba(255,255,255,0.4);
+                border: 2px solid white;
+                h1 {
+                    color: white;
+                    font-size: 2rem;
+                }
+            }
+            .loading {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                height: 100%;
+                background: rgba(255,255,255,0.5);
+                border: 2px solid white;
+                img {
+                    width: 150px;
+                    aspect-ratio: 1;
+                    filter: brightness(2.5);
+                }
+                h1 {
+                    color: white;
+                    font-size: 2rem;
+                    font-weight: bold;
+                }
+            }
+            .content {
+                border: 5px solid #fd01a4;
+                height: 100%;
+                width: 100%;
+                overflow-x: hidden;
+                overflow-y: hidden;
+                .header {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    position: absolute;
+                    width: 35%;
+                    height: 100px;
+                    border-radius: 20px;
+                    transform: translate(-30px, -30px);
+                    background: #fd01a4;
+                    .left-side {
+                        margin-left: 40px;
+                        color: white;
+                        .title {
+                            font-size: 1.75rem;
+                            font-weight: 600;
+                        }
+                        .artist {
+                            margin-top: 5px;
+                            font-size: 1.2rem;
+                            opacity: 85%;
+                        }
+                    }
+                    .right-side {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        flex-direction: column;
+                        margin-right: 20px;
+                        .border {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            flex-direction: column;
+                            padding: 10px;
+                            padding-left: 20px;
+                            padding-right: 20px;
+                            border: 2px solid white;
+                            border-radius: 12px;
+                            min-width: 70px;
+                            .bars {
+                                display: flex;
+                                flex-direction: row;
+                                .bar {
+                                    background-color: white;
+                                    border: 0.5px solid rgba(255,255,255,0.8);
+                                    height: 25px;
+                                    width: 7px;
+                                    margin: 2.5px;
+                                    border-radius: 5px;
+                                    opacity: 50%;
+                                }
+                                .bar1 {
+                                    opacity: 100%;
+                                }
+                                .bar2 {
+                                    &--medium {
+                                        opacity: 100%;
+                                    }
+                                    &--hard {
+                                        opacity: 100%;
+                                    }
+                                    &--extreme {
+                                        opacity: 100%;
+                                    }
+                                }
+                                .bar3 {
+                                    &--hard {
+                                        opacity: 100%;
+                                    }
+                                    &--extreme {
+                                        opacity: 100%;
+                                    }
+                                }
+                                .bar4 {
+                                    &--extreme {
+                                        opacity: 100%;
+                                    }
+                                }
+                            }
+                            .difficulty {
+                                color: white;
+                                margin-top: 3px;
+                                font-size: 1.125rem;
+                            }
+                        }
+                    }
+                }
+                iframe {
+                    display: flex;
+                    margin: auto;
+                    width: 80%;
+                    height: 90%;
+                }
+                h1 {
+                    display: flex;
+                    justify-content: center;
+                    color: white;
+                    font-size: 1.75rem;
+                    // margin-top: 30px;
+                }
+                
+                .video {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 55%;
+                    width: 100%;
+                    background: rgba(255,255,255,0.2);
+                }
+                .songinfo {
+                    height: 45%;
+                    width: 100%;
+                    border-top: 3px solid white;
+                    background: rgba(255,255,255,0.4);
+                    h1 {
+                        margin-top: 1.15rem;
+                    }
+                    .col {
+                        &--xxl, &--xl {
+                            .sub-col {
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                justify-content: center;
+                                margin-top: 20px;
+                                .info {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    justify-content: center;
+                                    padding: 10px;
+                                    width: 225px;
+                                    h1 {
+                                        font-size: 1.72rem;
+                                        font-weight: 550;
+                                    }
+                                    h2 {
+                                        color: white;
+                                        font-size: 1.5rem;
+                                    }
+                                }
+                            }
+                        }
+                        &--xl {
+                            display: none;
+                        }
+                    }
+                }
+            }
         }
     }
 }
+
+@media screen and (max-width: 600px) { // portrait tablet/large phone
+}
+
+@media screen and (max-width: 768px) { // landscape tablet
+}
+
+@media screen and (max-width: 992px) { // laptop/desktop
+
+}
+
+@media screen and (max-width: 1200px) { // large laptop/desktop
+    .Songlist-content {
+        .inside-content {
+            .songlist {
+                height: 70vh;
+                .song {
+                    .left-side {
+                        img { }
+                        .text {
+                            h1 { }
+                            h2 { }
+                        }
+                    }
+                    .right-side {
+                        .border {
+                            .bars {
+                                .bar { }
+                            }
+                            .difficulty { }
+                        }
+                    }
+                }
+            }
+            .details {
+                height: 70vh;
+                .content {
+                    .video {
+                        iframe { }
+                    }
+                    .songinfo {
+                        .col {
+                            &--xxl { 
+                                display: flex;
+                                flex-direction: column;
+                                .sub-col {
+                                    display: flex;
+                                    flex-direction: row;
+                                    margin-top: 0;
+                                    .info {
+                                        width: 200px;
+                                        padding: 0;
+                                        h1 {
+                                            font-size: 1.25rem;
+                                        }
+                                        h2 {
+                                            font-size: 1rem;
+                                        }
+                                    }
+                                }
+                            }
+                            &--xl {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1440px) { // very large laptop/desktop
+    .Songlist-content {
+        .inside-content {
+            .details {
+                .content {
+                    .header {
+                        height: 80px;
+                        .left-side {
+                            .title {
+                                font-size: 1.35em;
+                            }
+                            .artist {
+                                font-size: 1.15em;
+                            }
+                        }
+                        .right-side {
+                            .border {
+                                padding: 10px;
+                                padding-inline: 15px;
+                                .bars {
+                                    .bar { 
+                                        height: 20px;
+                                        width: 5px;
+                                        margin: 2px;
+                                    }
+                                }
+                                .difficulty {
+                                    font-size: 0.9em;    
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// .Songlist-content {
+//     .inside-content {
+//         .songlist {
+//             .song {
+//                 .left-side {
+//                     img { }
+//                     .text {
+//                         h1 { }
+//                         h2 { }
+//                     }
+//                 }
+//                 .right-side {
+//                     .border {
+//                         .bars {
+//                             .bar { }
+//                         }
+//                         .difficulty { }
+//                     }
+//                 }
+//             }
+//         }
+//         .details {
+//             .content {
+//                 .header {
+//                     .left-side {
+//                         .title { }
+//                         .artist { }
+//                     }
+//                     .right-side {
+//                         .border {
+//                             .bars {
+//                                 .bar { }
+//                             }
+//                             .difficulty { }
+//                         }
+//                     }
+//                 }
+//                 .video {
+//                     iframe { }
+//                 }
+//                 .songinfo {
+//                     .col {
+//                         &--xl { 
+//                             .sub-col {
+//                                 .info {
+//                                     h1 { }
+//                                     h2 { }
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }

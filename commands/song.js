@@ -2,6 +2,7 @@ const { songManager, songsHandler, basicEmbed, findSong, checkUser, steps, steps
 const Songs = require('./../models/songs');
 const Users = require('./../models/users');
 const emoji = require('../config/emojis.json');
+const fs = require('fs');
 // const toImport = require('./../config/import.json');
 
 const { MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
@@ -44,7 +45,13 @@ module.exports = {
         } else if (args[0] === 'menu') {
             user = await checkUser(msg.author.id);
             if (user.messageId) {
-                const _msg = await msg.channel.messages.fetch(user.messageId);
+                let _msg;
+                try {
+                    _msg = await msg.channel.messages.fetch(user.messageId);
+                } catch (e) {
+                    user.messageId = "";
+                    await Users.updateOne({ userId: msg.author.id }, user)
+                }
                 if (_msg) _msg.delete().catch(console.log);
             }
             const row = new MessageActionRow()
@@ -114,7 +121,6 @@ module.exports = {
             name.splice(0, 1);
             name = name.join(' ');
             if (name.includes('/revision/latest/')) name = name.split('/revision/')[0];
-            console.log(name);
             user.song_temp[steps[page]] = [name];
             await Users.updateOne({ userId: msg.author.id }, user);
 
@@ -218,6 +224,32 @@ module.exports = {
             if (!user.song_temp['name'][0]) return;
             const name = user.song_temp['name'][0].replace(/\s/g, '_');
             msg.channel.send({ embeds: [await basicEmbed(msg, `[CLICK HERE](https://justdance.fandom.com/wiki/${name})`, 'no', 'green')] }).then(e => setTimeout(() => e.delete().catch(console.log), 5000));
+        } else if (args[0] === 'clearform' || args[0] === 'cf' || args[0] === 'clear') {
+            const user = await checkUser(msg.author.id);
+            if (!user.isFilled) return;
+            if (user.messageId) {
+                const _msg = await msg.channel.messages.fetch(user.messageId);
+                if (_msg) _msg.delete().catch(console.log);
+            }
+            let fillout = await JSON.parse(fs.readFileSync('config/fillout.json'));
+            fillout = [`${user.song_temp['name']}${user.song_temp['version'] != 'classic' ? ` > ${user.song_temp['version']}` : ''}(${user.song_temp['game']})`, ...fillout];
+            fs.writeFileSync('config/fillout.json', JSON.stringify(fillout));
+            user.song_temp['artist'] = [];
+            user.song_temp['dancemode'] = [];
+            user.song_temp['xboxbrokenlevel'] = [];
+            user.song_temp['difficulty'] = [];
+            user.song_temp['effort'] = [];
+            user.song_temp['times'] = [];
+            user.song_temp['genre'] = [];
+            user.song_temp['duration'] = [];
+            user.song_temp['tags'] = [];
+            user.song_temp['cover'] = [];
+            user.song_temp['preview'] = [];
+            user.song_temp['name'] = [];
+            user.song_temp['game'] = [];
+            user.song_temp['version'] = [];
+            user.isFilled = false;
+            await Users.updateOne({ userId: msg.author.id }, user);
         }
     }
 }
