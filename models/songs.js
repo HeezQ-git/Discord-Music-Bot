@@ -10,6 +10,10 @@ const songsSchema = new Schema({
         type: [{ type: String }],
         required: true,
     },
+    version: {
+        type: String,
+        default: "classic",
+    },
     game: {
         type: String,
         required: true,

@@ -73,10 +73,9 @@ module.exports =  {
                 await Users.updateOne({ userId: user.id }, { $set: { song_page: 1, messageId: "" } });
                 react.message.delete();
             } else if (emoji == "🔃") {
-                await Users.updateOne({ userId: user.id }, { $set: { song_page: 1 } });
                 react.message.delete().catch(console.log);
                 const msg = await react.message.channel.send({ embeds: [await songManager('new', react)] });
-                await Users.updateOne({ userId: user.id }, { $set: { messageId: msg.id } });
+                await Users.updateOne({ userId: user.id }, { $set: { messageId: msg.id, song_page: 1 } });
                 await msg.react("⏪");
                 await msg.react(`${emojis.no}`);
                 await msg.react("⏩");

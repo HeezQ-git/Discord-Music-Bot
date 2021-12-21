@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const Message = require('./../models/msg');
 const Users = require('./../models/users');
+const Songs = require('./../models/songs');
 const emoji = require('./../config/emojis.json');
 const colors = require('./../config/colors.json');
 const config = require('./../config.json');
@@ -72,7 +73,7 @@ module.exports.songsHandler = async (type, song, interaction) => {
     let embed;
     switch(type) {
         case 'info':
-            let value = song.tags[0] ? song.tags.map(tag => `> ${tags[Number(tag-1)].emoji} ${tags[Number(tag-1)].name}`) : `No tags found`;
+            let value = song.tags.length > 0 ? song.tags.map(tag => `> ${tags[Number(tag-1)].emoji} ${tags[Number(tag-1)].name}`) : `No tags found`;
             value = value.join('\n');
             let artist = song.artist.map(artist => `> ${artist}`);
             artist = artist.join('\n');
@@ -80,13 +81,14 @@ module.exports.songsHandler = async (type, song, interaction) => {
             .setColor(`${song.name ? colors.green : colors.red}`)
             .addField(`📜 Name`, `> ${song.name ? song.name : `Not found`}`, true)
             .addField(`🎤 Artist${song.artist.length > 0 ? 's' : ''}`, `${artist}`, true)
-            .addField(`🕹 Game`, `> ${song.game ? song.game : `Not found`}`, true)
+            .addField(`🎮 Game`, `> ${song.game ? song.game : `Not found`}`, true)
             .addField(`💃 Dance mode`, `> ${song.dancemode ? song.dancemode : `Not found`}`, true)
             .addField(`❌ Broken lvl`, `> ${song.xboxbrokenlevel ? song.xboxbrokenlevel : `Not found`}`, true)
-            .addField(`🪓 Difficulty`, `> ${song.difficulty ? song.difficulty : `Not found`}`, true)
+            .addField(`🕒 Duration`, `> ${song.duration ? song.duration : `Not found`}`, true)
+            .addField(`🍂 Difficulty`, `> ${song.difficulty ? song.difficulty : `Not found`}`, true)
             .addField(`💦 Effort`, `> ${song.effort ? song.effort : `Not found`}`, true)
-            .addField(`🎉 Tags`, `${value}`, true)
-            .addField(`🔗 Cover URL`, `> [CLICK HERE](${song.cover})`)
+            .addField(`🔗 Cover URL`, `> [CLICK HERE](${song.cover})`, true)
+            .addField(`🎉 Tags`, `${value}`)
             .setThumbnail(`${song.cover.startsWith('http') ? song.cover : ''}`)
             .setTimestamp()
             .setAuthor(`${interaction.guild.me.user.username}`) //  msg.guild.me.user.avatarURL()
@@ -101,21 +103,23 @@ module.exports.songsHandler = async (type, song, interaction) => {
                 .setAuthor(`${interaction.guild.me.user.username}`) //  msg.guild.me.user.avatarURL()
                 .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
             } else {
-                let value = song.tags[0] ? song.tags.map(tag => `> ${tags[Number(tag-1)].emoji} ${tags[Number(tag-1)].name}`) : `No tags found`;
+                let value = song.tags.length > 0 ? song.tags.map(tag => `> ${tags[Number(tag-1)].emoji} ${tags[Number(tag-1)].name}`) : `No tags found`;
                 value = value.join('\n');
                 let artist = song.artist.map(artist => `> ${artist}`);
                 artist = artist.join('\n');
                 embed = new Discord.MessageEmbed()
                 .setColor(`${song.name ? colors.green : colors.red}`)
+                .addField(`🔢 Song ID:`, `> ${song._id ? song._id : `Not found`}`, true)
                 .addField(`📜 Name:`, `> ${song.name ? song.name : `Not found`}`, true)
                 .addField(`🎤 Artist${song.artist.length > 0 ? 's' : ''}:`, `${artist}`, true)
-                .addField(`🕹 Game:`, `> ${song.game ? song.game : `Not found`}`, true)
+                .addField(`🎮 Game:`, `> ${song.game ? song.game : `Not found`}`, true)
                 .addField(`💃 Dance mode:`, `> ${song.dancemode ? song.dancemode : `Not found`}`, true)
                 .addField(`❌ Broken lvl:`, `> ${song.xboxbrokenlevel ? song.xboxbrokenlevel : `Not found`}`, true)
-                .addField(`🪓 Difficulty:`, `> ${song.difficulty ? song.difficulty : `Not found`}`, true)
+                .addField(`🕒 Duration`, `> ${song.duration ? song.duration : `Not found`}`, true)
+                .addField(`🍂 Difficulty:`, `> ${song.difficulty ? song.difficulty : `Not found`}`, true)
                 .addField(`💦 Effort:`, `> ${song.effort ? song.effort : `Not found`}`, true)
+                .addField(`🔗 Cover URL:`, `> [CLICK HERE](${song.cover})`, true)
                 .addField(`🎉 Tags:`, `${value}`, true)
-                .addField(`🔗 Cover URL:`, `> [CLICK HERE](${song.cover})`)
                 .setThumbnail(`${song.cover.startsWith('http') ? song.cover : ''}`)
                 .setTimestamp()
                 .setAuthor(`${interaction.guild.me.user.username}`) //  msg.guild.me.user.avatarURL()
@@ -172,7 +176,6 @@ const checkUser = async (userId) => {
     user = await Users.findOne({ userId: `${userId}` });
     if (!user) user = Users.create({ 
         userId: `${userId}`,
-        song_page: 1,
     });
     return user;
 }
@@ -212,6 +215,11 @@ const stepsDetails = [
       "add": true,
       "set": true,
       "required": true },
+
+    { "name": "version",
+      "add": false,
+      "set": true,
+      "required": false },
 
     { "name": "game",
       "add": false,
@@ -265,6 +273,21 @@ const stepsDetails = [
 ];
 
 const steps = stepsDetails.map(el => el.name);
+
+const findSong = async (name) => {
+    let song = [];
+    const songs = await Songs.find();
+    songs.map(s => {
+        if (s.name.includes(name)) song.push(s);
+    })
+    if (song.length <= 0) {
+        const find = await Songs.find({ _id: name });
+        if (find) song.push(find);
+    }
+    return song;
+}
+
+module.exports.findSong = findSong;
 
 module.exports.songManager = async (type, option, err) => {
     let embed;

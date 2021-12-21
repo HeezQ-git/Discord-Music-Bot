@@ -1,8 +1,8 @@
-const { songManager, songsHandler, basicEmbed, checkUser, steps, stepsDetails, tags } = require('../handlers/embeds');
+const { songManager, songsHandler, basicEmbed, findSong, checkUser, steps, stepsDetails, tags } = require('../handlers/embeds');
 const Songs = require('./../models/songs');
 const Users = require('./../models/users');
 const emoji = require('../config/emojis.json');
-const toImport = require('./../config/import.json');
+// const toImport = require('./../config/import.json');
 
 const { MessageActionRow, MessageSelectMenu, MessageButton } = require('discord.js');
 
@@ -13,7 +13,7 @@ module.exports = {
     cooldown: 0,
     category: 'Administration',
     async execute(msg, args, cmd, client) {
-        msg.delete();
+        if (args[0] != 'find') msg.delete();
         let user, page, _msg, message;
         if (
             args[0] === 'add' || 
@@ -33,9 +33,12 @@ module.exports = {
 
             page = user.song_page - 1;
         }
-        if (args[0] === 'get') {
-            const song = await Songs.findOne({ name: 'Calypso' });
-            const embed = await songsHandler('info', song, msg);
+        if (args[0] === 'info') {
+            let name = args;
+            name.splice(0, 1);
+            name = name.join(' ');
+            const song = await findSong(name);
+            const embed = await songsHandler('info', song[0][0], msg);
             if (!embed || embed == null) await msg.channel.send({ embeds: [await basicEmbed(msg, 'An unexpected error has occurred', 'no')] });
             await msg.channel.send({ embeds: [embed] });
         } else if (args[0] === 'menu') {
@@ -51,14 +54,18 @@ module.exports = {
                     .setPlaceholder('Select an action')
                     .addOptions([
                         {
-                            label: 'New song',
+                            label: '✅ New song',
                             description: 'Opens menu where you can add a new song',
                             value: 'new_song',
                         },
                         {
-                            label: 'Edit song',
+                            label: '📝 Edit song',
                             description: 'Opens menu where you can edit an existing song',
                             value: 'edit_song',
+                        },
+                        {
+                            label: '❌ Delete song',
+                            value: 'delete_song',
                         },
                     ]),
             );
@@ -106,6 +113,8 @@ module.exports = {
             let name = args;
             name.splice(0, 1);
             name = name.join(' ');
+            if (name.includes('/revision/latest/')) name = name.split('/revision/')[0];
+            console.log(name);
             user.song_temp[steps[page]] = [name];
             await Users.updateOne({ userId: msg.author.id }, user);
 
@@ -156,47 +165,59 @@ module.exports = {
         } else if (args[0] === 'find' || args[0] === 'f') {
             if (!args[1]) return msg.channel.send({ embeds: [await basicEmbed(msg, `You need to provide song's name or ID!`, 'no')] }).then(e => setTimeout(() => e.delete().catch(console.log), 4000));
 
-            let song;
+            await msg.react(emoji.loading);
             let name = args;
             name.splice(0, 1);
             name = name.join(' ');
 
-            song = await Songs.findOne({ name: name });
-            if (!song) {
-                if (/^\d+$/.test(name)) song = await Songs.findOne({ songId: Number(name) });
-            }
+            const song = await findSong(name);
+            if (song.length == 0) {
+                await msg.reactions.removeAll();
+                return msg.react(emoji.no); }
 
-            const embed = await songsHandler('find', song, msg);
-            if (embed) msg.channel.send({ embeds: [embed] })
+            msg.delete();
+            const embed = await songsHandler('find', song[0][0], msg);
+            if (embed) msg.channel.send({ content: song.length > 1 ? `Found ${song.length - 1} more results matching given query...` : null, embeds: [embed] })
             else msg.channel.send(`${emoji.no} Couldn't send information about song!`);
-        } 
-        // else if (args[0] === 'import') {
-        //     for await (const song of toImport) {
-        //         let tagsSemiFinal = [], tagsFinal = [];
-        //         let _tags = song.tags.split('&&');
-        //         tags.map(tag => {
-        //             _tags.map(_tag => {
-        //                if (_tag.includes(tag.name.toLowerCase())) tagsSemiFinal.push(tag.id);
-        //             })
-        //         })
-        //         tagsSemiFinal.map(tag => {
-        //             if (/^\d+$/.test(tag)) tagsFinal.push(tag);
-        //         })
-        //         await Songs.insertMany({
-        //             name: song.name ? song.name : 'Undefined',
-        //             artist: song.artist ? song.artist.split('&&') : 'Undefined',
-        //             game: song.game ? song.game : 'Undefined',
-        //             dancemode: song.dancemode ? song.dancemode : 'Undefined',
-        //             xboxbrokenlevel: song.xboxbrokenlevel ? song.xboxbrokenlevel : 'Undefined',
-        //             difficulty: song.difficulty ? song.difficulty : 'Undefined',
-        //             effort: song.effort ? song.effort : 'Undefined',
-        //             times: song.times ? song.times : 'Undefined',
-        //             genre: song.genre ? song.genre.split('&&') : 'Undefined',
-        //             duration: song.duration ? song.duration : 'Undefined',
-        //             tags: song.tags ? tagsFinal : 'Undefined',
-        //             cover: song.cover ? song.cover : 'Undefined',
-        //         })
-        //     }
-        // }
+        } else if (args[0] === 'fillout' || args[0] === 'fo') {
+            const user = await checkUser(msg.author.id);
+            if (user.fillout === true) user.fillout = false
+            else user.fillout = true;
+            user.isFilled = false;
+            await Users.updateOne({ userId: msg.author.id }, user);
+            return msg.channel.send({ embeds: [await basicEmbed(msg, `Fill out information has been changed to: **${user.fillout.toString().toUpperCase()}**`, 'yes', 'green')] }).then(e => setTimeout(() => e.delete().catch(console.log), 4000));
+        } else if (args[0] === 'import') {
+            for await (const song of toImport) {
+                let tagsSemiFinal = [], tagsFinal = [];
+                let _tags = song.tags.split('&&');
+                tags.map(tag => {
+                    _tags.map(_tag => {
+                       if (_tag.includes(tag.name.toLowerCase())) tagsSemiFinal.push(tag.id);
+                    })
+                })
+                tagsSemiFinal.map(tag => {
+                    if (/^\d+$/.test(tag)) tagsFinal.push(tag);
+                })
+                await Songs.insertMany({
+                    name: song.name ? song.name : 'Undefined',
+                    artist: song.artist ? song.artist.split('&&') : 'Undefined',
+                    game: song.game ? song.game : 'Undefined',
+                    dancemode: song.dancemode ? song.dancemode : 'Undefined',
+                    xboxbrokenlevel: song.xboxbrokenlevel ? song.xboxbrokenlevel : 'Undefined',
+                    difficulty: song.difficulty ? song.difficulty : 'Undefined',
+                    effort: song.effort ? song.effort : 'Undefined',
+                    times: song.times ? song.times : 'Undefined',
+                    genre: song.genre ? song.genre.toLowerCase().split('&&') : 'Undefined',
+                    duration: song.duration ? song.duration : 'Undefined',
+                    tags: song.tags ? tagsFinal : 'Undefined',
+                    cover: song.cover ? song.cover : 'Undefined',
+                })
+            }
+        } else if (args[0] === 'link' || args[0] === 'l') {
+            const user = await checkUser(msg.author.id);
+            if (!user.song_temp['name'][0]) return;
+            const name = user.song_temp['name'][0].replace(/\s/g, '_');
+            msg.channel.send({ embeds: [await basicEmbed(msg, `[CLICK HERE](https://justdance.fandom.com/wiki/${name})`, 'no', 'green')] }).then(e => setTimeout(() => e.delete().catch(console.log), 5000));
+        }
     }
 }

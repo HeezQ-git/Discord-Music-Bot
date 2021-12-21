@@ -1,27 +1,26 @@
-const { songManager, stepsDetails, tags } = require('../handlers/embeds');
+const { songsHandler, songManager, stepsDetails, checkUser } = require('../handlers/embeds');
 const emoji = require('./../config/emojis.json');
 const Users = require('./../models/users');
 const Songs = require('./../models/songs');
 
 const wait = require('util').promisify(setTimeout);
+const fs = require('fs');
 
 module.exports =  {
     name: 'interactionCreate',
     async execute(interaction, user) {
-        const userProfile = await Users.findOne({ userId: interaction.member.id });
+        const userProfile = await checkUser(interaction.member.id);
         if (!userProfile || userProfile.messageId != interaction.message.id) return;
         if (interaction.isSelectMenu()) {
             if (interaction.customId === 'select_menu') {
-                if (interaction.values[0] == 'edit_song') {
-                    
+                if (interaction.values[0] == 'edit_song' || interaction.values[0] == 'delete_song') {
+                    await interaction.deferUpdate();
                     let songInfo, song;
-                    const _msg = await interaction.channel.send(`${emoji.loading} Please input name or ID of desired song below:`);
+                    const _msg = await interaction.channel.send(`${emoji.loading} Please input name of desired song below:`);
                     
                     const filter = m => m.author.id === interaction.member.id;
                     const collector = interaction.channel.createMessageCollector({ filter, max: 1, time: 15000 });
                     
-                    await interaction.deferUpdate();
-
                     collector.on('collect', async m => {
                         songInfo = m.content;
                         m.delete().catch(console.log);
@@ -30,43 +29,99 @@ module.exports =  {
                         if (!song) {
                             if (/^\d+$/.test(songInfo)) song = await Songs.findOne({ songId: Number(songInfo) });
                         }
+                        if (interaction.values[0] == 'edit_song') {
+                            if (song) {
+                                _msg.delete().catch(console.log);
+                                await Users.updateOne({ userId: interaction.member.id }, { $set: { mode: 'edit', song_temp: {
+                                    songId: song._id,
+                                    name: [song.name],
+                                    artist: song.artist,
+                                    game: [song.game],
+                                    dancemode: [song.dancemode],
+                                    xboxbrokenlevel: [song.xboxbrokenlevel],
+                                    difficulty: [song.difficulty],
+                                    effort: [song.effort],
+                                    times: [song.times],
+                                    genre: song.genre,
+                                    duration: [song.duration],
+                                    tags: song.tags,
+                                    cover: [song.cover],
+                                }}});
+                                
+                                const embed = await songManager('new', interaction.member);
+                                if (!embed) return;
 
-                        if (song) {
-                            _msg.delete().catch(console.log);
-                            await Users.updateOne({ userId: interaction.member.id }, { $set: { mode: 'edit', song_temp: {
-                                name: [song.name],
-                                artist: song.artist,
-                                game: [song.game],
-                                dancemode: [song.dancemode],
-                                xboxbrokenlevel: [song.xboxbrokenlevel],
-                                difficulty: [song.difficulty],
-                                effort: [song.effort],
-                                times: [song.times],
-                                genre: song.genre,
-                                duration: [song.duration],
-                                tags: song.tags,
-                                cover: [song.cover],
-                            }}});
-                            
-                            const embed = await songManager('new', interaction.member);
-                            if (!embed) return;
+                                const msg = await interaction.editReply({ embeds: [embed], components: [] });
 
-                            const msg = await interaction.editReply({ embeds: [embed], components: [] });
+                                await msg.react("⏪");
+                                await msg.react(`${emoji.no}`);
+                                await msg.react("⏩");
+                            }  else {
+                                interaction.channel.send(`${emoji.no} Couldn't find related song!`);
+                            }
+                        } else if (interaction.values[0] == 'delete_song') {
+                            if (song) {
+                                _msg.delete().catch(console.log);
+                                
+                                const embed = await songsHandler('info', song, interaction);
+                                if (!embed) return;
 
-                            await msg.react("⏪");
-                            await msg.react(`${emoji.no}`);
-                            await msg.react("⏩");
-                        } else {
-                            interaction.channel.send(`${emoji.no} Couldn't find related song!`);
+                                const msg = await interaction.editReply({ content: `${emoji.warning} Would you like to remove this song from database?`, embeds: [embed], components: [] });
+
+                                await msg.react("⏪");
+                                await msg.react(`${emoji.no}`);
+                                await msg.react("⏩");
+                            } else {
+                                interaction.channel.send(`${emoji.no} Couldn't find related song!`);
+                            }
                         }
-                    });
-                    
+                    })
+
                     collector.on('end', async collected => {
                         if (collected.size <= 0) {
                             _msg.delete().catch(console.log);
                         };
-                    });
+                    })
                 } else if (interaction.values[0] == 'new_song') {
+                    if (userProfile.fillout) {
+                        if (!userProfile.isFilled) {
+                            let fillout = await JSON.parse(fs.readFileSync('config/fillout.json'));
+                            let song = fillout[0];
+                            fillout.splice(0, 1);
+                            fs.writeFileSync('config/fillout.json', JSON.stringify(fillout));
+                            let game = (song.match(/\(([^)]+)\)$/g))[0].replace(/\(|\)/g, '')
+                            song = song.replace((song.match(/\(([^)]+)\)$/g))[0], '')
+                            let version = "classic";
+                            if (song.includes(' > ')) {
+                                version = song.split(' > ');
+                                song = version[0];
+                                version = version[1].toLowerCase()
+                            }
+                            if (version.includes('sweat')) version = 'sweat';
+                            if (version.includes('sing')) version = 'sing-along';
+                            if (version.includes('alt')) version = 'alt';
+                            if (version.includes('extreme')) {
+                                version = 'alt';
+                                userProfile.song_temp['difficulty'] = ['extreme'];
+                            };
+                            userProfile.song_temp['name'] = [song];
+                            userProfile.song_temp['game'] = [game];
+                            userProfile.song_temp['version'] = [version];
+                            userProfile.song_temp['artist'] = [];
+                            userProfile.song_temp['dancemode'] = [];
+                            userProfile.song_temp['xboxbrokenlevel'] = [];
+                            userProfile.song_temp['difficulty'] = [];
+                            userProfile.song_temp['effort'] = [];
+                            userProfile.song_temp['times'] = [];
+                            userProfile.song_temp['genre'] = [];
+                            userProfile.song_temp['duration'] = [];
+                            userProfile.song_temp['tags'] = [];
+                            userProfile.song_temp['cover'] = [];
+                            userProfile.isFilled = true;
+                            await Users.updateOne({ userId: interaction.member.id }, userProfile);
+                            console.log(`SONG: ${song} | GAME: ${game} | VERSION: ${version}`);
+                        }
+                    }
                     await Users.updateOne({ userId: interaction.member.id }, { $set: { mode: 'new' } });
                     const embed = await songManager('new', interaction.member);
                     if (!embed) return;
@@ -114,7 +169,8 @@ module.exports =  {
                     await wait(Math.floor(Math.random() * (3000 - 1000 + 1)) + 1000);
                     await interaction.editReply({ embeds: [await songManager('save', options)]});
 
-                    const song = await Songs.findOne({ name: `${userProfile.song_temp['name'][0]}` });
+                    let song;
+                    song = await Songs.findOne({ name: `${userProfile.song_temp['name'][0]}` });
                     if (userProfile.mode == 'new') {
                         if (song) {
                             err.push(`Song named \`${userProfile.song_temp['name'][0]}\` already exists.\nYou may want to edit it instead!`);
@@ -124,6 +180,7 @@ module.exports =  {
                                 await Songs.insertMany({ 
                                     name: userProfile.song_temp['name'][0],
                                     artist: userProfile.song_temp['artist'],
+                                    version: userProfile.song_temp['version'][0],
                                     game: userProfile.song_temp['game'][0],
                                     dancemode: userProfile.song_temp['dancemode'][0],
                                     xboxbrokenlevel: userProfile.song_temp['xboxbrokenlevel'][0],
@@ -136,9 +193,11 @@ module.exports =  {
                                     cover: userProfile.song_temp['cover'][0],
                                 });
                                 await Users.updateOne({ userId: interaction.member.id }, { $set: {
+                                    isFilled: false,
                                     song_temp: {
                                         name: [],
                                         artist: [],
+                                        version: [],
                                         game: [],
                                         dancemode: [],
                                         xboxbrokenlevel: [],
@@ -159,12 +218,14 @@ module.exports =  {
                             }
                         };
                     } else {
+                        if (!song) song = await Songs.findOne({ _id: userProfile.song_temp['songId'] });
                         if (song) {
                             try {
-                                await Songs.updateOne({ name: userProfile.song_temp['name'][0] }, {
+                                await Songs.updateOne({ _id: userProfile.song_temp['songId'] }, {
                                     $set: {
                                         name: userProfile.song_temp['name'][0],
                                         artist: userProfile.song_temp['artist'],
+                                        version: userProfile.song_temp['version'][0],
                                         game: userProfile.song_temp['game'][0],
                                         dancemode: userProfile.song_temp['dancemode'][0],
                                         xboxbrokenlevel: userProfile.song_temp['xboxbrokenlevel'][0],
@@ -180,7 +241,7 @@ module.exports =  {
                                 options[2] = true;
                             } catch (e) {
                                 console.log(e);
-                                err.push(`Couldn't add desired song to database!\nAsk developer for assistance.`);
+                                err.push(`Couldn't edit desired song in database!\nAsk developer for assistance.`);
                                 options[2] = 'error';
                             }
                         } else {

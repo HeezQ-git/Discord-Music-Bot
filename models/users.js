@@ -11,8 +11,23 @@ const usersSchema = new Schema({
         type: String,
         default: "new",
     },
-    song_page: Number,
+    song_page: {
+        type: Number,
+        default: 1,
+    },
+    fillout: {
+        type: Boolean,
+        default: false,
+    },
+    isFilled: {
+        type: Boolean,
+        default: false,
+    },
     song_temp: {
+        songId: String,
+        version: {
+            type: [{ type: String }],
+        },
         name: {
             type: [{ type: String }],
         },
