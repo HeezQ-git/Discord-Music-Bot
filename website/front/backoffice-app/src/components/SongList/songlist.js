@@ -127,7 +127,7 @@ const SongList = () => {
                                 </div>
                             </div>
                             <div className="video">
-                                <iframe src={songInfo ? `${songInfo.preview}${!songInfo.preview.includes('?') ? '?' : '&'}modestbranding=1&autohide=1&showinfo=0&controls=0&rel=0&loop=1` : ''} frameBorder={"0"} allow={"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; modestbranding"}></iframe>
+                                <iframe src={songInfo ? `${songInfo.preview}${!songInfo.preview.includes('?') ? '?' : '&'}modestbranding=1&autohide=1&showinfo=0&rel=0&loop=1` : ''} frameBorder={"0"} allow={"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; modestbranding"} allowFullScreen></iframe>
                             </div>
                             <div className="songinfo">
                                 <h1>Song info</h1>
@@ -165,14 +165,14 @@ const SongList = () => {
                                         </div>
                                         <div className="info">
                                             <h1>💃 Dance Mode</h1>
-                                            <h2>Just Dance {songInfo.dancemode}</h2>
+                                            <h2>{songInfo.dancemode}</h2>
                                         </div>
                                         
                                     </div>
                                     <div className="sub-col">
                                         <div className="info">
                                             <h1>🕐 Duration</h1>
-                                            <h2>Just Dance {songInfo.duration}</h2>
+                                            <h2>{songInfo.duration}</h2>
                                         </div>
                                         <div className="info">
                                             <h1>🍂 Difficulty</h1>
@@ -181,6 +181,38 @@ const SongList = () => {
                                     </div>
                                     <div className="sub-col">
                                         <div className="info">
+                                            <h1>💦 Effort</h1>
+                                            <h2>{songInfo.effort}</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col--m">
+                                    <div className="sub-col">
+                                        <div className="info">
+                                            <h1>🎮 Game</h1>
+                                            <h2>Just Dance {songInfo.game}</h2>
+                                        </div>
+                                    </div>
+                                    <div className="sub-col">
+                                        <div className="info">
+                                            <h1>💃 Dance Mode</h1>
+                                            <h2>{songInfo.dancemode}</h2>
+                                        </div>
+                                    </div>
+                                    <div className="sub-col">
+                                    <div className="info">
+                                            <h1>🕐 Duration</h1>
+                                            <h2>{songInfo.duration}</h2>
+                                        </div>
+                                    </div>
+                                    <div className="sub-col">
+                                    <div className="info">
+                                            <h1>🍂 Difficulty</h1>
+                                            <h2>{songInfo.difficulty}</h2>
+                                        </div>
+                                    </div>
+                                    <div className="sub-col">
+                                    <div className="info">
                                             <h1>💦 Effort</h1>
                                             <h2>{songInfo.effort}</h2>
                                         </div>

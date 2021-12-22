@@ -64,11 +64,12 @@
                 background: rgba(255,255,255,0.2);
                 border: 2px solid white;
                 border-radius: 7px;
-                width: 95%;
+                min-width: 95%;
                 .left-side {
                     display: flex;
                     flex-direction: row;
                     align-items: center;
+                    min-width: 350px;
                     img {
                         height: 75px;
                         width: 75px;
@@ -78,7 +79,7 @@
                         margin-left: 10px;
                         color: white;
                         h1 {
-                            font-size: 1.15rem;
+                            font-size: 1.13rem;
                             font-weight: 600;
                         }
                         h2 {
@@ -289,8 +290,8 @@
                 iframe {
                     display: flex;
                     margin: auto;
-                    width: 80%;
-                    height: 90%;
+                    width: 100%;
+                    height: 100%;
                 }
                 h1 {
                     display: flex;
@@ -317,7 +318,7 @@
                         margin-top: 1.15rem;
                     }
                     .col {
-                        &--xxl, &--xl {
+                        &--xxl, &--xl, &--m {
                             .sub-col {
                                 display: flex;
                                 flex-direction: row;
@@ -342,79 +343,8 @@
                                 }
                             }
                         }
-                        &--xl {
+                        &--xl, &--m {
                             display: none;
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-@media screen and (max-width: 600px) { // portrait tablet/large phone
-}
-
-@media screen and (max-width: 768px) { // landscape tablet
-}
-
-@media screen and (max-width: 992px) { // laptop/desktop
-
-}
-
-@media screen and (max-width: 1200px) { // large laptop/desktop
-    .Songlist-content {
-        .inside-content {
-            .songlist {
-                height: 70vh;
-                .song {
-                    .left-side {
-                        img { }
-                        .text {
-                            h1 { }
-                            h2 { }
-                        }
-                    }
-                    .right-side {
-                        .border {
-                            .bars {
-                                .bar { }
-                            }
-                            .difficulty { }
-                        }
-                    }
-                }
-            }
-            .details {
-                height: 70vh;
-                .content {
-                    .video {
-                        iframe { }
-                    }
-                    .songinfo {
-                        .col {
-                            &--xxl { 
-                                display: flex;
-                                flex-direction: column;
-                                .sub-col {
-                                    display: flex;
-                                    flex-direction: row;
-                                    margin-top: 0;
-                                    .info {
-                                        width: 200px;
-                                        padding: 0;
-                                        h1 {
-                                            font-size: 1.25rem;
-                                        }
-                                        h2 {
-                                            font-size: 1rem;
-                                        }
-                                    }
-                                }
-                            }
-                            &--xl {
-                                display: none;
-                            }
                         }
                     }
                 }
@@ -426,7 +356,11 @@
 @media screen and (max-width: 1440px) { // very large laptop/desktop
     .Songlist-content {
         .inside-content {
+            .songlist {
+                height: 72.5vh;
+            }
             .details {
+                height: 72.5vh;
                 .content {
                     .header {
                         height: 80px;
@@ -455,12 +389,282 @@
                             }
                         }
                     }
+                    .songinfo {
+                        overflow-y: scroll;
+                        .col {
+                            &--xxl { 
+                                flex-direction: column;
+                                .sub-col {
+                                    display: flex;
+                                    flex-direction: row;
+                                    margin-top: 30px;
+                                    .info {
+                                        width: 200px;
+                                        padding: 0;
+                                        h1 {
+                                            font-size: 1.35rem;
+                                        }
+                                        h2 {
+                                            font-size: 1.15rem;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
 
+@media screen and (max-width: 1200px) { // large laptop/desktop
+    .Songlist-content {
+        .inside-content {
+            .songlist {
+                .song {
+                    .left-side {
+                        .text {
+                            h1 {
+                                font-size: 1.05rem;
+                            }
+                            h2 {
+                                font-size: 0.92rem;
+                            }
+                        }
+                    }
+                    .right-side {
+                        .border {
+                            .bars {
+                                .bar { }
+                            }
+                            .difficulty { }
+                        }
+                    }
+                }
+            }
+            .details {
+                .content {
+                    .header {
+                        height: 70px;
+                        .left-side {
+                            .title {
+                                font-size: 1.1em;
+                            }
+                            .artist {
+                                font-size: 0.9em;
+                            }
+                        }
+                        .right-side {
+                            .border {
+                                padding: 5px;
+                                padding-inline: 7.5px;
+                                .bars {
+                                    .bar { 
+                                        height: 17.5px;
+                                        width: 4px;
+                                        margin: 1.5px;
+                                    }
+                                }
+                                .difficulty {
+                                    font-size: 0.75em;    
+                                }
+                            }
+                        }
+                    }
+                    .songinfo {
+                        .col {
+                            &--xl, &--m {
+                                display: flex;
+                                flex-direction: column;
+                                margin-top: 10px;
+                                .sub-col {
+                                    // flex-direction: column;
+                                    margin-top: 0;
+                                    .info {
+                                        padding: 7px;
+                                        width: 175px;
+                                        h1 {
+                                            font-size: 1.5rem;
+                                            font-weight: 550;
+                                        }
+                                        h2 {
+                                            color: white;
+                                            font-size: 1.25rem;
+                                        }
+                                    }
+                                }
+                            }
+                            &--xxl, &--m { 
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1145px) { // laptop/desktop
+    .Songlist-content {
+        .inside-content {
+            flex-direction: column;
+            margin-top: 25px;
+            gap: 25px;
+            .songlist {
+                height: 35vh;
+                width: 90%;
+                .song {
+                    .left-side {
+                        img { }
+                        .text {
+                            h1 { }
+                            h2 { }
+                        }
+                    }
+                    .right-side {
+                        .border {
+                            .bars {
+                                .bar { }
+                            }
+                            .difficulty { }
+                        }
+                    }
+                }
+            }
+            .details {
+                height: 41.5vh;
+                width: 90%;
+                .content {
+                    display: flex;
+                    flex-direction: row;
+                    .header {
+                        width: 55%;
+                        height: 80px;
+                        .left-side {
+                            .title {
+                                font-size: 1.35em;
+                            }
+                            .artist {
+                                font-size: 1.15em;
+                            }
+                        }
+                        .right-side {
+                            .border {
+                                padding: 10px;
+                                padding-inline: 15px;
+                                .bars {
+                                    .bar { 
+                                        height: 20px;
+                                        width: 5px;
+                                        margin: 2px;
+                                    }
+                                }
+                                .difficulty {
+                                    font-size: 0.9em;    
+                                }
+                            }
+                        }
+                    }
+                    .video {
+                        height: 100%;
+                        display: flex;
+                        align-items: flex-end;
+                        bottom: 0;
+                        iframe {
+                            margin: 0;
+                            height: 90%;
+                        }
+                    }
+                    .songinfo {
+                        height: 100%;
+                        border-top: 0;
+                        border-left: 3px solid white;
+                        overflow-x: hidden;
+                        .col {
+                            &--xl { 
+                                height: 80%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                align-self: center;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// @media screen and (max-width: 992px) { // laptop/desktop
+
+// }
+
+@media screen and (max-width: 840px) {
+    .Songlist-content {
+        .inside-content {
+            .details {
+                .content {
+                    .header {
+                        height: 70px;
+                        .left-side {
+                            .title {
+                                font-size: 1.1em;
+                            }
+                            .artist {
+                                font-size: 0.9em;
+                            }
+                        }
+                        .right-side {
+                            .border {
+                                padding: 5px;
+                                padding-inline: 7.5px;
+                                .bars {
+                                    .bar { 
+                                        height: 17.5px;
+                                        width: 4px;
+                                        margin: 1.5px;
+                                    }
+                                }
+                                .difficulty {
+                                    font-size: 0.75em;    
+                                }
+                            }
+                        }
+                    }
+                    .songinfo {
+                        .col {
+                            &--m { 
+                                display: flex;
+                                margin-top: 0;
+                                .sub-col {
+                                    margin-top: 5px;
+                                    .info {
+                                        h1 {
+                                            font-size: 1.25rem;
+                                        }
+                                        h2 {
+                                            margin-top: 3px;
+                                            font-size: 1.1rem;
+                                        }
+                                    }
+                                }
+                            }
+                            &--xl {
+                                display: none;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 600px) { // portrait tablet/large phone
+}
 // .Songlist-content {
 //     .inside-content {
 //         .songlist {
