@@ -11,6 +11,9 @@ const Login = () => {
     const [loginStyles, setLoginStyles] = useState({display: 'block'});
     const [regStyles, setRegStyles] = useState({display: 'none'});
 
+    const [usernameStyles, setUsernameStyles] = useState(null);
+    const [emailStyles, setEmailStyles] = useState(null);
+
     const choiceChange = type => {
         if (type === 'login') {
             setLoginStyles({display: 'block'});
@@ -27,6 +30,15 @@ const Login = () => {
     const usernameRegisterRef = React.createRef();
     const emailRegisterRef = React.createRef();
     const passwordRegisterRef = React.createRef();
+    const confirmPasswordRegisterRef = React.createRef();
+
+    const checkEmail = () => {
+        console.log(emailRegisterRef.current.value);
+        const email = String(emailRegisterRef.current.value).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+        console.log(email);
+        if (!email) setEmailStyles('red-border')
+        else setEmailStyles('green-border')
+    }
 
     const login = () => {
         loginService.loginUser({ 
@@ -80,11 +92,11 @@ const Login = () => {
                         <div className="credentials">
                             <div className="reg-box">
                                 <p>Username</p>
-                                <input ref={usernameRegisterRef} placeholder="John Doe"></input>
+                                <input ref={usernameRegisterRef} className={usernameStyles} placeholder="John Doe"></input>
                             </div>
                             <div className="reg-box">
                                 <p>E-mail address</p>
-                                <input ref={emailRegisterRef} placeholder="john.doe@gmail.com"></input>
+                                <input onChange={() => checkEmail()} className={emailStyles} ref={emailRegisterRef} placeholder="john.doe@gmail.com"></input>
                             </div>
                             <div className="reg-box">
                                 <p>Password</p>
@@ -92,7 +104,7 @@ const Login = () => {
                             </div>
                             <div className="reg-box">
                                 <p>Confirm password</p>
-                                <input placeholder="********" type="password"></input>
+                                <input ref={confirmPasswordRegisterRef} placeholder="********" type="password"></input>
                             </div>
                         </div>
                         <button onClick={() => register()} className="reg-button">Register</button>
