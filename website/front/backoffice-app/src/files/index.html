@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+    <style>
+        body {
+            font-family: "Gelion", sans-serif;
+            background: url('https://i.imgur.com/aE1h491.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            backdrop-filter: blur(15px);
+            height: 100vh;
+            overflow-y: hidden;
+            overflow-x: hidden;
+        }
+        .outside-content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            margin: auto;
+            width: 500px;
+        }
+        .outside-content img {
+            height: 100px;
+            width: 100px;
+            margin-bottom: 25px;
+        }
+        .content {
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            margin: auto;
+            height: 400px;
+            width: 100%;
+            background: white;
+            border-radius: 5px;
+        }
+        .content .heading {
+            margin-top: 25px;
+            font-size: 1.5rem;
+            color: rgb(49, 49, 49);
+        }
+        .content .text p {
+            margin: 0;
+            margin-top: 10px;
+            text-align: center;
+        }
+        .content .info {
+            max-width: 400px;
+            margin-top: 50px;
+            font-size: 1.25rem;
+            color: rgb(49, 49, 49);
+            font-weight: bold;
+            text-align: center;
+        }
+        .content .button {
+            margin-top: 25px;
+        }
+        .content .button a {
+            transition: all .3s ease;
+            padding: 10px;
+            padding-inline: 30px;
+            height: 45px;
+            background: rgb(195,51,244);
+            background: linear-gradient(97deg, rgba(195,51,244,1) 0%, rgba(219,66,149,1) 100%);
+            border: 0.5px solid rgba(100, 100, 100, 0.5);
+            border-radius: 8px;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .content .button a:hover {
+            box-shadow: 0px 0px 7px 0px rgba(195,51,244, 0.6);
+        }
+    </style>
+    <div class="outside-content">
+        <a target="_" href=""><img src="https://i.imgur.com/kcjcPFs.png"></a>
+        <div class="content">
+            <h1 class="heading">Dear USERNAME,</h1>
+            <div class="text">
+                <p>Thank you for registering on our website.</p>
+                <p>We sincerely hope you enjoy your time with us.</p>
+            </div>
+            <p class="info">To activate your account, please click the following button:</p>
+            <div class="button">
+                <a target="_" href="">ACTIVATE ACCOUNT</a>
+            </div>
+        </div>
+    </div>
+</html>

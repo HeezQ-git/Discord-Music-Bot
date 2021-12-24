@@ -1,5 +1,167 @@
 @import './../../colors';
 
-.Home-content {
-    
+.Login-content {
+    .login-form-content {
+        user-select: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 400px;
+        height: 75vh;
+        background: rgba(255,255,255, 1);
+        margin: auto;
+        margin-top: 2.5vh;
+        border-radius: 5px;
+        .login-inside {
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            margin-top: 2.5%;
+            max-width: 300px;
+            h1 {
+                text-align: center;
+                font-size: 2rem;
+                font-weight: bold;
+                padding: 20px;
+            }
+            .choice-box {
+                margin-top: 20px;
+                p {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: center;
+                    color: #0F9D58;
+                    margin-bottom: 7.5px;
+                    img {
+                        margin-right: 2.5px;
+                        width: 15px;
+                        height: 15px;
+                    }
+                }
+                .choice {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    .choice-border {
+                        border: 0.5px solid rgba(100, 100, 100, 0.5);
+                        border-radius: 3px;
+                        width: 100%;
+                        overflow: hidden;
+                        button {
+                            cursor: pointer;
+                            color: white;
+                            font-size: 1.15rem;
+                            height: 40px;
+                            width: 50%;
+                            border: 0;
+                            border-radius: 3px;
+                        }
+                        .choice-register, .choice-login {
+                            background: white;
+                            color: black;
+                        }
+                        .choice--active {
+                            color: white;
+                            background: rgb(195,51,244);
+                            background: linear-gradient(97deg, rgba(195,51,244,1) 0%, rgba(219,66,149,1) 100%);
+                        }
+                    }
+                }
+            }
+            .login-form {
+                .credentials {
+                    margin-top: 30px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    input {
+                        width: 300px;
+                        border: 0.5px solid rgba(100, 100, 100, 0.5);
+                        border-radius: 3px;
+                        text-indent: 15px;
+                        height: 45px;
+                        font-size: 1.1rem;
+                        &::placeholder {
+                            font-size: 1.1rem;
+                            color:  rgba(100, 100, 100, 0.8);
+                        }
+                    }
+                }
+                .forgot-password {
+                    color: rgba(255, 64, 64, 0.8);
+                    margin-top: 5px; 
+                    &:hover {
+                        cursor: pointer;
+                        text-decoration: underline;
+                    }
+                }
+                .login-button {
+                    width: 100%;
+                    transition: all .3s ease;
+                    margin-top: 20px;
+                    height: 45px;
+                    background: rgb(195,51,244);
+                    background: linear-gradient(97deg, rgba(195,51,244,1) 0%, rgba(219,66,149,1) 100%);
+                    border: 0.5px solid rgba(100, 100, 100, 0.5);
+                    border-radius: 8px;
+                    color: white;
+                    font-size: 1.25rem;
+                    cursor: pointer;
+                    &:hover {
+                        box-shadow: 0px 0px 7px 0px rgba(195,51,244, 0.6);
+                    }
+                }
+            }
+            .register-form {
+                display: none;
+                .credentials {
+                    margin-top: 30px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    input {
+                        width: 300px;
+                        border: 0.5px solid rgba(100, 100, 100, 0.5);
+                        border-radius: 3px;
+                        text-indent: 15px;
+                        height: 40px;
+                        font-size: 1.1rem;
+                        &::placeholder {
+                            font-size: 1.1rem;
+                            color:  rgba(100, 100, 100, 0.8);
+                        }
+                    }
+                }
+                .forgot-password {
+                    color: rgba(255, 64, 64, 0.8);
+                    margin-top: 5px; 
+                    &:hover {
+                        cursor: pointer;
+                        text-decoration: underline;
+                    }
+                }
+                .reg-button {
+                    width: 100%;
+                    transition: all .3s ease;
+                    margin-top: 20px;
+                    height: 45px;
+                    background: rgb(195,51,244);
+                    background: linear-gradient(97deg, rgba(195,51,244,1) 0%, rgba(219,66,149,1) 100%);
+                    border: 0.5px solid rgba(100, 100, 100, 0.5);
+                    border-radius: 8px;
+                    color: white;
+                    font-size: 1.25rem;
+                    cursor: pointer;
+                    &:hover {
+                        box-shadow: 0px 0px 7px 0px rgba(195,51,244, 0.6);
+                    }
+                }
+            }
+        }
+    }
 }

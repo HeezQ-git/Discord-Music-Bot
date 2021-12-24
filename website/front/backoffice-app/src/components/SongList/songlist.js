@@ -53,7 +53,7 @@ const SongList = () => {
     }
 
     const changeSong = async (song) => {
-        console.log(song);
+        // console.log(song);
         if (songInfo ? song.name === songInfo.name : false) return;
         if (song.loading) return;
         song.loading = true;
@@ -64,7 +64,7 @@ const SongList = () => {
         song.loading = false;
         const newSong = {...song};
         setSongInfo(newSong);
-        console.log('after');
+        // console.log('after');
     }
 
     // console.log(songInfo.tags.map(tag => findTag(tag)));
