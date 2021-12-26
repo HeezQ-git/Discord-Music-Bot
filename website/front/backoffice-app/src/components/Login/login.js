@@ -11,8 +11,8 @@ const Login = () => {
     const [loginStyles, setLoginStyles] = useState({display: 'block'});
     const [regStyles, setRegStyles] = useState({display: 'none'});
 
-    const [usernameStyles, setUsernameStyles] = useState(null);
-    const [emailStyles, setEmailStyles] = useState(null);
+    const [usernameStyles, setUserStyles] = useState({style: null, msg: ''});
+    const [emailStyles, setEmailStyles] = useState({style: null, msg: ''});
 
     const choiceChange = type => {
         if (type === 'login') {
@@ -33,11 +33,19 @@ const Login = () => {
     const confirmPasswordRegisterRef = React.createRef();
 
     const checkEmail = () => {
-        console.log(emailRegisterRef.current.value);
         const email = String(emailRegisterRef.current.value).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-        console.log(email);
-        if (!email) setEmailStyles('red-border')
-        else setEmailStyles('green-border')
+        if (!email) setEmailStyles({ style: 'red-border', msg: 'Invalid email address'})
+        else setEmailStyles({ style: 'green-border' })
+    }
+
+    const checkUser = async () => {
+        if (!usernameRegisterRef.current.value) return;
+        const res = await loginService.checkUser(usernameRegisterRef.current.value)
+        if (!res.data.success) {
+            setUserStyles('red-border');
+            
+        }
+        else setUserStyles('green-border')
     }
 
     const login = () => {
@@ -92,15 +100,21 @@ const Login = () => {
                         <div className="credentials">
                             <div className="reg-box">
                                 <p>Username</p>
-                                <input ref={usernameRegisterRef} className={usernameStyles} placeholder="John Doe"></input>
+                                <input onBlur={() => checkUser()} ref={usernameRegisterRef} className={usernameStyles.style} placeholder="John Doe"></input>
                             </div>
                             <div className="reg-box">
                                 <p>E-mail address</p>
-                                <input onChange={() => checkEmail()} className={emailStyles} ref={emailRegisterRef} placeholder="john.doe@gmail.com"></input>
+                                <input onChange={() => checkEmail()} ref={emailRegisterRef} className={emailStyles.style} placeholder="john.doe@gmail.com"></input>
+                                <div className="centered-box">
+                                    <span className="material-icons icon">error_outline</span>
+                                    <span>{emailStyles.msg}</span>
+                                </div>
                             </div>
                             <div className="reg-box">
-                                <p>Password</p>
-                                <input ref={passwordRegisterRef} placeholder="********" type="password"></input>
+                                <div className="password">
+                                    <p>Password</p>
+                                    <input ref={passwordRegisterRef} placeholder="********" type="password"></input>
+                                </div>
                             </div>
                             <div className="reg-box">
                                 <p>Confirm password</p>

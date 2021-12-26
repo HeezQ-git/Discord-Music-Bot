@@ -21,6 +21,10 @@ const loginUser = async (req, res) => {
     return res.status(200).json(response);
 }
 
+const checkUser = async (req, res) => {
+    
+}
+
 module.exports = {
     loginUser,
 };

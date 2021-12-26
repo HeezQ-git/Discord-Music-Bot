@@ -3,6 +3,10 @@ const Schema = mongoose.Schema;
 
 const usersSchema = new Schema({
     userId: String,
+    randomMessageId: {
+        type: String,
+        default: "",
+    },
     messageId: {
         type: String,
         default: "",

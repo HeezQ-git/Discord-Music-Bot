@@ -3,5 +3,6 @@ const router = express.Router();
 const loginService = require('./service/login');
 
 router.post('/api/backoffice/login', loginService.loginUser);
+// router.post('/api/backoffice/login/checkUser', loginService.checkUser);
 
 module.exports = router;

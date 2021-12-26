@@ -14,7 +14,8 @@ const AccountActivate = () => {
 
     const tryActivate = (id) => {
         if (id) {
-            accountService.activateAccount({ id })
+            console.log(id);
+            accountService.activateAccount(id)
             .then(res => {
                 if (res.data.success) setActivated(true)
                 else {
