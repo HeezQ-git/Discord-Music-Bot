@@ -82,16 +82,17 @@ module.exports =  {
                 }
             } else if (react.message.id == userProfile.randomMessageId) {
                 if (emoji == "🔄") {
+                    react.guild = await react.client.guilds.fetch(react.message.guildId);
                     let message;
-                    if (user.randomMessageId) message = await checkEditMessage(react, user.randomMessageId);
+                    if (userProfile.randomMessageId) message = await checkEditMessage(react, user.randomMessageId);
                     
                     const embed = await songsHandler('info', await randomHandler(), react);
                     if (!message) message = await react.message.channel.send({ embeds: [ embed ] })
                     else return message.edit({ embeds: [ embed ] });
 
-                    await Users.updateOne({ userId: user.userId }, { randomMessageId: message.id });
+                    await Users.updateOne({ userId: userProfile.userId }, { randomMessageId: message.id });
                 } else if (emoji == `${emojis.no}`) {
-                    await Users.updateOne({ userId: user.userId }, { randomMessageId: "" });
+                    await Users.updateOne({ userId: userProfile.userId }, { randomMessageId: "" });
                     react.message.delete().catch(console.log);
                 }
             }

@@ -91,7 +91,7 @@ module.exports.songsHandler = async (type, song, interaction) => {
             .addField(`🎉 Tags`, `${value}`)
             .setThumbnail(`${song.cover.startsWith('http') ? song.cover : ''}`)
             .setTimestamp()
-            .setAuthor(`${interaction.guild.me.user.username}`) //  msg.guild.me.user.avatarURL()
+            .setAuthor(`${interaction.guild.me.user.username}`)
             .setFooter(`💖 With love, tournament team`, interaction.guild.me.user.avatarURL())
             break;
         case 'find': 
