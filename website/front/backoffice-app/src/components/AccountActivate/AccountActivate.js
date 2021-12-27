@@ -12,23 +12,19 @@ const AccountActivate = () => {
     const [message, setMessage] = useState('');
     const { id } = useParams();
 
-    const tryActivate = (id) => {
+    useEffect(() => {
         if (id) {
-            console.log(id);
-            accountService.activateAccount(id)
+            accountService.activateAccount({ id: id })
             .then(res => {
+                console.log(res);
                 if (res.data.success) setActivated(true)
                 else {
                     setActivated(false);
                     setMessage(res.data.msg);
                 };
             })
-        } else {
-            setActivated(false);
         }
-    }
-
-    useEffect(() => tryActivate(id), [tryActivate]);
+    }, []);
 
     return (
         <div className="AccountActivate-content">

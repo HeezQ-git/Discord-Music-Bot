@@ -7,6 +7,9 @@ const loginService = {
     checkUser: (data) => {
         return axios.post('/api/backoffice/login/checkUser', data);
     },
+    checkEmail: (data) => {
+        return axios.post('/api/backoffice/login/checkEmail', data);
+    },
 }
 
 export { loginService };

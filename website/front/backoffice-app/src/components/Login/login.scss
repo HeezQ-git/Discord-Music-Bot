@@ -1,17 +1,53 @@
 @import './../../colors';
 
+::-webkit-scrollbar {
+    width: 7.5px;
+}
+::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.1); 
+    // background: transparent; 
+}
+::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.4); 
+}
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.5); 
+}
+
 .Login-content {
     .login-form-content {
+        position: relative;
         user-select: none;
         display: flex;
         align-items: center;
         justify-content: center;
         width: 400px;
-        height: 600px;
         background: rgba(255,255,255, 1);
         margin: auto;
         margin-top: 2.5vh;
         border-radius: 5px;
+        .loading {
+            z-index: 9999;
+            position: absolute;
+            background: rgba(255,255,255, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            img {
+                filter: invert(100);
+            }
+            h1 {
+                font-size: 1.5rem;
+                font-weight: bold;
+            }
+            height: 100%;
+            width: 100%;
+        }
+        .blur {
+            background-color: transparent;
+            filter: blur(5px);
+        }
         .login-inside {
             display: flex;
             flex-direction: column;
@@ -91,17 +127,27 @@
                     }
                 }
                 .forgot-password {
-                    color: rgba(255, 64, 64, 0.8);
+                    color: $gBlue;
                     margin-top: 5px; 
                     &:hover {
                         cursor: pointer;
                         text-decoration: underline;
                     }
                 }
+                .login-error {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 5px;
+                    color: $red;
+                    margin-top: 10px;
+                }
                 .login-button {
-                    width: 100%;
+                    position: absolute;
+                    width: 300px;
                     transition: all .3s ease;
-                    margin-top: 20px;
+                    margin-top: 50px;
+                    bottom: 25px;
                     height: 45px;
                     background: rgb(195,51,244);
                     background: linear-gradient(97deg, rgba(195,51,244,1) 0%, rgba(219,66,149,1) 100%);
@@ -111,7 +157,7 @@
                     font-size: 1.25rem;
                     cursor: pointer;
                     &:hover {
-                        box-shadow: 0px 0px 7px 0px rgba(195,51,244, 0.6);
+                        box-shadow: 0px 0px 12px 0px rgba(195,51,244, 0.6);
                     }
                 }
             }
@@ -153,6 +199,79 @@
                             outline: none !important;
                         }
                     }
+                    .reg-box {
+                        position: relative;
+                        .centered-box {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            color: #DB4437;
+                            .msg {
+                                margin-left: 5px;
+                            }
+                        }
+                        .meter {
+                            width: 100%;
+                            height: 1rem;
+                        }
+                        .meter[value="1"]::-webkit-meter-optimum-value { background: #DB4437; };
+                        .meter[value="1"]::-moz-meter-bar { background: #DB4437; };
+                        
+                        .meter[value="2"]::-webkit-meter-optimum-value { background: #f47200; };
+                        .meter[value="2"]::-moz-meter-bar { background: #f47200; };
+                        
+                        .meter[value="3"]::-webkit-meter-optimum-value { background: #F4B400; };
+                        .meter[value="3"]::-moz-meter-bar { background: #F4B400; };
+                        
+                        .meter[value="4"]::-webkit-meter-optimum-value { background: #0F9D58; };
+                        .meter[value="4"]::-moz-meter-bar { background: #0F9D58; };
+                        .password {
+                            display: flex;
+                            flex-direction: row;
+                            align-items: center;
+                            .strength {
+                                opacity: .75;
+                            }
+                            .tips {
+                                z-index: 9998;
+                                width: 30ch;
+                                background-color: black;
+                                color: #fff;
+                                text-align: center;
+                                border-radius: 6px;
+                                padding: 5px;
+                                position: absolute;
+                                z-index: 1;
+                                left: 110%;
+                                &::after {
+                                    content: "";
+                                    position: absolute;
+                                    top: 50%;
+                                    right: 100%;
+                                    margin-top: -5px;
+                                    border-width: 5px;
+                                    border-style: solid;
+                                    border-color: transparent black transparent transparent;
+                                }
+                                .warning {
+                                    font-weight: bold;
+                                    color: #DB4437;
+                                    opacity: .95;
+                                }
+                                .suggestion {
+                                    opacity: .8;
+                                }
+                            }
+                        }
+                        .login {
+                            text-decoration: underline;
+                            cursor: pointer;
+                            color: $gBlue;
+                            a {
+                                text-decoration: none;
+                            }
+                        }
+                    }
                 }
                 .forgot-password {
                     color: rgba(255, 64, 64, 0.8);
@@ -163,9 +282,11 @@
                     }
                 }
                 .reg-button {
-                    width: 100%;
+                    position: absolute;
+                    width: 300px;
                     transition: all .3s ease;
                     margin-top: 20px;
+                    bottom: 25px;
                     height: 45px;
                     background: rgb(195,51,244);
                     background: linear-gradient(97deg, rgba(195,51,244,1) 0%, rgba(219,66,149,1) 100%);
@@ -175,7 +296,56 @@
                     font-size: 1.25rem;
                     cursor: pointer;
                     &:hover {
-                        box-shadow: 0px 0px 7px 0px rgba(195,51,244, 0.6);
+                        box-shadow: 0px 0px 12px 0px rgba(195,51,244, 0.6);
+                    }
+                }
+                .reg-button:disabled {
+                    opacity: .75;
+                    cursor: not-allowed;
+                    &:hover {
+                        box-shadow: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 900px) {
+    .Login-content {
+        .login-form-content {
+            .login-inside {
+                .register-form {
+                    .credentials {
+                        .reg-box {
+                            position: relative;
+                            .password {
+                                .tips {
+                                    width: 100%;
+                                    background-color: black;
+                                    color: #fff;
+                                    text-align: center;
+                                    border-radius: 6px;
+                                    padding: 5px 0;
+                                    position: absolute;
+                                    z-index: 1;
+                                    top: 100%;
+                                    left: 50%;
+                                    margin-left: -50%;
+                                    &::after {
+                                        content: " ";
+                                        position: absolute;
+                                        top: unset;
+                                        bottom: 100%;
+                                        left: 50%;
+                                        margin-left: -5px;
+                                        border-width: 5px;
+                                        border-style: solid;
+                                        border-color: transparent transparent black transparent;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

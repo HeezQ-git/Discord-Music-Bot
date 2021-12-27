@@ -1,0 +1,116 @@
+@use "@material/theme" with (
+    $primary: #4285F4,
+    $on-primary: #fff
+);
+@use "@material/button/styles";
+@import './../../colors';
+
+.EmailSent-content {
+    height: 100vh;
+    .emailsent-inside {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: auto;
+        height: 500px;
+        min-width: 500px;
+        width: 35vw;
+        margin-top: 2.5vh;
+        padding: 10px;
+        background: white;
+        border-radius: 5px;
+        .red {
+            color: $red;
+        }
+        .emailsent {
+            &--text {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                h1 {
+                    margin-top: 25px;
+                    font-size: 1.75rem;
+                    font-weight: bold;
+                }
+                h2 {
+                    color: $green;
+                    font-size: 1.5rem;
+                    margin-top: 35px;
+                }
+                h3 {
+                    margin-top: 10px;
+                    font-size: 1.1rem;
+                    opacity: .75;
+                    .emailsent-feature {
+                        font-weight: bold;
+                        font-size: 1.15rem;
+                        opacity: .95;
+                    }
+                }
+            }
+            &--note {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                margin-top: 50px;
+                span {
+                    font-size: 1.6rem;
+                    opacity: .85;
+                }
+                p {
+                    font-size: 1.35rem;
+                    padding: 2px;
+                }
+            }
+            &--smallnote {
+                max-width: 85%;
+                text-align: center;
+                font-size: 1rem;
+                margin-top: 5px;
+                opacity: .85;
+            }
+            &--buttons {
+                display: flex;
+                flex-direction: row;
+                gap: 50px;
+                margin-top: 50px;
+                a {
+                    text-decoration: none;
+                }
+                button {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 5px;
+                }
+            }
+            &--bottom-text {
+                user-select: none;
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                bottom: 50px;
+                left: 50px;
+                p {
+                    margin: 0;
+                    font-size: 1.1rem;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1380px) {
+    .EmailSent-content {
+        height: 100vh;
+        .emailsent-inside {
+            .emailsent {
+                &--buttons {
+                    margin-top: 35px;
+                }
+            }
+        }
+    }
+}

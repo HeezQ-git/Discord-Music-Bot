@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 const pendingUsers = require('./../../../models/pendingUsers');
-// const websiteUsers = require('./../../../models/websiteUsers');
 const bcrypt = require('bcrypt');
 
 const hashPassword = async (password) => {
@@ -27,10 +26,8 @@ const newPendingUser = async (req, res) => {
     if (user) response.success = true
     else response.msg = `Didn't find user in pending users list.`;
 
-    // console.log(user);
     if (response.success) {
         const info = await sendConfirmationEmail(user, user._id);
-        console.log(info);
         if (info.rejected.length > 0) {
             response.success = false;
             response.msg = `Email couldn't be sent, please retry in a moment.`;
@@ -51,7 +48,7 @@ const sendConfirmationEmail = async (toUser, hash) => {
     });
 
     let info = await transporter.sendMail({
-        from: `"💖 Tournament Team" <${process.env.GOOGLE_USER}>`,
+        from: `"Tournament Team" <${process.env.GOOGLE_USER}>`,
         to: toUser.email,
         subject: "Tournament Team - Account Activation",
         text: "Account Activation",
@@ -67,7 +64,7 @@ const sendConfirmationEmail = async (toUser, hash) => {
                     </div>
                     <p class="info" style="text-align:center;margin:auto;max-width: 400px;margin-top: 50px;font-size: 1.25rem;color: rgb(49, 49, 49);font-weight: bold;">To activate your account, please click the following button:</p>
                     <div class="button" style="margin-top: 25px;text-align:center;">
-                        <a target="_" href="${process.env.DOMAIN}/api/backoffice/account/activate/${hash}" style="transition: all .3s ease;padding: 10px;padding-inline: 30px;height: 45px;background: linear-gradient(97deg, rgba(195,51,244,1) 0%, rgba(219,66,149,1) 100%);border: 0.5px solid rgba(100, 100, 100, 0.5);border-radius: 8px;color: white;font-size: 1.25rem;cursor: pointer;text-decoration: none;">ACTIVATE ACCOUNT</a>
+                        <a target="_" href="${process.env.DOMAIN}/account/activate/${hash}" style="transition: all .3s ease;padding: 10px;padding-inline: 30px;height: 45px;background: linear-gradient(97deg, rgba(195,51,244,1) 0%, rgba(219,66,149,1) 100%);border: 0.5px solid rgba(100, 100, 100, 0.5);border-radius: 8px;color: white;font-size: 1.25rem;cursor: pointer;text-decoration: none;">ACTIVATE ACCOUNT</a>
                     </div>
                 </div>
             </div>
@@ -78,7 +75,30 @@ const sendConfirmationEmail = async (toUser, hash) => {
     return info;
 }
 
+const sendEmail = async (req, res) => {
+    const response = {
+        success: false,
+    }
+
+    const user = await pendingUsers.findOne({ email: req.body.email });
+    if (user) {
+        let flag = true;
+        if (user.resendemail) {
+            const diff = Date.now() - user.resendemail;
+            if (diff < 30000) flag = false;
+        }
+        if (flag) {
+            const info = await sendConfirmationEmail(user, user._id);
+            if (info.rejected.length <= 0) response.success = true;
+            await pendingUsers.updateOne({ resendemail: Date.now() });
+        }
+    }
+
+    return res.status(200).json(response);
+}
+
 module.exports = {
     sendConfirmationEmail,
     newPendingUser,
+    sendEmail,
 };
