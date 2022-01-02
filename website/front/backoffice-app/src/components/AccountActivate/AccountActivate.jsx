@@ -1,8 +1,7 @@
 import './AccountActivate.scss';
-import Header from '../Header';
 import { useParams } from 'react-router';
 import { useState, useEffect } from 'react';
-import { accountService } from './../../services/account.service';
+import { accountService } from '../../services/account.service';
 import { Link } from 'react-router-dom';
 import loader from './../../img/loader.svg';
 
@@ -28,7 +27,6 @@ const AccountActivate = () => {
 
     return (
         <div className="AccountActivate-content">
-            <Header></Header>
             <div className="aa-content">
                 {activated != null ? activated ?
                     <div className="approved">

@@ -2,9 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const websiteUsersSchema = new Schema({
-    email: String,
+    accountType: {
+        type: String,
+        default: "classic",
+    },
     username: String,
+    email: String,
     password: String,
+    imageUrl: String,
+    googleId: String,
+    passwordResetId: String,
 });
 
 const WebsiteUsers = mongoose.model('WebsiteUsers', websiteUsersSchema);

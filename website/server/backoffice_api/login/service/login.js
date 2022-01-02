@@ -21,12 +21,43 @@ const loginUser = async (req, res) => {
     return res.status(200).json(response);
 }
 
+const loginGoogleUser = async (req, res) => {
+    const response = {
+        success: false,
+        msg: '',
+    }
+
+    if (req.body.googleId) {
+        const user = await websiteUsers.findOne({ googleId: req.body.googleId });
+        if (user) {
+            response.success = true;
+            response.msg = 'logged in';
+            // const result = await bcrypt.compare(req.body.password, user.password);
+            // if (result) {
+            //     response.success = true;
+            // } else response.msg = 'E-mail or password is incorrect.';
+        } else {
+            await websiteUsers.create({
+                accountType: 'google',
+                username: req.body.username,
+                email: req.body.email,
+                imageUrl: req.body.imageUrl,
+                googleId: req.body.googleId,
+            });
+            response.success = true;
+            response.msg = 'created';
+        };
+    }
+
+    return res.status(200).json(response);
+}
+
 const checkUser = async (req, res) => {
     const response = {
         success: false,
     }
-    const user = await websiteUsers.findOne({ username: req.body.username });
-    if (user) response.success = true;
+    const users = await websiteUsers.find();
+    if (users.some(e => e.username.toLowerCase() == req.body.username.toLowerCase())) response.success = true;
 
     return res.status(200).json(response);
 }
@@ -43,6 +74,7 @@ const checkEmail = async (req, res) => {
 
 module.exports = {
     loginUser,
+    loginGoogleUser,
     checkUser,
     checkEmail,
 };

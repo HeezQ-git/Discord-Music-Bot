@@ -1,6 +1,5 @@
 import './songlist.scss';
-import Header from './../Header';
-import { songsService } from './../../services/songs.service';
+import { songsService } from '../../services/songs.service';
 import React, { useState, useEffect } from 'react';
 import loader from './../../img/loader.svg';
 
@@ -73,7 +72,6 @@ const SongList = () => {
     
     return (
         <div className="Songlist-content">
-            <Header></Header>
             <div className="inside-content">
                 <div className="songlist">
                     {songs.length > 0 ? songs.map((song, index) => {

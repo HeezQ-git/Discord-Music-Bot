@@ -7,6 +7,9 @@ const mailerService = {
     sendEmail: (data) => {
         return axios.post('/api/backoffice/mailer/sendEmail', data);
     },
+    sendForgetPassword: (data) => {
+        return axios.post('/api/backoffice/mailer/sendForgetPassword', data);
+    },
 }
 
 export { mailerService };

@@ -39,9 +39,13 @@ module.exports = {
             name.splice(0, 1);
             name = name.join(' ');
             const song = await findSong(name);
-            const embed = await songsHandler('info', song[0], msg);
-            if (!embed || embed == null) await msg.channel.send({ embeds: [await basicEmbed(msg, 'An unexpected error has occurred', 'no')] });
-            await msg.channel.send({ embeds: [embed] });
+            if (song.length > 0) {
+                const embed = await songsHandler('info', song[0], msg);
+                if (!embed || embed == null) await msg.channel.send({ embeds: [await basicEmbed(msg, 'An unexpected error has occurred', 'no')] });
+                await msg.channel.send({ embeds: [embed] });
+            } else {
+                await msg.channel.send({ embeds: [await basicEmbed(msg, `Couldn't find anything related to **${args[0]}**!`, 'no')] });
+            }
         } else if (args[0] === 'menu') {
             user = await checkUser(msg.author.id);
             if (user.messageId) {
@@ -120,7 +124,18 @@ module.exports = {
             let name = args;
             name.splice(0, 1);
             name = name.join(' ');
-            if (name.includes('/revision/latest/')) name = name.split('/revision/')[0];
+            if (name.includes('/revision/latest/')) name = name.split('/revision/')[0]
+            else if (name.includes('youtu.be/')) {
+                const info = name.split('youtu.be/')[1].split('?t=');
+                const id = info[0];
+                let time = info[1];
+                let end = '';
+                if (time.contains('&end=')) {
+                    time = time.split('&end=')[0];
+                    end = time.split('&end=')[1];
+                }
+                name = `https://youtube.com/embed/${id}?start=${start}${end ? `&end=${end}` : ''}`;
+            }
             user.song_temp[steps[page]] = [name];
             await Users.updateOne({ userId: msg.author.id }, user);
 
@@ -177,14 +192,16 @@ module.exports = {
             name = name.join(' ');
 
             const song = await findSong(name);
-            if (song.length == 0) {
+            if (song.length > 0) {
+                msg.delete();
+                
+                const embed = await songsHandler('find', song[0], msg);
+                if (embed) msg.channel.send({ content: song.length > 1 ? `Found ${song.length - 1} more results matching given query...` : null, embeds: [embed] })
+                else msg.channel.send(`${emoji.no} Couldn't send information about song!`);
+            } else {
                 await msg.reactions.removeAll();
-                return msg.react(emoji.no); }
-
-            msg.delete();
-            const embed = await songsHandler('find', song[0], msg);
-            if (embed) msg.channel.send({ content: song.length > 1 ? `Found ${song.length - 1} more results matching given query...` : null, embeds: [embed] })
-            else msg.channel.send(`${emoji.no} Couldn't send information about song!`);
+                return msg.react(emoji.no);
+            }
         } else if (args[0] === 'fillout' || args[0] === 'fo') {
             const user = await checkUser(msg.author.id);
             if (user.fillout === true) user.fillout = false

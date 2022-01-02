@@ -15,17 +15,22 @@
 }
 
 .Login-content {
+    height: calc(100vh - 125px);
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     .login-form-content {
         position: relative;
         user-select: none;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 400px;
-        background: rgba(255,255,255, 1);
+        width: 450px;
+        background: $bgWhite;
         margin: auto;
-        margin-top: 2.5vh;
         border-radius: 5px;
+        box-shadow: 0px 0px 21px -6px black;
         .loading {
             z-index: 9999;
             position: absolute;
@@ -59,53 +64,68 @@
                 font-size: 2rem;
                 font-weight: bold;
                 padding: 20px;
+                padding-bottom: 10px;
             }
-            .choice-box {
-                margin-top: 20px;
-                p {
+            .protected {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                color: #0F9D58;
+                img {
+                    margin-right: 2.5px;
+                    width: 15px;
+                    height: 15px;
+                }
+            }
+            .buttons-styling {
+                position: absolute;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 67.5%;
+                bottom: 11%;
+                gap: 15px;
+                .buttons {
                     display: flex;
                     flex-direction: row;
                     align-items: center;
-                    justify-content: center;
-                    color: #0F9D58;
-                    margin-bottom: 7.5px;
-                    img {
-                        margin-right: 2.5px;
-                        width: 15px;
-                        height: 15px;
-                    }
+                    justify-content: space-between;
+                    width: 100%;
                 }
-                .choice {
+            }
+            .login-via {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: row;
+                gap: 10px;
+                width: max-content;
+                padding: 10px;
+                border-radius: 0.3rem;
+                transition: 200ms ease;
+                outline: none;
+                border: 0;
+                background: transparent;
+                p {
+                    font-size: 1.1rem;
+                }
+                span {
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    .choice-border {
-                        border: 0.5px solid rgba(100, 100, 100, 0.5);
-                        border-radius: 3px;
-                        width: 100%;
-                        overflow: hidden;
-                        button {
-                            cursor: pointer;
-                            color: white;
-                            font-size: 1.15rem;
-                            height: 40px;
-                            width: 50%;
-                            border: 0;
-                            border-radius: 3px;
-                        }
-                        .choice-register, .choice-login {
-                            background: white;
-                            color: black;
-                        }
-                        .choice--active {
-                            color: white;
-                            background: rgb(195,51,244);
-                            background: linear-gradient(97deg, rgba(195,51,244,1) 0%, rgba(219,66,149,1) 100%);
-                        }
+                    svg {
+                        transform: scale(1.5);
                     }
+                }
+                &:hover {
+                    background-color: rgba(26, 115, 232, 0.075);
+                    cursor: pointer;
                 }
             }
             .login-form {
+                a { text-decoration: none; }
                 .credentials {
                     margin-top: 30px;
                     display: flex;
@@ -115,15 +135,10 @@
                     gap: 10px;
                     input {
                         width: 300px;
-                        border: 0.5px solid rgba(100, 100, 100, 0.5);
-                        border-radius: 3px;
-                        text-indent: 15px;
-                        height: 45px;
-                        font-size: 1.1rem;
-                        &::placeholder {
-                            font-size: 1.1rem;
-                            color:  rgba(100, 100, 100, 0.8);
-                        }
+                    }
+                    .password {
+                        width: 300px;
+                        margin-top: 5px;
                     }
                 }
                 .forgot-password {
@@ -137,32 +152,17 @@
                 .login-error {
                     display: flex;
                     flex-direction: row;
-                    align-items: center;
+                    justify-content: flex-start;
                     gap: 5px;
                     color: $red;
                     margin-top: 10px;
                 }
-                .login-button {
-                    position: absolute;
-                    width: 300px;
-                    transition: all .3s ease;
-                    margin-top: 50px;
-                    bottom: 25px;
-                    height: 45px;
-                    background: rgb(195,51,244);
-                    background: linear-gradient(97deg, rgba(195,51,244,1) 0%, rgba(219,66,149,1) 100%);
-                    border: 0.5px solid rgba(100, 100, 100, 0.5);
-                    border-radius: 8px;
-                    color: white;
-                    font-size: 1.25rem;
-                    cursor: pointer;
-                    &:hover {
-                        box-shadow: 0px 0px 12px 0px rgba(195,51,244, 0.6);
-                    }
-                }
             }
             .register-form {
                 display: none;
+                .buttons {
+                    bottom: 8.5%;
+                }
                 .credentials {
                     margin-top: 30px;
                     display: flex;
@@ -170,34 +170,8 @@
                     align-items: center;
                     justify-content: center;
                     gap: 10px;
-                    .red-border {
-                        border: 0.5px solid #DB4437;
-                        &:focus {
-                            outline: none !important;
-                            border: 1px solid #DB4437;
-                        }
-                    }
-                    .green-border {
-                        border: 0.5px solid #0F9D58;
-                        &:focus {
-                            outline: none !important;
-                            border: 1px solid #0F9D58;
-                        }
-                    }
                     input {
                         width: 300px;
-                        border: 0.5px solid rgba(100, 100, 100, 0.5);
-                        border-radius: 3px;
-                        text-indent: 15px;
-                        height: 40px;
-                        font-size: 1.1rem;
-                        &::placeholder {
-                            font-size: 1.1rem;
-                            color:  rgba(100, 100, 100, 0.8);
-                        }
-                        &:focus {
-                            outline: none !important;
-                        }
                     }
                     .reg-box {
                         position: relative;
@@ -206,9 +180,6 @@
                             flex-direction: row;
                             align-items: center;
                             color: #DB4437;
-                            .msg {
-                                margin-left: 5px;
-                            }
                         }
                         .meter {
                             width: 100%;

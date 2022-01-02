@@ -1,8 +1,7 @@
 import './EmailSent.scss';
-import Header from '../Header';
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
-import { mailerService } from './../../services/mailer.service';
+import { mailerService } from '../../services/mailer.service';
 
 const EmailSent = () => {
 
@@ -34,7 +33,6 @@ const EmailSent = () => {
 
     return (
         <div className="EmailSent-content">
-            <Header></Header>
             <div className="emailsent-inside">
                 <div className="emailsent--text">
                     <h1>ACCOUNT ACTIVATION</h1>

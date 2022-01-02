@@ -84,11 +84,13 @@ module.exports.songsHandler = async (type, song, interaction) => {
             .addField(`🎮 Game`, `> ${song.game ? song.game : `Not found`}`, true)
             .addField(`💃 Dance mode`, `> ${song.dancemode ? song.dancemode : `Not found`}`, true)
             .addField(`❌ Broken lvl`, `> ${song.xboxbrokenlevel ? song.xboxbrokenlevel : `Not found`}`, true)
+            .addField(`📅 Times:`, `> ${song.times ? song.times : `Not found`}`, true)
+            .addField(`🎹 Genre:`, `> ${song.genre.length > 1 ? song.genre.join(', ') : `Not found`}`, true)
             .addField(`🕒 Duration`, `> ${song.duration ? song.duration : `Not found`}`, true)
             .addField(`🍂 Difficulty`, `> ${song.difficulty ? song.difficulty : `Not found`}`, true)
             .addField(`💦 Effort`, `> ${song.effort ? song.effort : `Not found`}`, true)
             .addField(`🔗 Cover URL`, `> [CLICK HERE](${song.cover})`, true)
-            .addField(`🎉 Tags`, `${value}`)
+            .addField(`🎉 Tags`, `${value}`, true)
             .setThumbnail(`${song.cover.startsWith('http') ? song.cover : ''}`)
             .setTimestamp()
             .setAuthor(`${interaction.guild.me.user.username}`)
@@ -115,6 +117,8 @@ module.exports.songsHandler = async (type, song, interaction) => {
                 .addField(`🎮 Game:`, `> ${song.game ? song.game : `Not found`}`, true)
                 .addField(`💃 Dance mode:`, `> ${song.dancemode ? song.dancemode : `Not found`}`, true)
                 .addField(`❌ Broken lvl:`, `> ${song.xboxbrokenlevel ? song.xboxbrokenlevel : `Not found`}`, true)
+                .addField(`📅 Times:`, `> ${song.times ? song.times : `Not found`}`, true)
+                .addField(`🎹 Genre:`, `> ${song.genre ? song.genre : `Not found`}`, true)
                 .addField(`🕒 Duration`, `> ${song.duration ? song.duration : `Not found`}`, true)
                 .addField(`🍂 Difficulty:`, `> ${song.difficulty ? song.difficulty : `Not found`}`, true)
                 .addField(`💦 Effort:`, `> ${song.effort ? song.effort : `Not found`}`, true)
@@ -283,12 +287,8 @@ const findSong = async (name) => {
     let song = [];
     const songs = await Songs.find();
     songs.map(s => {
-        if (s.name.toLowerCase().includes(name)) song.push(s);
+        if (s.name.toLowerCase().includes(name.toLowerCase())) song.push(s);
     })
-    // if (song.length <= 0) {
-    //     const find = await Songs.find({ _id: name });
-    //     if (find) song.push(find);
-    // }
     return song;
 }
 

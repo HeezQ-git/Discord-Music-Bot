@@ -84,11 +84,14 @@ module.exports =  {
                 if (emoji == "🔄") {
                     react.guild = await react.client.guilds.fetch(react.message.guildId);
                     let message;
-                    if (userProfile.randomMessageId) message = await checkEditMessage(react, user.randomMessageId);
-                    
+                    if (userProfile.randomMessageId) message = await checkEditMessage(react, userProfile.randomMessageId);
+
                     const embed = await songsHandler('info', await randomHandler(), react);
-                    if (!message) message = await react.message.channel.send({ embeds: [ embed ] })
+                    if (!message) message = await react.message.channel.send({ embeds: [ embed ] });
                     else return message.edit({ embeds: [ embed ] });
+
+                    await message.react("🔄");
+                    await message.react(`${emojis.no}`);
 
                     await Users.updateOne({ userId: userProfile.userId }, { randomMessageId: message.id });
                 } else if (emoji == `${emojis.no}`) {
