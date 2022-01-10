@@ -8,6 +8,7 @@ import loader from './../../img/loader.svg';
 import { FcGoogle } from 'react-icons/fc';
 import { GoogleLogin } from 'react-google-login';
 import zxcvbn from 'https://cdnjs.cloudflare.com/ajax/libs/zxcvbn/4.2.0/zxcvbn.js';
+import { MdErrorOutline } from 'react-icons/md'
 
 import { TextField, Password, Form } from '@react-md/form';
 
@@ -38,26 +39,27 @@ const Login = () => {
             setRegStyles({display: 'block'});
         }
     }
+    const [usernameRegister, setUsernameRegister] = useState('');
+    const [emailRegister, setEmailRegister] = useState('');
+    const [passwordRegister, setPasswordRegister] = useState('');
+    const [confirmPasswordRegister, setConfirmPasswordRegister] = useState('');
 
     const [emailLogin, setEmailLogin] = useState('');
     const [passwordLogin, setPasswordLogin] = useState('');
     
-    const usernameRegisterRef = React.createRef();
-    const emailRegisterRef = React.createRef();
-    const passwordRegisterRef = React.createRef();
     const confirmPasswordRegisterRef = React.createRef();
 
     const checkEmail = () => {
-        if (!emailRegisterRef.current.value) return setEmailStyles({ pass: false, style: null, msg: '' });
-        const email = String(emailRegisterRef.current.value).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+        if (!emailRegister) return setEmailStyles({ pass: false, style: null, msg: '' });
+        const email = String(emailRegister).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
         if (!email) setEmailStyles({ pass: false, style: 'red-border', msg: 'Invalid email address'})
         else setEmailStyles({ pass: true, style: 'green-border', msg: '' })
     }
 
     const checkEmailDB = async () => {
-        if (!emailRegisterRef.current.value) return setEmailStyles({ pass: false, style: null, msg: '' });
+        if (!emailRegister) return setEmailStyles({ pass: false, style: null, msg: '' });
         if (emailStyles.pass) {
-            const res = await loginService.checkEmail({ email: emailRegisterRef.current.value });
+            const res = await loginService.checkEmail({ email: emailRegister });
             if (res.data.success) {
                 setEmailStyles({ pass: false, style: 'red-border', msg: 'This email is taken' });
             }
@@ -66,18 +68,18 @@ const Login = () => {
     }
 
     const checkUser = async () => {
-        if (!usernameRegisterRef.current.value) return setUserStyles({ pass: false, style: null, msg: '' });
-        if (usernameRegisterRef.current.value.length < 4) return setUserStyles({ pass: false, style: 'red-border', msg: 'Minimum number of characters is 4' });
-        if (/^\d+$/.test(usernameRegisterRef.current.value)) return setUserStyles({ pass: false, style: 'red-border', msg: 'Name cannot consist of numbers only' });
-        const res = await loginService.checkUser({ username: usernameRegisterRef.current.value });
+        if (!usernameRegister) return setUserStyles({ pass: false, style: null, msg: '' });
+        if (usernameRegister.length < 4) return setUserStyles({ pass: false, style: 'red-border', msg: 'Minimum number of characters is 4' });
+        if (/^\d+$/.test(usernameRegister)) return setUserStyles({ pass: false, style: 'red-border', msg: 'Name cannot consist of numbers only' });
+        const res = await loginService.checkUser({ username: usernameRegister });
         if (res.data.success) setUserStyles({ pass: false, style: 'red-border', msg: 'This username is taken' })
         else setUserStyles({ pass: true, style: 'green-border', msg: '' });
     }
 
     const checkPassword = () => {
-        if (!passwordRegisterRef.current.value) return setPasswordStyles({pass: false, style: null, text: '', value: "0", msg: '', suggestion: '', warning: ''});
-        if (passwordRegisterRef.current.value.length < 8) return setPasswordStyles({pass: false, style: 'red-border', text: '', value: '', msg: '1', suggestion: '', warning: 'Minimum number of characters is 8'});
-        const res = zxcvbn(passwordRegisterRef.current.value);
+        if (!passwordRegister) return setPasswordStyles({pass: false, style: null, text: '', value: "0", msg: '', suggestion: '', warning: ''});
+        if (passwordRegister.length < 8) return setPasswordStyles({pass: false, style: 'red-border', text: '', value: '', msg: '1', suggestion: '', warning: 'Minimum number of characters is 8'});
+        const res = zxcvbn(passwordRegister);
         const strength = { 0: 'Terribly bad ❌', 1: 'Bad 🙁', 2: 'Weak 😕', 3: 'Good 👍', 4: 'Strong 💪' };
         if (Number(res.score) <= 2) setPasswordStyles({pass: false, style: 'red-border', text: strength[res.score], value: res.score, msg: '1', suggestion: res.feedback.suggestions[Math.floor(Math.random()*res.feedback.suggestions.length)], warning: res.feedback.warning});
         else setPasswordStyles({pass: true, style: 'green-border', text: strength[res.score], value: res.score, msg: '', suggestion: '', warning: ''});
@@ -86,18 +88,18 @@ const Login = () => {
 
     const checkConfirmPassword = () => {
         if (!confirmPasswordRegisterRef.current.value) return setConfirmPasswordStyles({ pass: false, style: null, msg: '' });
-        if (confirmPasswordRegisterRef.current.value != passwordRegisterRef.current.value) setConfirmPasswordStyles({ pass: false, style: 'red-border', msg: 'Passwords don\'t match' });
+        if (confirmPasswordRegisterRef.current.value != passwordRegister) setConfirmPasswordStyles({ pass: false, style: 'red-border', msg: 'Passwords don\'t match' });
         else setConfirmPasswordStyles({ pass: true, style: 'green-border', msg: '' });
     }
 
     const register = async () => {
         if (canRegister) {
-            const email = emailRegisterRef.current.value;
+            const email = emailRegister.current.value;
             setLoading(true);
             const res = await mailerService.newPendingUser({ 
-                username: usernameRegisterRef.current.value,
-                email: emailRegisterRef.current.value,
-                password: passwordRegisterRef.current.value,
+                username: usernameRegister,
+                email: emailRegister,
+                password: passwordRegister,
             });
             if (res.data.success) {
                 navigate(`/account/email_sent/${email}`);
@@ -124,7 +126,7 @@ const Login = () => {
     }
 
     const refreshPage = () => {
-        navigate(`/login/${emailRegisterRef.current.value}`);
+        navigate(`/login/${emailRegister.current.value}`);
         window.location.reload(false);
     };
 
@@ -152,16 +154,18 @@ const Login = () => {
                     <p className="protected"><img src={lockIcon}></img>Your data is protected.</p>
                     <div className="login-form" style={loginStyles}>
                         <div className="credentials">
-                            <div className="login-box">
-                                <TextField required id="text-field-type-email" value={emailLogin} onChange={(event) => setEmailLogin(event.currentTarget.value)} defaultValue={email != `null` ? email : ''} placeholder="Your e-mail" label="E-mail address"/>
-                            </div>
-                            <div className="login-box">
-                                <Password className="password" required maxLength="24" id="text-field-type-password" onChange={(event) => setPasswordLogin(event.currentTarget.value)} placeholder="Your password" label="Password"/>
-                            </div>
+                            <Form>
+                                <div className="login-box">
+                                    <TextField required id="text-field-type-email" value={emailLogin} onChange={(event) => setEmailLogin(event.currentTarget.value)} defaultValue={email != `null` ? email : ''} placeholder="Your e-mail" label="E-mail address"/>
+                                </div>
+                                <div className="login-box">
+                                    <Password className="password" required maxLength="24" id="text-field-type-password" onChange={(event) => setPasswordLogin(event.currentTarget.value)} placeholder="Your password" label="Password"/>
+                                </div>
+                            </Form>
                         </div>
                         <Link to={`/account/forgot_password/${emailValue ? emailValue : ''}`}><p className="forgot-password">Forgot password?</p></Link>
                         {loginError ? <div className="login-error error">
-                            <span className="material-icons">error_outline</span>
+                            <MdErrorOutline size={20}/>
                             <p>{loginError}</p>
                         </div> : ''}
                         <div className="buttons-styling">
@@ -197,27 +201,26 @@ const Login = () => {
                     <div className="register-form" style={regStyles}>
                         <div className="credentials">
                             <div className="reg-box">
-                                <p>Username</p>
-                                <input maxLength="14" onBlur={() => checkUser()} ref={usernameRegisterRef} className={usernameStyles.style} placeholder="John Doe" required></input>
+                                <TextField required maxLength={14} id="text-field-type-username" value={usernameRegister} onBlur={() => checkUser()} onChange={(event) => setUsernameRegister(event.currentTarget.value)} placeholder="Your username" label="Username" error={usernameStyles.msg.length > 0 ? true : false}/>
                                 {usernameStyles.msg.length > 0 ? <div className="btn-gap">
-                                    <span className="material-icons icon">error_outline</span>
+                                    <MdErrorOutline size={20}/>
                                     <span className="msg">{usernameStyles.msg}</span>
                                 </div> : ''}
                             </div>
                             <div className="reg-box">
-                                <p>E-mail address</p>
-                                <input onBlur={() => checkEmailDB()} onChange={() => checkEmail()} ref={emailRegisterRef} className={emailStyles.style} placeholder="john.doe@gmail.com" required></input>
+                                <TextField required id="text-field-type-emailRegister" value={emailRegister} onBlur={() => checkEmailDB()} onChange={(event) => { setEmailRegister(event.currentTarget.value); checkEmail() }} placeholder="Your e-mail" label="E-mail address" error={emailStyles.msg.length > 0 ? true : false}/>
                                 {emailStyles.msg.length > 0 ? <div className="btn-gap">
-                                    <span className="material-icons icon">error_outline</span>
+                                    <MdErrorOutline size={20}/>
                                     {emailStyles.msg.includes('taken') ? <span className="msg">{emailStyles.msg}! <span onClick={() => refreshPage()} className="login">Login?</span></span> : <span className="msg">{emailStyles.msg}</span>}
                                 </div> : ''}
                             </div>
                             <div className="reg-box">
                                 <div className="password">
                                     <div>
-                                        <p>Password</p>
-                                        <input maxLength="24" onChange={() => checkPassword()} className={passwordStyles.style} ref={passwordRegisterRef} placeholder="********" type="password" required></input>
-                                        <meter max="4" value={passwordStyles.value} className="meter"></meter>
+                                        <Password required maxLength={24} id="text-field-type-password" value={passwordRegister} onBlur={() => checkPassword()} onChange={(event) => setPasswordRegister(event.currentTarget.value)} placeholder="Your password" label="Password" error={passwordStyles.msg.length > 0 ? true : false}/>
+                                        {/* <p>Password</p>
+                                        <input maxLength="24" onChange={() => checkPassword()} className={passwordStyles.style} ref={passwordRegisterRef} placeholder="********" type="password" required></input> */}
+                                        <meter max={4} value={passwordStyles.value} className="meter"></meter>
                                         <p className="strength">{passwordStyles.text ? <p>{passwordStyles.text}</p> : ''}</p>
                                     </div>
                                     {passwordStyles.msg.length > 0 ?
@@ -232,7 +235,7 @@ const Login = () => {
                                 <p>Confirm password</p>
                                 <input onChange={() => checkConfirmPassword()} className={confirmPasswordStyles.style} ref={confirmPasswordRegisterRef} placeholder="********" type="password" required></input>
                                 {confirmPasswordStyles.msg.length > 0 ? <div className="btn-gap">
-                                    <span className="material-icons icon">error_outline</span>
+                                    <MdErrorOutline size={20}/>
                                     <span className="msg">{confirmPasswordStyles.msg}</span>
                                 </div> : ''}
                             </div>
