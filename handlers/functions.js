@@ -38,3 +38,14 @@ module.exports.validURL = (str) => {
     if (!regex.test(str)) return false;
     return true;
 }
+
+module.exports.getUnique = async (songs, type) => {
+    let final = [];
+    songs.map(song => {
+        if (`${typeof song[type]}`.toLowerCase() === `string`) final.push(song[type])
+        else final.push(...(Object.values(...[song[type]]).map(a => a)));
+    });
+    songs.map(el => el[type].includes('None') ? console.log(`${type} includes None!`) : '');
+    final = [... new Set(final)];
+    return final;
+}

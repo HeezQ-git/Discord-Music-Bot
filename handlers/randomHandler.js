@@ -1,19 +1,20 @@
 const Discord = require('discord.js');
-const Songs = require('../models/songs');
-const color = require('../config/colors.json');
-const config= require('../config.json');
+const Songs   = require('../models/songs');
+const color   = require('../config/colors.json');
+const config  = require('../config.json');
+const { getUnique } = require('../handlers/functions');
 
 randomPages = [ 
-    { name: "Version", emoji: "🌗"}, 
+    { name: "Version", emoji: "🌗" }, 
     { name: "Artist", emoji: "🎤" }, 
     { name: "Game", emoji: "🎮" }, 
     { name: "Dance mode", emoji: "👯‍♂️" }, 
-    { name: "Broken lvl", emoji: "❌"}, 
+    { name: "Broken lvl", emoji: "❌" }, 
     { name: "Difficulty", emoji: "🍂" }, 
     { name: "Effort", emoji: "💦" }, 
     { name: "Times", emoji: "📅" }, 
-    { name: "Genre", emoji: "🎹"}, 
-    { name: "Tags", emoji: "🎉"}
+    { name: "Genre", emoji: "🎹" }, 
+    { name: "Tags", emoji: "🎉" }
 ]
 
 const checkEditMessage = async (msg, id) => {
@@ -57,13 +58,31 @@ const randomEmbed = async (type, category, user) => {
                 .setFooter(`💖 With love, tournament team`, config.avatar)
                 .setTimestamp()
                 break;
+            case 'edit':
+                const songs = await Songs.find();
+                let firstValues = [], values;
+                values = await getUnique(songs, user.randomMenu);
+                if (values.length > 3) firstValues = [`Type \`.top ${user.randomMenu}\` to find available options`]
+                else values.map(el => firstValues.push(`- \`${el}\``));
+                embed = new Discord.MessageEmbed()
+                .setColor(color.blue)
+                .setTitle(`Managing ${user.randomMenu}`)
+                .addFields({
+                    name: 'Available options',
+                    value: firstValues.join('\n')
+                })
+                .setAuthor(`TournamentBot`, config.avatar)
+                .setFooter(`💖 With love, tournament team`, config.avatar)
+                .setTimestamp()
+                break;
         }
         return embed;
     }
 }
 
 module.exports = {
-    randomHandler,
     checkEditMessage,
+    randomHandler,
     randomEmbed,
+    randomPages,
 }
