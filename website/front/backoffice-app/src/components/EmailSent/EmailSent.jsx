@@ -43,7 +43,7 @@ const EmailSent = () => {
                     <span className="red">Please note:</span>
                     <p>If you do not click the link your account will remain inactive.</p>
                 </div>
-                <p className="emailsent--smallnote">If you do not receive the email within a few minutes, please check your spam folder.</p>
+                <p className="emailsent--smallnote">Didn't receive email within a few minutes? Check your spam folder.</p>
                 <div className="emailsent--buttons">
                     <div className="mdc-touch-target-wrapper">
                         <button style={btnStyle} onClick={() => resendEmail()} disabled={disabled === null || disabled === true ? true : false} className="mdc-button">

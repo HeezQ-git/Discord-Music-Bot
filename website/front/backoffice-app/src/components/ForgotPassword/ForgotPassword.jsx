@@ -105,7 +105,7 @@ const ForgotPassword = (props) => {
                 </div>
                 <div className="forgotpassword--credentials">
                     <div className={"input input-email " + (inputClass ? inputClass : '')}>
-                        <TextField id="text-field-type-email" value={emailValue} onChange={(event) => setEmailValue(event.currentTarget.value)} defaultValue={email != `null` ? email : ''} placeholder="Your e-mail" label="E-mail address"/>
+                        <TextField id="text-field-type-email" onChange={(event) => setEmailValue(event.currentTarget.value)} defaultValue={email != `null` ? email : ''} placeholder="Your e-mail" label="E-mail address"/>
                     </div>
                     {buttonInfo.error ?
                     <div className="error btn-gap">

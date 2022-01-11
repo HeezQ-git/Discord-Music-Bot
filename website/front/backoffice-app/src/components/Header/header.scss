@@ -1,4 +1,5 @@
 @import './../../colors';
+@import './../../vars';
 
 .Header-content {
     .header-inside-content {
@@ -7,7 +8,7 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
-        height: 125px;
+        height: $headerHeight;
         width: 100%;
         // backdrop-filter: blur(150px);
         background-color: rgba(0,0,0, 0.3);
@@ -70,18 +71,18 @@
         }
         .logo {
             margin-left: 100px;
-            width: 90px;
-            height: 90px;
+            height: 80%;
+            aspect-ratio: 1;
             cursor: pointer;
         }
         h1 {
-            font-size: 26px;
+            font-size: 23px;
         }
         .buttons {
             .button {
-                width: 150px;
-                height: 125px;
-                font-size: 1.2rem;
+                width: 125px;
+                height: $headerHeight;
+                font-size: 1rem;
                 // background: $secondaryDark;
                 background: transparent;
                 border: 0;

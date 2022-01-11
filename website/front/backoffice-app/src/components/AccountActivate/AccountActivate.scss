@@ -3,13 +3,11 @@
     $on-primary: #fff
 );
 @use "@material/button/styles";
-@import "./../../fontawesome/scss/fontawesome.scss";
-@import "./../../fontawesome/scss/solid.scss";
-@import "./../../fontawesome/scss/brands.scss";
 @import './../../colors';
+@import './../../vars';
 
 .AccountActivate-content {
-    height: calc(100vh - 125px);
+    height: calc(100vh - $headerHeight);
     width: 100vw;
     display: flex;
     align-items: center;
@@ -17,7 +15,7 @@
     .aa-content {
         display: flex;
         justify-content: center;
-        height: 500px;
+        height: 95%;
         width: 500px;
         background: $bgWhite;
         margin: auto;
