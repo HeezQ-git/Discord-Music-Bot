@@ -278,8 +278,11 @@ $boxWidth: 275px;
             .login-inside {
                 .register-form {
                     .credentials {
-                        .reg-box {
+                        .confirmpass {
                             position: relative;
+                        }
+                        .reg-box {
+                            // position: relative;
                             .password {
                                 .tips {
                                     width: 100%;

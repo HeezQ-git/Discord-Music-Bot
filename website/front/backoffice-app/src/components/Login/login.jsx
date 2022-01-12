@@ -51,9 +51,10 @@ const Login = () => {
     const [emailLogin, setEmailLogin] = useState(email || '');
     const [passwordLogin, setPasswordLogin] = useState('');
 
-    const checkEmail = () => {
-        if (!emailRegister) return setEmailStyles({ pass: false, style: null, msg: '' });
-        const email = String(emailRegister).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+    const checkEmail = (ev) => {
+        const emailReg = ev ? ev : emailRegister;
+        if (!emailReg) return setEmailStyles({ pass: false, style: null, msg: '' });
+        const email = String(emailReg).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
         if (!email) setEmailStyles({ pass: false, style: 'red-border', msg: 'Invalid email address'})
         else setEmailStyles({ pass: true, style: 'green-border', msg: '' })
     }
@@ -224,7 +225,7 @@ const Login = () => {
                             {step === 1 && 
                                 <div className="reg-box">
                                     <p className="iTip">Prodive your username below</p>
-                                    <TextField required onKeyDown={e => e.code.toLowerCase() === 'enter' && usernameStyles.pass && nextStep()} className="resize-box" maxLength={14} id="text-field-type-username" value={usernameRegister} onBlur={() => checkUserDB(usernameRegister)} onChange={(event) => {setUsernameRegister(event.currentTarget.value); checkUser(event.currentTarget.value)}} placeholder="Your username" label="Username" error={usernameStyles.msg.length > 0 ? true : false}/>
+                                    <TextField required onKeyDown={e => `${e.code}`.toLowerCase() === 'enter' && usernameStyles.pass && nextStep()} className="resize-box" maxLength={14} id="text-field-type-username" value={usernameRegister} onBlur={() => checkUserDB(usernameRegister)} onChange={(event) => {setUsernameRegister(event.currentTarget.value); checkUser(event.currentTarget.value)}} placeholder="Your username" label="Username" error={usernameStyles.msg.length > 0 ? true : false}/>
                                     {usernameStyles.msg.length > 0 ? <div className="error">
                                         <MdErrorOutline size={20}/>
                                         <span className="msg">{usernameStyles.msg}</span>
@@ -258,7 +259,7 @@ const Login = () => {
                             {step === 2 &&
                                 <div className="reg-box">
                                     <p className="iTip">Also provide your e-mail address</p>
-                                    <TextField required onKeyDown={e => e.code.toLowerCase() === 'enter' && emailStyles.pass && nextStep()} className="resize-box" id="text-field-type-emailRegister" value={emailRegister} onBlur={() => checkEmailDB(passwordRegister)} onChange={(event) => { setEmailRegister(event.currentTarget.value); checkEmail() }} placeholder="Your e-mail" label="E-mail address" error={emailStyles.msg.length > 0 ? true : false}/>
+                                    <TextField required onInput={(e) => { setEmailRegister(e.target.value); checkEmail(e.target.value)}} onKeyDown={e => `${e.code}`.toLowerCase() === 'enter' && emailStyles.pass && nextStep()} className="resize-box" id="text-field-type-emailRegister" value={emailRegister} onBlur={() => checkEmailDB(passwordRegister)} placeholder="Your e-mail" label="E-mail address" error={emailStyles.msg.length > 0 ? true : false}/>
                                     {emailStyles.msg.length > 0 ? <div className="error">
                                         <MdErrorOutline size={20}/>
                                         {emailStyles.msg.includes('taken') ? <span className="msg">{emailStyles.msg}! <span onClick={() => refreshPage()} className="login">Login?</span></span> : <span className="msg">{emailStyles.msg}</span>}
@@ -307,7 +308,7 @@ const Login = () => {
                                         </div>
                                     </div>
                                     <div className="reg-box">
-                                        <Password required onKeyDown={e => e.code.toLowerCase() === 'enter' && passwordStyles.pass && confirmPasswordStyles.pass && register()} className="resize-box confirmpass" maxLength={24} id="text-field-type-confirmpassword" value={confirmPasswordRegister} onBlur={() => checkConfirmPassword(confirmPasswordRegister)} onChange={(event) => {setConfirmPasswordRegister(event.currentTarget.value); checkConfirmPassword(event.currentTarget.value) }} placeholder="Confirm password" label="Confirm password" error={confirmPasswordStyles.msg.length > 0 ? true : false}/>
+                                        <Password required onKeyDown={e => `${e.code}`.toLowerCase() === 'enter' && passwordStyles.pass && confirmPasswordStyles.pass && register()} className="resize-box confirmpass" maxLength={24} id="text-field-type-confirmpassword" value={confirmPasswordRegister} onBlur={() => checkConfirmPassword(confirmPasswordRegister)} onChange={(event) => {setConfirmPasswordRegister(event.currentTarget.value); checkConfirmPassword(event.currentTarget.value) }} placeholder="Confirm password" label="Confirm password" error={confirmPasswordStyles.msg.length > 0 ? true : false}/>
                                         {confirmPasswordStyles.msg.length > 0 ? <div className="error">
                                             <MdErrorOutline size={20}/>
                                             <span className="msg">{confirmPasswordStyles.msg}</span>
