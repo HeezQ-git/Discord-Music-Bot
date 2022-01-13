@@ -16,11 +16,10 @@
 }
 
 body {
-    background: url('./img/bg1.jpg');
+    background: url('./img/blurred.jpg');
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    backdrop-filter: blur(20px) !important;
     height: 100vh;
     overflow-x: hidden;
     overflow-y: hidden;

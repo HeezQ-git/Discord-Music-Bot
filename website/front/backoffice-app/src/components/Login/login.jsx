@@ -4,15 +4,16 @@ import lockIcon from './../../img/icons/lock.png';
 import { mailerService } from '../../services/mailer.service';
 import { loginService } from '../../services/login.service';
 import { useNavigate, useParams, Link } from 'react-router-dom';
-import loader from './../../img/loader.svg';
 import { FcGoogle, FcPrevious } from 'react-icons/fc';
 import { GoogleLogin } from 'react-google-login';
-import { MdErrorOutline, MdDone, MdClose } from 'react-icons/md'
-import zxcvbn from 'zxcvbn';
+import { MdErrorOutline, MdDone, MdClose, MdLogin } from 'react-icons/md'
 import { LinearProgress } from "@react-md/progress";
-import { Typography } from "@react-md/typography";
 
-import { TextField, Password, Form } from '@react-md/form';
+import zxcvbn from 'zxcvbn';
+
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import { Password, Form } from '@react-md/form';
 
 const Login = () => {
     const { email } = useParams();
@@ -63,6 +64,7 @@ const Login = () => {
         if (!emailRegister) return setEmailStyles({ pass: false, style: null, msg: '' });
         if (emailStyles.pass) {
             const res = await loginService.checkEmail({ email: emailRegister });
+            
             if (res.data.success) {
                 setEmailStyles({ pass: false, style: 'red-border', msg: 'This email is taken' });
             }
@@ -80,18 +82,21 @@ const Login = () => {
 
     const checkUserDB = async (username) => {
         const res = await loginService.checkUser({ username: username });
+        
         if (res.data.success) setUserStyles({ pass: false, style: 'red-border', msg: 'This username is taken' })
         else setUserStyles({ pass: true, style: 'green-border', msg: '' });
         return !res.data.success;
     }
 
     const checkPassword = (password) => {
-        if (!password) return setPasswordStyles({pass: false, style: null, text: '', value: "0", msg: '', suggestion: '', warning: ''});
-        if (password.length < 8) return setPasswordStyles({pass: false, style: 'red-border', text: '', value: '', msg: '1', suggestion: '', warning: 'Minimum number of characters is 8'});
+        if (!password) return setPasswordStyles({ pass: false, style: null, text: '', value: "0", msg: '', suggestion: '', warning: ''});
+        if (password.length < 8) return setPasswordStyles({ pass: false, style: 'red-border', text: '', value: '', msg: '1', suggestion: '', warning: 'Minimum number of characters is 8'});
+        
         const res = zxcvbn(password);
         const strength = { 0: 'Terribly bad ❌', 1: 'Bad 🙁', 2: 'Weak 😕', 3: 'Good 👍', 4: 'Strong 💪' };
-        if (Number(res.score) <= 2) setPasswordStyles({pass: false, style: 'red-border', text: strength[res.score], value: res.score, msg: '1', suggestion: res.feedback.suggestions[Math.floor(Math.random()*res.feedback.suggestions.length)], warning: res.feedback.warning});
-        else setPasswordStyles({pass: true, style: 'green-border', text: strength[res.score], value: res.score, msg: '', suggestion: '', warning: ''});
+        
+        if (Number(res.score) <= 2) setPasswordStyles({ pass: false, style: 'red-border', text: strength[res.score], value: res.score, msg: '1', suggestion: res.feedback.suggestions[Math.floor(Math.random()*res.feedback.suggestions.length)], warning: res.feedback.warning });
+        else setPasswordStyles({ pass: true, style: 'green-border', text: strength[res.score], value: res.score, msg: '', suggestion: '', warning: '' });
         if (confirmPasswordRegister) checkConfirmPassword();
     }
 
@@ -104,14 +109,17 @@ const Login = () => {
     const register = async () => {
         if (canRegister) {
             const email = emailRegister;
+            
             setLoading(true);
             checkPassword();
             checkConfirmPassword();
+            
             const res = await mailerService.newPendingUser({ 
                 username: usernameRegister,
                 email: emailRegister,
                 password: passwordRegister,
             });
+            
             if (res.data.success) {
                 navigate(`/account/email_sent/${email}`);
             }
@@ -129,6 +137,7 @@ const Login = () => {
             email: emailLogin,
             password: passwordLogin,
         })
+        
         if (res.data.success) {
 
         } else {
@@ -142,12 +151,14 @@ const Login = () => {
     };
 
     const responseGoogle = async (data) => {
+
         const res = await loginService.loginGoogleUser({
             email: data.profileObj.email,
             username: data.profileObj.name,
             imageUrl: data.profileObj.imageUrl,
             googleId: data.profileObj.googleId,
         });
+
         setLoginError(res.data.msg);
     }
 
@@ -155,11 +166,16 @@ const Login = () => {
 
     const nextStep = async () => {
         let res = false;
+
         setLoading(true);
+
         if (step === 1) res = await checkUserDB(usernameRegister)
         else res = await checkEmailDB()
+
         setLoading(false);
+
         if (!res) return;
+
         setStep(step+1);
     };
 
@@ -204,19 +220,8 @@ const Login = () => {
                                 cookiePolicy="single_host_origin"
                                 />
                             <div className="buttons">
-                                <div className="mdc-touch-target-wrapper">
-                                    <button onClick={() => choiceChange('reg')} className="mdc-button btn-gap">
-                                        <span className="mdc-button__ripple"></span>
-                                        <span className="mdc-button__label">Create account</span>
-                                    </button>
-                                </div>
-                                <div className="mdc-touch-target-wrapper">
-                                    <button onClick={() => login()} className="mdc-button mdc-button--raised btn-gap">
-                                        <span className="mdc-button__ripple"></span>
-                                        <span className="material-icons">login</span>
-                                        <span className="mdc-button__label">Login</span>
-                                    </button>
-                                </div>
+                                <Button onClick={() => choiceChange('reg')}>Create account</Button>
+                                <Button onClick={() => login()} variant="contained" startIcon={<MdLogin />}>Login</Button>
                             </div>
                         </div>
                     </div>
@@ -245,13 +250,16 @@ const Login = () => {
                                                     <MdDone size={20}/>
                                                     <span className="mdc-button__label">Next</span>
                                                 </button>
-                                            </div> : <div className="mdc-touch-target-wrapper">
+                                            </div> : 
+                                            
+                                            <div className="mdc-touch-target-wrapper">
                                                 <button disabled className="mdc-button mdc-button--raised btn-gap">
                                                     <span className="mdc-button__ripple"></span>
                                                     <MdClose size={20}/>
                                                     <span className="mdc-button__label">Next</span>
                                                 </button>
-                                            </div>}
+                                            </div>
+                                            }
                                         </div>
                                     </div>
                                 </div>

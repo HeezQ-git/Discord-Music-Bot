@@ -5,6 +5,8 @@
   "homepage": "./",
   "dependencies": {
     "@babel/core": "^7.16.0",
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
     "@fortawesome/fontawesome-free": "^5.15.4",
     "@material/button": "^13.0.0",
     "@material/progress-indicator": "^13.0.0",

@@ -56,7 +56,7 @@ const sendConfirmationEmail = async (toUser, hash) => {
         text: "Account Activation",
         html: `
         <div style="user-select: none; font-family: 'Gelion', sans-serif; height: 100vh;">
-            <div class="outside-content" style="display: block;width: 500px;">
+            <div style="display: block;width: 500px;">
                 <div style="display: inline-flex; font-weight: bold; font-size: 2rem; width: 100%; background-color: #242424; padding: 10px; color: white;">
                     <div><a target="_" href="${process.env.DOMAIN}"><img src="https://i.imgur.com/kcjcPFs.png" style="height: 100px;width: 100px;"></a></div>
                     <p style="margin-top: auto; margin-left: auto; margin-right: auto">ACCOUNT ACTIVATION</p>
