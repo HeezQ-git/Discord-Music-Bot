@@ -223,6 +223,7 @@ $boxWidth: 275px;
                             align-items: center;
                             .strength {
                                 opacity: .75;
+                                align-self: flex-start;
                             }
                             .tips {
                                 z-index: 9998;

@@ -13,7 +13,7 @@ import zxcvbn from 'zxcvbn';
 
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { Password, Form } from '@react-md/form';
+import Password from './../Password';
 
 const Login = () => {
     const { email } = useParams();
@@ -25,6 +25,7 @@ const Login = () => {
     const [canRegister, setCanRegister] = useState(false);
     const [loading, setLoading] = useState(false);
     const [loginError, setLoginError] = useState(null);
+    const [title, setTitle] = useState('Login form');
 
     const [usernameStyles, setUserStyles] = useState({pass: false, style: null, msg: ''});
     const [emailStyles, setEmailStyles] = useState({pass: false, style: null, msg: ''});
@@ -33,16 +34,17 @@ const Login = () => {
 
     const choiceChange = type => {
         if (type === 'login') {
+            setTitle('Login form');
             setLoginStyles({display: 'block'});
             setRegStyles({display: 'none'});
         } else {
+            setTitle('Create account');
             setLoginStyles({display: 'none'});
             setRegStyles({display: 'block'});
         }
     }
 
     const [step, setStep] = useState(1);
-    const [canNextStep, setCanNextStep] = useState(false);
 
     const [usernameRegister, setUsernameRegister] = useState('');
     const [emailRegister, setEmailRegister] = useState('');
@@ -188,18 +190,22 @@ const Login = () => {
                     </div>
                 : ''}
                 <div className={`login-inside`}>
-                    <h1>Login form</h1>
+                    <h1>{title}</h1>
                     <p className="protected"><img src={lockIcon}></img>Your data is protected.</p>
                     <div className="login-form" style={loginStyles}>
                         <div className="credentials">
-                            <Form>
-                                <div className="login-box">
-                                    <TextField required className="resize-box" id="text-field-type-email" onChange={(event) => setEmailLogin(event.currentTarget.value)} defaultValue={email ? `${email}` : ''} placeholder="Your e-mail" label="E-mail address"/>
-                                </div>
-                                <div className="login-box">
-                                    <Password className="password resize-box" required maxLength="24" id="text-field-type-password" onChange={(event) => setPasswordLogin(event.currentTarget.value)} placeholder="Your password" label="Password"/>
-                                </div>
-                            </Form>
+                            <div className="login-box">
+                                <TextField required className="resize-box" id="text-field-type-email" onChange={(event) => setEmailLogin(event.currentTarget.value)} defaultValue={email ? `${email}` : ''} placeholder="Your e-mail" label="E-mail address"/>
+                            </div>
+                            <div className="login-box">
+                                <Password required
+                                    onChange={(event) => setPasswordLogin(event.currentTarget.value)}
+                                    id="outlined-adornment-password"
+                                    value={passwordLogin}
+                                    inputProps={{ maxLength: 24 }}
+                                    className="medium-width"
+                                />
+                            </div>
                         </div>
                         <Link to={`/account/forgot_password/${emailLogin ? emailLogin : ''}`}><p className="forgot-password">Forgot password?</p></Link>
                         {loginError ? <div className="login-error error">
@@ -237,29 +243,10 @@ const Login = () => {
                                     </div> : ''}
                                     <div className="buttons-styling">
                                         <div className="buttons">
-                                            <div className="mdc-touch-target-wrapper">
-                                                <button onClick={() => choiceChange('login')} className="mdc-button btn-gap">
-                                                    <span className="mdc-button__ripple"></span>
-                                                    <span className="mdc-button__label">Back</span>
-                                                </button>
-                                            </div>
-                                            
-                                            {usernameStyles.pass ? <div className="mdc-touch-target-wrapper">
-                                                <button onClick={() => nextStep()} className="mdc-button mdc-button--raised btn-gap">
-                                                    <span className="mdc-button__ripple"></span>
-                                                    <MdDone size={20}/>
-                                                    <span className="mdc-button__label">Next</span>
-                                                </button>
-                                            </div> : 
-                                            
-                                            <div className="mdc-touch-target-wrapper">
-                                                <button disabled className="mdc-button mdc-button--raised btn-gap">
-                                                    <span className="mdc-button__ripple"></span>
-                                                    <MdClose size={20}/>
-                                                    <span className="mdc-button__label">Next</span>
-                                                </button>
-                                            </div>
-                                            }
+                                            <Button onClick={() => choiceChange('login')}>Back</Button>
+                                            {usernameStyles.pass ?
+                                            <Button onClick={() => nextStep()} variant="contained" startIcon={<MdDone />}>Next</Button> :
+                                            <Button variant="contained" disabled startIcon={<MdClose />}>Next</Button>}
                                         </div>
                                     </div>
                                 </div>
@@ -274,26 +261,10 @@ const Login = () => {
                                     </div> : ''}
                                     <div className="buttons-styling">
                                         <div className="buttons">
-                                        <div className="mdc-touch-target-wrapper">
-                                                <button onClick={() => prevStep()} className="mdc-button btn-gap">
-                                                    <span className="mdc-button__ripple"></span>
-                                                    <span className="mdc-button__label">Back</span>
-                                                </button>
-                                            </div>
-                                            
-                                            {emailStyles.pass ? <div className="mdc-touch-target-wrapper">
-                                                <button onClick={() => nextStep()} className="mdc-button mdc-button--raised btn-gap">
-                                                    <span className="mdc-button__ripple"></span>
-                                                    <MdDone size={20}/>
-                                                    <span className="mdc-button__label">Next</span>
-                                                </button>
-                                            </div> : <div className="mdc-touch-target-wrapper">
-                                                <button disabled className="mdc-button mdc-button--raised btn-gap">
-                                                    <span className="mdc-button__ripple"></span>
-                                                    <MdClose size={20}/>
-                                                    <span className="mdc-button__label">Next</span>
-                                                </button>
-                                            </div>}
+                                            <Button onClick={() => prevStep()}>Back</Button>
+                                            {emailStyles.pass ?
+                                            <Button onClick={() => nextStep()} variant="contained" startIcon={<MdDone />}>Next</Button> :
+                                            <Button variant="contained" disabled startIcon={<MdClose />}>Next</Button>}
                                         </div>
                                     </div>
                                 </div>
@@ -302,8 +273,15 @@ const Login = () => {
                                 <div className="password-box">
                                     <div className="reg-box">
                                         <div className="password">
-                                            <div>
-                                                <Password required className="resize-box" maxLength={24} id="text-field-type-passwordregister" value={passwordRegister} onBlur={() => checkPassword(passwordRegister)} onChange={async (event) => {setPasswordRegister(event.currentTarget.value); checkPassword(event.currentTarget.value)}} placeholder="Your password" label="Password" error={passwordStyles.msg.length > 0 ? true : false}/>
+                                            <div className="reg-box align-left">
+                                                <Password required placeholder="Password"
+                                                    onChange={(event) => {setPasswordRegister(event.currentTarget.value); checkPassword(event.currentTarget.value)}}
+                                                    error={passwordStyles.msg.length > 0 ? true : false}
+                                                    onBlur={() => checkPassword(passwordRegister)}
+                                                    inputProps={{ maxLength: 24 }}
+                                                    value={passwordRegister}
+                                                    id="outlined-adornment-passwordRegister"
+                                                    className="medium-width" />
                                                 <meter max={4} value={passwordStyles.value} className="meter"></meter>
                                                 <p className="strength">{passwordStyles.text ? <p>{passwordStyles.text}</p> : ''}</p>
                                             </div>
@@ -316,7 +294,17 @@ const Login = () => {
                                         </div>
                                     </div>
                                     <div className="reg-box">
-                                        <Password required onKeyDown={e => `${e.code}`.toLowerCase() === 'enter' && passwordStyles.pass && confirmPasswordStyles.pass && register()} className="resize-box confirmpass" maxLength={24} id="text-field-type-confirmpassword" value={confirmPasswordRegister} onBlur={() => checkConfirmPassword(confirmPasswordRegister)} onChange={(event) => {setConfirmPasswordRegister(event.currentTarget.value); checkConfirmPassword(event.currentTarget.value) }} placeholder="Confirm password" label="Confirm password" error={confirmPasswordStyles.msg.length > 0 ? true : false}/>
+                                        <Password required placeholder="Confirm password"
+                                            label="Confirm password"
+                                            onChange={(event) => {setConfirmPasswordRegister(event.currentTarget.value); checkConfirmPassword(event.currentTarget.value) }}
+                                            onKeyDown={e => `${e.code}`.toLowerCase() === 'enter' && passwordStyles.pass && confirmPasswordStyles.pass && register()}
+                                            error={confirmPasswordStyles.msg.length > 0 ? true : false}
+                                            onBlur={() => checkConfirmPassword(confirmPasswordRegister)}
+                                            inputProps={{ maxLength: 24 }}
+                                            value={confirmPasswordRegister}
+                                            className="medium-width"
+                                            id="outlined-adornment-confirmpass"
+                                            formClasses="margin-top-15 confirmpass" />
                                         {confirmPasswordStyles.msg.length > 0 ? <div className="error">
                                             <MdErrorOutline size={20}/>
                                             <span className="msg">{confirmPasswordStyles.msg}</span>
@@ -324,25 +312,10 @@ const Login = () => {
                                     </div>
                                     <div className="buttons-styling">
                                         <div className="buttons">
-                                            <div className="mdc-touch-target-wrapper">
-                                                <button onClick={() => prevStep()} className="mdc-button btn-gap">
-                                                    <span className="mdc-button__ripple"></span>
-                                                    <span className="mdc-button__label">Back</span>
-                                                </button>
-                                            </div>
-                                            {passwordStyles.pass && confirmPasswordStyles.pass ? <div className="mdc-touch-target-wrapper">
-                                                <button onClick={() => register()} className="mdc-button mdc-button--raised btn-gap">
-                                                    <span className="mdc-button__ripple"></span>
-                                                    <MdDone size={20}/>
-                                                    <span className="mdc-button__label">Register</span>
-                                                </button>
-                                            </div> : <div className="mdc-touch-target-wrapper">
-                                                <button disabled className="mdc-button mdc-button--raised btn-gap">
-                                                    <span className="mdc-button__ripple"></span>
-                                                    <MdClose size={20}/>
-                                                    <span className="mdc-button__label">Register</span>
-                                                </button>
-                                            </div>}
+                                            <Button onClick={() => prevStep()}>Back</Button>
+                                            {passwordStyles.pass && confirmPasswordStyles.pass ? 
+                                                <Button variant="contained" onClick={() => register()} startIcon={<MdDone />}>Register</Button> :
+                                                <Button variant="contained" disabled startIcon={<MdClose />}>Register</Button>}
                                         </div>
                                     </div>
                                 </div>

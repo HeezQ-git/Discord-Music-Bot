@@ -2,6 +2,10 @@ import './EmailSent.scss';
 import { useParams, Link } from 'react-router-dom';
 import { useState } from 'react';
 import { mailerService } from '../../services/mailer.service';
+import { MdAutorenew, MdLogin, MdClose, MdDone } from 'react-icons/md';
+
+import { LinearProgress } from "@react-md/progress";
+import Button from '@mui/material/Button';
 
 const EmailSent = () => {
 
@@ -10,10 +14,12 @@ const EmailSent = () => {
     const { email } = useParams();
     const [disabled, setDisabled] = useState(false);
     const [btnStyle, setBtnStyle] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const resendEmail = async () => {
+        setLoading(true);
         const res = await mailerService.sendEmail({ email: email });
-        console.log(res);
+        setLoading(false);
 
         let color;
         if (res.data.success) {
@@ -34,6 +40,11 @@ const EmailSent = () => {
     return (
         <div className="EmailSent-content">
             <div className="emailsent-inside">
+            {loading ?
+                <div className="loading">
+                    <LinearProgress id='simple-linear-progress' /> 
+                </div>
+            : ''}
                 <div className="emailsent--text">
                     <h1>ACCOUNT ACTIVATION</h1>
                     <h2>A verification email has been sent to your inbox.</h2>
@@ -45,20 +56,8 @@ const EmailSent = () => {
                 </div>
                 <p className="emailsent--smallnote">Didn't receive email within a few minutes? Check your spam folder.</p>
                 <div className="emailsent--buttons">
-                    <div className="mdc-touch-target-wrapper">
-                        <button style={btnStyle} onClick={() => resendEmail()} disabled={disabled === null || disabled === true ? true : false} className="mdc-button">
-                            <span className="mdc-button__ripple"></span>
-                            {disabled === true ? <span className="material-icons">done</span> : disabled === null ? <span className="material-icons">close</span> : <span className="material-icons">autorenew</span>}
-                            <span className="mdc-button__label">RESEND EMAIL</span>
-                        </button>
-                    </div>
-                    <div className="mdc-touch-target-wrapper">
-                        <Link to={`/login/${email}`}><button className="mdc-button mdc-button--raised">
-                            <span className="mdc-button__ripple"></span>
-                            <span className="material-icons">login</span>
-                            <span className="mdc-button__label">LOGIN</span>
-                        </button></Link>
-                    </div>
+                    <Button style={btnStyle} onClick={() => resendEmail()} disabled={disabled === null || disabled === true ? true : false} startIcon={disabled === true ? <MdDone/> : disabled === null ? <MdClose/> : <MdAutorenew/>}>Resend email</Button>
+                    <Link to={`/login/${email}`}><Button variant="contained" startIcon={<MdLogin/>}>Login</Button></Link>
                 </div>
                 <div className="emailsent--bottom-text">
                     <p>Best regards,</p>

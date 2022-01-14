@@ -11,7 +11,9 @@ import zxcvbn from 'zxcvbn';
 
 import { LinearProgress } from "@react-md/progress";
 import { Typography } from "@react-md/typography";
-import { Form, Password, TextField, FormThemeProvider } from "@react-md/form";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Password from './../Password';
 
 const ForgotPassword = (props) => {
 
@@ -24,7 +26,7 @@ const ForgotPassword = (props) => {
 
     // Forgot password
     const [inputClass, setInputClass] = useState(null);
-    const [buttonInfo, setButtonInfo] = useState({ icon: 'email', msg: 'send', error: '' });
+    const [buttonInfo, setButtonInfo] = useState({ icon: 'email', msg: 'send', error: '', disabled: false });
     const [emailValue, setEmailValue] = useState('');
 
     // Reset password
@@ -38,18 +40,19 @@ const ForgotPassword = (props) => {
         if (!emailValue) return setInputClass(true);
         const email = String(emailValue).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
         if (!email) return setInputClass(true);
+        setButtonInfo({ ...buttonInfo, disabled: true });
         setLoading(true);
         const res = await mailerService.sendForgetPassword({ email: emailValue });
         if (res.data.success) {
             setInputClass(false);
-            setButtonInfo({ icon: 'ok', msg: 'sent', error: '' });
+            setButtonInfo({ icon: 'ok', msg: 'sent', error: '', disabled: true });
         } else {
             setInputClass(true);
-            setButtonInfo({ icon: 'no', msg: 'error', error: res.data.msg })
+            setButtonInfo({ icon: 'email', msg: 'send', error: res.data.msg, disabled: false });
         };
         setLoading(false);
         await delay(5000);
-        setButtonInfo({ icon: 'email', msg: 'send', error: res.data.msg });
+        setButtonInfo({ icon: 'email', msg: 'send', error: res.data.msg, disabled: false });
     }
 
     const checkPassword = async () => {
@@ -112,13 +115,7 @@ const ForgotPassword = (props) => {
                         <MdErrorOutline size="20"/>
                         {buttonInfo.error}
                     </div> : ''}
-                    <div onClick={() => sendEmail()} className="mdc-touch-target-wrapper btn">
-                        <button disabled={buttonInfo.icon === 'email' ? false : buttonInfo.icon === 'ok' ? true : true} className="mdc-button mdc-button--raised btn-gap">
-                            <span className="mdc-button__ripple"></span>
-                            {buttonInfo.icon === 'email' || buttonInfo.icon === 'loading' ? <MdOutlineEmail size="24"/> : buttonInfo.icon === 'ok' ? <MdDone size="24"/> : <MdClose size="24"/>}
-                            <span className="mdc-button__label">{buttonInfo.msg}</span>
-                        </button>
-                    </div>
+                    <Button disabled={buttonInfo.disabled} className="btn" onClick={() => sendEmail()} variant="contained" startIcon={buttonInfo.icon === 'email' || buttonInfo.icon === 'loading' ? <MdOutlineEmail/> : buttonInfo.icon === 'ok' ? <MdDone/> : <MdClose/>}>{buttonInfo.msg}</Button>
                 </div>
                 <div className="forgotpassword--info">
                     <h1>Logged in using <span>Google Account</span>?</h1>
@@ -135,28 +132,19 @@ const ForgotPassword = (props) => {
                         <h1>PASSWORD RESET</h1>
                         <h2>Fill in the fields below:</h2>
                         <div className="form">
-                            <FormThemeProvider theme="filled">
-                                <Form>
-                                    <div className="password">
-                                        <Password maxLength={24} required value={password} onChange={(event) => setPassword(event.currentTarget.value)} id={`text-field-type-password`} placeholder="New password" label="Password" error={passwordStyles.pass != null ? !passwordStyles.pass : false} />
-                                        {passwordStyles.msg.length > 0 ?
-                                            <div className="tips">
-                                                {passwordStyles.warning && <p className="warning">{passwordStyles.warning}</p>}
-                                                <p className="suggestion">{passwordStyles.suggestion}</p>
-                                            </div>
-                                        : ''}
+                            <div className="password">
+                                <Password className="medium-width" inputProps={{ maxLength: 24 }} required value={password} onChange={(event) => setPassword(event.currentTarget.value)} id={`text-field-type-password`} placeholder="New password" label="Password" error={passwordStyles.pass != null ? !passwordStyles.pass : false} />
+                                {passwordStyles.msg.length > 0 ?
+                                    <div className="tips">
+                                        {passwordStyles.warning && <p className="warning">{passwordStyles.warning}</p>}
+                                        <p className="suggestion">{passwordStyles.suggestion}</p>
                                     </div>
-                                    <Password maxLength={24} required value={confirmPassword} onChange={(event) => setConfirmPassword(event.currentTarget.value)} id={`text-field-type-confirm`} placeholder="Confirm password" label="Confirm" error={confirmPasswordStyles.pass != null ? !confirmPasswordStyles.pass : false} />
-                                    {confirmPasswordStyles.msg && <p className="error"><MdErrorOutline size="20"/>{confirmPasswordStyles.msg}</p>}
-                                    <div onClick={() => changePassword()} className="mdc-touch-target-wrapper btn">
-                                        <button className="mdc-button mdc-button--raised btn-gap">
-                                            <span className="mdc-button__ripple"></span>
-                                            <MdDone size="24"></MdDone>
-                                            <span className="mdc-button__label">Submit</span>
-                                        </button>
-                                    </div>
-                                </Form>
-                            </FormThemeProvider>
+                                : ''}
+                            </div>
+                            <Password className="medium-width" inputProps={{ maxLength: 24 }} required value={confirmPassword} onChange={(event) => setConfirmPassword(event.currentTarget.value)} id={`text-field-type-confirm`} placeholder="Confirm password" label="Confirm" error={confirmPasswordStyles.pass != null ? !confirmPasswordStyles.pass : false} />
+                            
+                            {confirmPasswordStyles.msg && <p className="error"><MdErrorOutline size="20"/>{confirmPasswordStyles.msg}</p>}
+                            <Button onClick={() => changePassword()} variant="contained" startIcon={<MdDone/>}>Submit</Button>
                         </div>
                         {error && <p className="error"><MdErrorOutline size="20"/>{error}</p>}
                         <div className="warning">

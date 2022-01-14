@@ -12,6 +12,7 @@ const websiteUsersSchema = new Schema({
     imageUrl: String,
     googleId: String,
     passwordResetId: String,
+    forgotPassEmail: Date,
 });
 
 const WebsiteUsers = mongoose.model('WebsiteUsers', websiteUsersSchema);

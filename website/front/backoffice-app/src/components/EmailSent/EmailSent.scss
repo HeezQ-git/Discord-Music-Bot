@@ -1,8 +1,3 @@
-@use "@material/theme" with (
-    $primary: #4285F4,
-    $on-primary: #fff
-);
-@use "@material/button/styles";
 @import './../../colors';
 @import './../../vars';
 

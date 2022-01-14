@@ -24,21 +24,31 @@ const newPendingUser = async (req, res) => {
         msg: '',
     }
 
-    const hashedPassword = await hashPassword(req.body.password);
+    const info = req.body;
+    const userFind = await PendingUsers.findOne({ email: info.email });
+    
+    if (userFind) {
+        const hashedPassword = await hashPassword(info.password);
+        await PendingUsers.updateOne({ email: info.email }, { username: info.username, password: hashedPassword });
+        response.success = true;
+    } else {
+        const hashedPassword = await hashPassword(info.password);
+    
+        await PendingUsers.create({
+            email: info.email,
+            username: info.username,
+            password: hashedPassword
+        });
+    
+    }
 
-    await PendingUsers.create({
-        email: req.body.email,
-        username: req.body.username,
-        password: hashedPassword
-    });
-
-    const user = await PendingUsers.findOne({ username: req.body.username });
+    const user = await PendingUsers.findOne({ email: info.email });
     if (user) response.success = true
     else response.msg = `Didn't find user in pending users list.`;
 
     if (response.success) {
-        const info = await sendConfirmationEmail(user, user._id);
-        if (info.rejected.length > 0) {
+        const i = await sendConfirmationEmail(user, user._id);
+        if (i.rejected.length > 0) {
             response.success = false;
             response.msg = `Email couldn't be sent, please retry in a moment.`;
         }
@@ -100,7 +110,7 @@ const sendEmail = async (req, res) => {
         if (flag) {
             const info = await sendConfirmationEmail(user, user._id);
             if (info.rejected.length <= 0) response.success = true;
-            await PendingUsers.updateOne({ resendemail: Date.now() });
+            await PendingUsers.updateOne({ email: user.email }, { resendemail: Date.now() });
         }
     }
 
@@ -120,54 +130,66 @@ const sendForgetPassword = async (req, res) => {
         if (user) {
             if (user.accountType === 'classic') {
 
-                const hash = crypto.randomBytes(20).toString('hex');
-                user.passwordResetId = hash;
-                await WebsiteUsers.updateOne({ email: req.body.email }, user);
-                
-                console.log(`${req.body.email} : ${hash}`);
-                
-                let info;
+                let flag = true;
 
-                try {
-                    info = await transporter.sendMail({
-                        from: `"Tournament Team" <${process.env.GOOGLE_USER}>`,
-                        to: req.body.email,
-                        subject: "Password Reset (Tournaments)",
-                        text: "Password Reset",
-                        html: `
-                        <div style="width: 100vw; font-family: 'Gelion', sans-serif; height: 100vh;">
-                            <div class="outside-content" style="display: block;width: 500px;">
-                                <div style="display: inline-flex; font-weight: bold; font-size: 2rem; width: 100%; background-color: #242424; padding: 10px; color: white;">
-                                    <div><a target="_" href="${process.env.DOMAIN}"><img src="https://i.imgur.com/kcjcPFs.png" style="height: 100px;width: 100px;"></a></div>
-                                    <p style="margin-top: auto; margin-left: auto; margin-right: auto">PASSWORD RESET</p>
-                                </div>
-                                <div class="content" style="background: #f4f4f4; padding: 10px; display: block;align-items: center;margin: auto;height: 300px;width: 100%;border-radius: 5px;">
-                                    <h1 class="heading" style="margin-left: 25px; font-weight: normal; padding-top: 10px;font-size: 1.3rem;color: rgb(49, 49, 49);">Dear ${user.username},</h1>
-                                    <div style="line-height:1.65rem;max-width: 90%;margin-left: 25px;margin-top: 25px;">
-                                        <span style="font-size: 1.1rem;color: rgb(49, 49, 49);font-weight: 550;">A request has been received to change the password for your Tournament account.</span> 
-                                        <p style="opacity: .9; margin-top: 5px; color: black; font-size: 1.1rem;">Click on this link to create a new password:</p>
+                if (user.forgotPassEmail) {
+                    const diff = Date.now() - user.forgotPassEmail;
+
+                    if (diff < 30000) flag = false;
+                }
+                if (flag) {
+                    
+                    const hash = crypto.randomBytes(20).toString('hex');
+
+                    user.passwordResetId = hash;
+                    await WebsiteUsers.updateOne({ email: req.body.email }, user);
+                    
+                    let info;
+    
+                    try {
+                        info = await transporter.sendMail({
+                            from: `"Tournament Team" <${process.env.GOOGLE_USER}>`,
+                            to: req.body.email,
+                            subject: "Password Reset (Tournaments)",
+                            text: "Password Reset",
+                            html: `
+                            <div style="width: 100vw; font-family: 'Gelion', sans-serif; height: 100vh;">
+                                <div class="outside-content" style="display: block;width: 500px;">
+                                    <div style="display: inline-flex; font-weight: bold; font-size: 2rem; width: 100%; background-color: #242424; padding: 10px; color: white;">
+                                        <div><a target="_" href="${process.env.DOMAIN}"><img src="https://i.imgur.com/kcjcPFs.png" style="height: 100px;width: 100px;"></a></div>
+                                        <p style="margin-top: auto; margin-left: auto; margin-right: auto">PASSWORD RESET</p>
                                     </div>
-                                    <div class="button" style="margin-top: 60px;text-align:center;">
-                                        <a target="_" href="${process.env.DOMAIN}/account/password_reset/${hash}" style="padding: 15px;padding-inline: 30px; height: 45px;background: #2c7bfa;border: 0;border-radius: 8px;color: white;font-size: 1.1rem;cursor: pointer;text-decoration: none;">Reset Password</a>
+                                    <div class="content" style="background: #f4f4f4; padding: 10px; display: block;align-items: center;margin: auto;height: 300px;width: 100%;border-radius: 5px;">
+                                        <h1 class="heading" style="margin-left: 25px; font-weight: normal; padding-top: 10px;font-size: 1.3rem;color: rgb(49, 49, 49);">Dear ${user.username},</h1>
+                                        <div style="line-height:1.65rem;max-width: 90%;margin-left: 25px;margin-top: 25px;">
+                                            <span style="font-size: 1.1rem;color: rgb(49, 49, 49);font-weight: 550;">A request has been received to change the password for your Tournament account.</span> 
+                                            <p style="opacity: .9; margin-top: 5px; color: black; font-size: 1.1rem;">Click on this link to create a new password:</p>
+                                        </div>
+                                        <div class="button" style="margin-top: 60px;text-align:center;">
+                                            <a target="_" href="${process.env.DOMAIN}/account/password_reset/${hash}" style="padding: 15px;padding-inline: 30px; height: 45px;background: #2c7bfa;border: 0;border-radius: 8px;color: white;font-size: 1.1rem;cursor: pointer;text-decoration: none;">Reset Password</a>
+                                        </div>
                                     </div>
-                                </div>
-                                <div style="display: inline-flex; width: 100%; background-color: rgba(36, 36, 36, 0.9); padding: 10px; color: white;">
-                                    <div style="margin: auto; text-align: center; opacity: .5; max-width: 100%;">
-                                        <p>If this was a mistake, just ignore this email and nothing will happen.</p>
+                                    <div style="display: inline-flex; width: 100%; background-color: rgba(36, 36, 36, 0.9); padding: 10px; color: white;">
+                                        <div style="margin: auto; text-align: center; opacity: .5; max-width: 100%;">
+                                            <p>If this was a mistake, just ignore this email and nothing will happen.</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        `,
-                    });
-                } catch (error) {
-                    response.msg = `Something went wrong!`;
-                }
-                if (info.rejected.length > 0) {
-                    response.msg = `Something went wrong!`;
-                } else {
-                    response.success = true;
-                }
+                            `,
+                        });
+                    } catch (error) {
+                        response.msg = `Something went wrong!`;
+                    }
+                    if (info.rejected.length > 0) {
+                        response.msg = `Something went wrong!`;
+                    } else {
+                        response.success = true;
+                        user.forgotPassEmail = Date.now();
+                        await WebsiteUsers.updateOne({ email: user.email }, user);
+                    }
+                } else response.msg = `Please wait some more time`;
+
             }  else response.msg = `Google accounts are not supported`;
         } else response.msg = `We could't find that account`;
 

@@ -1,5 +1,5 @@
-// const pendingUsers = require('./../../../models/pendingUsers');
-const websiteUsers = require('../../../models/websiteUsers');
+const PendingUsers = require('./../../../models/pendingUsers');
+const WebsiteUsers = require('../../../models/websiteUsers');
 const bcrypt = require('bcrypt');
 
 const loginUser = async (req, res) => {
@@ -9,7 +9,7 @@ const loginUser = async (req, res) => {
     }
 
     if (req.body.password) {
-        const user = await websiteUsers.findOne({ email: req.body.email });
+        const user = await WebsiteUsers.findOne({ email: req.body.email });
         if (user) {
             const result = await bcrypt.compare(req.body.password, user.password);
             if (result) {
@@ -28,7 +28,7 @@ const loginGoogleUser = async (req, res) => {
     }
 
     if (req.body.googleId) {
-        const user = await websiteUsers.findOne({ googleId: req.body.googleId });
+        const user = await WebsiteUsers.findOne({ googleId: req.body.googleId });
         if (user) {
             response.success = true;
             response.msg = 'logged in';
@@ -37,7 +37,7 @@ const loginGoogleUser = async (req, res) => {
             //     response.success = true;
             // } else response.msg = 'E-mail or password is incorrect.';
         } else {
-            await websiteUsers.create({
+            await WebsiteUsers.create({
                 accountType: 'google',
                 username: req.body.username,
                 email: req.body.email,
@@ -56,7 +56,7 @@ const checkUser = async (req, res) => {
     const response = {
         success: false,
     }
-    const users = await websiteUsers.find();
+    const users = await WebsiteUsers.find();
     if (users.some(e => e.username.toLowerCase() == req.body.username.toLowerCase())) response.success = true;
 
     return res.status(200).json(response);
@@ -66,7 +66,8 @@ const checkEmail = async (req, res) => {
     const response = {
         success: false,
     }
-    const user = await websiteUsers.findOne({ email: req.body.email });
+
+    const user = await WebsiteUsers.findOne({ email: req.body.email });
     if (user) response.success = true;
 
     return res.status(200).json(response);

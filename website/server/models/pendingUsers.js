@@ -6,6 +6,7 @@ const pendingUsersSchema = new Schema({
     username: String,
     password: String,
     resendemail: Date,
+    hash: String,
 });
 
 const pendingUsers = mongoose.model('pendingUsers', pendingUsersSchema);

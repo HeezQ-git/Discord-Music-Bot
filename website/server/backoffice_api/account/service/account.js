@@ -72,8 +72,6 @@ const changePassword = async (req, res) => {
                     user.passwordResetId = "";
                     await WebsiteUsers.updateOne({ passwordResetId: req.body.passwordResetId }, user);
                     response.success = true;
-                    console.log(user);
-                    console.log(req.body.password);
                 } catch (error) {
                     response.msg = error;
                 }
