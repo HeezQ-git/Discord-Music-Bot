@@ -10,9 +10,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
 
 import { LinearProgress } from "@react-md/progress";
-import { Typography } from "@react-md/typography";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
 import Password from './../Password';
 
 const ForgotPassword = (props) => {

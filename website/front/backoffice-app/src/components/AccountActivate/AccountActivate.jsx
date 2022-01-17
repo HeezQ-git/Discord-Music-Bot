@@ -3,7 +3,11 @@ import { useParams } from 'react-router';
 import { useState, useEffect } from 'react';
 import { accountService } from '../../services/account.service';
 import { Link } from 'react-router-dom';
-import loader from './../../img/loader.svg';
+import { FaDiscord } from 'react-icons/fa';
+import { MdLogin } from 'react-icons/md';
+// import loader from './../../img/loader.svg';
+import Button from '@mui/material/Button';
+import { LinearProgress } from "@react-md/progress";
 
 const AccountActivate = () => {
     
@@ -36,19 +40,10 @@ const AccountActivate = () => {
                             <p>You can now login to your account.</p>
                             <div className="approved-buttons">
                                 <div className="mdc-touch-target-wrapper">
-                                    <Link to="/"><button className="mdc-button">
-                                        <span className="mdc-button__ripple"></span>
-                                        <span className="mdc-button__label">HOME</span>
-                                    </button></Link>
+                                    <Link to="/"><Button>Home</Button></Link>
                                 </div>
                                 <div className="mdc-touch-target-wrapper">
-                                    <Link to="/login"><button className="mdc-button mdc-button--raised mdc-button--leading">
-                                        <span className="mdc-button__ripple"></span>
-                                        <div className="btn-gap">
-                                            <span class="material-icons">login</span>
-                                            <span className="mdc-button__label">LOGIN</span>
-                                        </div>
-                                    </button></Link>
+                                    <Link to="/login"><Button variant="contained" startIcon={<MdLogin/>}>Login</Button></Link>
                                 </div>
                             </div>
                             <div className="approved-bottom-text">
@@ -74,27 +69,17 @@ const AccountActivate = () => {
                             </div>
                             <div className="denied-buttons">
                                 <div className="mdc-touch-target-wrapper">
-                                    <Link to="/"><button className="mdc-button">
-                                        <span className="mdc-button__ripple"></span>
-                                        <span className="mdc-button__label">HOME</span>
-                                    </button></Link>
+                                    <Link to="/"><Button>Home</Button></Link>
                                 </div>
                                 <div className="mdc-touch-target-wrapper">
-                                    <Link to="/discord"><button className="mdc-button mdc-button--raised mdc-button--leading">
-                                        <span className="mdc-button__ripple"></span>
-                                        <div className="btn-gap">
-                                            <i className="fab fa-discord"></i>
-                                            <span className="mdc-button__label">DISCORD</span>
-                                        </div>
-                                    </button></Link>
+                                    <Link to="/discord"><Button variant="contained" startIcon={<FaDiscord/>}>Discord</Button></Link>
                                 </div>
                             </div>
                         </div>
                     </div>
                 : 
                 <div className="loading">
-                    <img src={loader}></img>
-                    <h1>Loading content...</h1>
+                    <LinearProgress id='simple-linear-progress' /> 
                 </div>}
             </div>
         </div>
