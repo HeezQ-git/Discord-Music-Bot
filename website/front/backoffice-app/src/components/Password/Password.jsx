@@ -22,9 +22,9 @@ const Password = (props) => {
                 id={props.id}
                 inputProps={props.inputProps ? props.inputProps : null}
                 type={showPassword ? 'text' : 'password'}
-                value={props.value ? props.value : null}
+                value={props.value || `${props.value}` != 'undefined' ? props.value : null}
                 onChange={(event) => props.onChange ? props.onChange(event) : null}
-                oBlur={(event) => props.onBlur ? props.onBlur(event) : null}
+                onBlur={(event) => props.onBlur ? props.onBlur(event) : null}
                 error={props.error ? props.error : false}
                 onKeyDown={props.onKeyDown ? props.onKeyDown : null}
                 endAdornment={

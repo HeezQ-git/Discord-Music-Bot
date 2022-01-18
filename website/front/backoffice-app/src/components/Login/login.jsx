@@ -141,7 +141,7 @@ const Login = () => {
         })
         
         if (res.data.success) {
-
+            navigate(`/account/`);
         } else {
             setLoginError(res.data.msg);
         }
@@ -201,7 +201,6 @@ const Login = () => {
                                 <Password required
                                     onChange={(event) => setPasswordLogin(event.currentTarget.value)}
                                     id="outlined-adornment-password"
-                                    value={passwordLogin}
                                     inputProps={{ maxLength: 24 }}
                                     className="medium-width"
                                 />

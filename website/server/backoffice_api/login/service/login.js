@@ -1,20 +1,26 @@
-const PendingUsers = require('./../../../models/pendingUsers');
 const WebsiteUsers = require('../../../models/websiteUsers');
 const bcrypt = require('bcrypt');
 
 const loginUser = async (req, res) => {
+
     const response = {
         success: false,
         msg: '',
+        token: '',
     }
 
     if (req.body.password) {
         const user = await WebsiteUsers.findOne({ email: req.body.email });
+
         if (user) {
-            const result = await bcrypt.compare(req.body.password, user.password);
-            if (result) {
-                response.success = true;
-            } else response.msg = 'E-mail or password is incorrect.';
+            if (user.accountType === 'classic') {
+                const result = await bcrypt.compare(req.body.password, user.password);
+
+                if (result) {
+                    response.success = true;
+                    response.token = await signToken(user);
+                } else response.msg = 'E-mail or password is incorrect.';
+            } else response.msg = 'Login via Google Account';
         } else response.msg = 'E-mail or password is incorrect.';
     } else response.msg = 'Password was not provided.';
 
@@ -32,10 +38,6 @@ const loginGoogleUser = async (req, res) => {
         if (user) {
             response.success = true;
             response.msg = 'logged in';
-            // const result = await bcrypt.compare(req.body.password, user.password);
-            // if (result) {
-            //     response.success = true;
-            // } else response.msg = 'E-mail or password is incorrect.';
         } else {
             await WebsiteUsers.create({
                 accountType: 'google',
@@ -50,6 +52,10 @@ const loginGoogleUser = async (req, res) => {
     }
 
     return res.status(200).json(response);
+}
+
+const signToken = async (user) => {
+    console.log(user);
 }
 
 const checkUser = async (req, res) => {
