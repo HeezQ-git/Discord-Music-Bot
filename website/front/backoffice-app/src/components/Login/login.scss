@@ -24,13 +24,13 @@ $boxWidth: 275px;
     align-items: center;
     justify-content: center;
     .login-form-content {
-        height: 90%;
+        height: clamp(450px, 50%, 90%);
         position: relative;
         user-select: none;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 450px;
+        width: clamp(450px, 450px, 100%);
         background: $bgWhite;
         margin: auto;
         border-radius: 5px;

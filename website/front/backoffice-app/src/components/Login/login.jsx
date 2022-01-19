@@ -135,6 +135,8 @@ const Login = () => {
     if (!canRegister) checkRegister();
 
     const login = async () => {
+        setLoading(true);
+
         const res = await loginService.loginUser({ 
             email: emailLogin,
             password: passwordLogin,
@@ -145,6 +147,8 @@ const Login = () => {
         } else {
             setLoginError(res.data.msg);
         }
+
+        setLoading(false);
     }
 
     const refreshPage = () => {
@@ -163,6 +167,51 @@ const Login = () => {
 
         setLoginError(res.data.msg);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
     const prevStep = () => setStep(step-1);
 
@@ -200,6 +249,7 @@ const Login = () => {
                             <div className="login-box">
                                 <Password required
                                     onChange={(event) => setPasswordLogin(event.currentTarget.value)}
+                                    onKeyDown={e => `${e.code}`.toLowerCase() === 'enter' && emailLogin.length > 0 && passwordLogin.length > 0 && login()}
                                     id="outlined-adornment-password"
                                     inputProps={{ maxLength: 24 }}
                                     className="medium-width"
