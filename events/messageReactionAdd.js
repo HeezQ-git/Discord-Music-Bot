@@ -43,14 +43,17 @@ module.exports =  {
             if (!["🔄", "⏪", "⏩", `${emojis.no}`, "🔃"].includes(emoji)) return;
 
             const userProfile = await Users.findOne({ userId: user.id });
-            react.users.remove(user.id);
+            react.users.remove(user.id).catch(console.log);
 
             if (react.message.id == userProfile.messageId) {
                 react.user = user;
 
                 if (emoji == "🔄") {
                     react.message.delete().catch(console.log);
+                    const page = userProfile.song_page-1;
+
                     const msg = await react.message.channel.send({ embeds: [react.message.embeds[0]] });
+                    
                     await Users.updateOne({ userId: user.id }, { $set: { messageId: msg.id } });
                     await msg.react("⏪");
                     await msg.react(`${emojis.no}`);

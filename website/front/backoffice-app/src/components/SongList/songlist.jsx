@@ -1,6 +1,6 @@
 import './songlist.scss';
 import { songsService } from '../../services/songs.service';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import loader from './../../img/loader.svg';
 
 const SongList = () => {
@@ -42,33 +42,34 @@ const SongList = () => {
     // }
 
     const delay = async ms => new Promise(res => setTimeout(res, ms));
-    
-    const _getSongs = () => {
-        songsService.getSongs()
-        .then(res => {
-            let _songs = res.data.songs;
-            setSongs(_songs);
-        });
-    }
 
+    
     const changeSong = async (song) => {
         // console.log(song);
         if (songInfo ? song.name === songInfo.name : false) return;
         if (song.loading) return;
         song.loading = true;
         setSongInfo(song);       
-
+        
         await delay(Math.floor(Math.random() * (1500 - 250 + 1)));
-
+        
         song.loading = false;
         const newSong = {...song};
         setSongInfo(newSong);
         // console.log('after');
     }
-
+    
     // console.log(songInfo.tags.map(tag => findTag(tag)));
+    
+    const componentMounted = useRef(true);
 
-    useEffect(() => _getSongs(), [songsService])
+    useEffect(async () => {
+        const res = await songsService.getSongs();
+        
+        if (componentMounted.current) setSongs(res.data.songs);
+
+        return () => componentMounted.current = false;
+    }, []);
     
     return (
         <div className="Songlist-content">

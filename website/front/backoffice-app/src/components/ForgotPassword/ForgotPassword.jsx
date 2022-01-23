@@ -9,10 +9,12 @@ import { accountService } from '../../services/account.service';
 import { Link, useNavigate } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
 
-import { LinearProgress } from "@react-md/progress";
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import LinearProgress from '@mui/material/LinearProgress';
+import Paper from '@mui/material/Paper';
+import Loading from './../Loading';
 import Password from './../Password';
 
 const ForgotPassword = (props) => {
@@ -96,82 +98,74 @@ const ForgotPassword = (props) => {
 
     return (
         <div className="ForgotPassword-content">
-            {props.type === "forgot" ?
-            <div className="forgotpassword-inside">
-                {loading &&
-                <div className="forgotpassword--loading">
-                    <LinearProgress id='simple-linear-progress' /> 
-                </div>}
-                <div className="forgotpassword--title">
-                    <h1 className="title">Forgot password?</h1>
-                    <h2>Reset your password via email.</h2>
-                </div>
-                <div className="forgotpassword--credentials">
-                    <div className={"input input-email " + (inputClass ? inputClass : '')}>
-                        <TextField id="text-field-type-email" onChange={(event) => setEmailValue(event.currentTarget.value)} defaultValue={email != `null` ? email : ''} placeholder="Your e-mail" label="E-mail address"/>
-                    </div>
-                    {buttonInfo.error ?
-                    <div className="error btn-gap">
-                        <MdErrorOutline size="20"/>
-                        {buttonInfo.error}
-                    </div> : ''}
-                    <Button disabled={buttonInfo.disabled} className="btn" onClick={() => sendEmail()} variant="contained" startIcon={buttonInfo.icon === 'email' || buttonInfo.icon === 'loading' ? <MdOutlineEmail/> : buttonInfo.icon === 'ok' ? <MdDone/> : <MdClose/>}>{buttonInfo.msg}</Button>
-                </div>
-                <div className="forgotpassword--info">
-                    <h1>Logged in using <span>Google Account</span>?</h1>
-                    <p>If you would like to set a password for your account, you can do it in your account settings!</p>
-                </div>
-            </div>
-            : resetPassword.success != null ?
-                <div className="forgotpassword-inside">
-                    {loading &&
-                    <div className="forgotpassword--loading">
-                        <LinearProgress id='simple-linear-progress' /> 
-                    </div>}
-                    { resetPassword.success ? <div className="forgotpassword--title">
-                        <h1>PASSWORD RESET</h1>
-                        <h2>Fill in the fields below:</h2>
-                        <div className="form">
-                            <div className="password">
-                                <Password className="medium-width" inputProps={{ maxLength: 24 }} required value={password} onChange={(event) => setPassword(event.currentTarget.value)} id={`text-field-type-password`} placeholder="New password" label="Password" error={passwordStyles.pass != null ? !passwordStyles.pass : false} />
-                                {passwordStyles.msg.length > 0 ?
-                                    <div className="tips">
-                                        {passwordStyles.warning && <p className="warning">{passwordStyles.warning}</p>}
-                                        <p className="suggestion">{passwordStyles.suggestion}</p>
-                                    </div>
-                                : ''}
+            <Paper elevation={8} className="paper">
+                {props.type === "forgot" ?
+                    <div className="forgotpassword-inside">
+                        {loading && <Loading />}
+                        <div className="forgotpassword--title">
+                            <h1 className="title">Forgot password?</h1>
+                            <h2>Reset your password via email.</h2>
+                        </div>
+                        <div className="forgotpassword--credentials">
+                            <div className={"input input-email " + (inputClass ? inputClass : '')}>
+                                <TextField id="text-field-type-email" onChange={(event) => setEmailValue(event.currentTarget.value)} defaultValue={email != `null` ? email : ''} placeholder="Your e-mail" label="E-mail address"/>
                             </div>
-                            <Password className="medium-width" inputProps={{ maxLength: 24 }} required value={confirmPassword} onChange={(event) => setConfirmPassword(event.currentTarget.value)} id={`text-field-type-confirm`} placeholder="Confirm password" label="Confirm" error={confirmPasswordStyles.pass != null ? !confirmPasswordStyles.pass : false} />
-                            
-                            {confirmPasswordStyles.msg && <p className="error"><MdErrorOutline size="20"/>{confirmPasswordStyles.msg}</p>}
-                            <Button onClick={() => changePassword()} variant="contained" startIcon={<MdDone/>}>Submit</Button>
+                            {buttonInfo.error ?
+                            <div className="error btn-gap">
+                                <MdErrorOutline size="20"/>
+                                {buttonInfo.error}
+                            </div> : ''}
+                            <Button disabled={buttonInfo.disabled} className="btn" onClick={() => sendEmail()} variant="contained" startIcon={buttonInfo.icon === 'email' || buttonInfo.icon === 'loading' ? <MdOutlineEmail/> : buttonInfo.icon === 'ok' ? <MdDone/> : <MdClose/>}>{buttonInfo.msg}</Button>
                         </div>
-                        {error && <p className="error"><MdErrorOutline size="20"/>{error}</p>}
-                        <div className="warning">
-                            <h2><IoMdWarning/> Warning!</h2>
-                            <p>Once the password is changed, you will be logged out from all devices!</p>
+                        <div className="forgotpassword--info">
+                            <h1>Logged in using <span>Google Account</span>?</h1>
+                            <p>If you would like to set a password for your account, you can do it in your account settings!</p>
                         </div>
-                    </div> :
-                    <div className="forgotpassword--title">
-                        <div className="content">
+                    </div>
+                : resetPassword.success != null ?
+                    <div className="forgotpassword-inside">
+                        { resetPassword.success ? <div className="forgotpassword--title">
                             <h1>PASSWORD RESET</h1>
-                            <h2>Couldn't download password reset form.</h2>
-                            <p>{resetPassword.msg}</p>
-                        </div>
-                        <div className="details">
-                            <h3>Does this keep happening?</h3>
-                            <p>Please contact support at our <Link to="/discord"><span><FaDiscord/>Discord server</span></Link> for further help.</p>
-                        </div>
-                    </div>}
-                </div>
-            : <div className="forgotpassword-loading">
-                <div className="forgotpassword-loading--content">
-                    <Typography type="headline-4">Loading content...</Typography>
-                    <LinearProgress id='simple-linear-progress' /> 
-                    {/* <LinearProgress id='simple-linear-progress' /> */}
-                </div>
-            </div>
-            }
+                            <h2>Fill in the fields below:</h2>
+                            <div className="form">
+                                <div className="password">
+                                    <Password className="medium-width" inputProps={{ maxLength: 24 }} required value={password} onChange={(event) => setPassword(event.currentTarget.value)} id={`text-field-type-password`} placeholder="New password" label="Password" error={passwordStyles.pass != null ? !passwordStyles.pass : false} />
+                                    {passwordStyles.msg.length > 0 ?
+                                        <div className="tips">
+                                            {passwordStyles.warning && <p className="warning">{passwordStyles.warning}</p>}
+                                            <p className="suggestion">{passwordStyles.suggestion}</p>
+                                        </div>
+                                    : ''}
+                                </div>
+                                <Password className="medium-width" inputProps={{ maxLength: 24 }} required value={confirmPassword} onChange={(event) => setConfirmPassword(event.currentTarget.value)} id={`text-field-type-confirm`} placeholder="Confirm password" label="Confirm" error={confirmPasswordStyles.pass != null ? !confirmPasswordStyles.pass : false} />
+                                
+                                {confirmPasswordStyles.msg && <p className="error"><MdErrorOutline size="20"/>{confirmPasswordStyles.msg}</p>}
+                                <Button onClick={() => changePassword()} variant="contained" startIcon={<MdDone/>}>Submit</Button>
+                            </div>
+                            {error && <p className="error"><MdErrorOutline size="20"/>{error}</p>}
+                            <div className="warning">
+                                <h2><IoMdWarning/> Warning!</h2>
+                                <p>Once the password is changed, you will be logged out from all devices!</p>
+                            </div>
+                        </div> :
+                        <div className="forgotpassword--title">
+                            <div className="content">
+                                <h1>PASSWORD RESET</h1>
+                                <h2>Couldn't download password reset form.</h2>
+                                <p>{resetPassword.msg}</p>
+                            </div>
+                            <div className="details">
+                                <h3>Does this keep happening?</h3>
+                                <p>Please contact support at our <Link to="/discord"><span><FaDiscord/>Discord server</span></Link> for further help.</p>
+                            </div>
+                        </div>}
+                    </div>
+                : 
+                    <div>
+                        <Loading content/>
+                    </div>
+                }
+            </Paper>
         </div>
     )
 }

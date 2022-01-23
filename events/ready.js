@@ -9,16 +9,16 @@ module.exports =  {
     name: 'ready',
     async execute(client, commands) {
         console.log('Bot is up!');
-        const songs = await Songs.find();
-        const analytics = await SongsAnalytics.find();
-        const values = ['version', 'artist', 'game', 'dancemode', 'xboxbrokenlevel', 'difficulty', 'effort', 'times', 'genre', 'tags'];
-        const toSave = [];
-        for await (const el of values) {
-            // console.log(`CHECKING: ${el}`)
-            toSave.push(await getUnique(songs, el));
-        }
-        toSave.map((el, index) => analytics[values[index]] = el );
-        await SongsAnalytics.create(analytics);
+        // const songs = await Songs.find();
+        // const analytics = await SongsAnalytics.find();
+        // const values = ['version', 'artist', 'game', 'dancemode', 'xboxbrokenlevel', 'difficulty', 'effort', 'times', 'genre', 'tags'];
+        // const toSave = [];
+        // for await (const el of values) {
+        //     // console.log(`CHECKING: ${el}`)
+        //     toSave.push(await getUnique(songs, el));
+        // }
+        // toSave.map((el, index) => analytics[values[index]] = el );
+        // await SongsAnalytics.create(analytics);
         // console.log(analytics);
         // console.log(toSave[1]);
         // const global = false;

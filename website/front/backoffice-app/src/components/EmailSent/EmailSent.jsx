@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { mailerService } from '../../services/mailer.service';
 import { MdAutorenew, MdLogin, MdClose, MdDone } from 'react-icons/md';
 
-import { LinearProgress } from "@react-md/progress";
+import Loading from './../Loading';
 import Button from '@mui/material/Button';
 
 const EmailSent = () => {
@@ -40,11 +40,7 @@ const EmailSent = () => {
     return (
         <div className="EmailSent-content">
             <div className="emailsent-inside">
-            {loading ?
-                <div className="loading">
-                    <LinearProgress id='simple-linear-progress' /> 
-                </div>
-            : ''}
+                {loading && <Loading/>}
                 <div className="emailsent--text">
                     <h1>ACCOUNT ACTIVATION</h1>
                     <h2>A verification email has been sent to your inbox.</h2>
