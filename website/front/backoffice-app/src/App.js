@@ -1,6 +1,6 @@
 import './App.scss';
 import Home from './components/Home';
-import Header from './components/Header';
+import Sidebar from './components/Sidebar';
 import SongList from './components/SongList';
 import Login from './components/Login';
 import Account from './components/Account';
@@ -8,6 +8,7 @@ import { Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { blue, red, grey } from '@mui/material/colors';
 import { useState } from 'react';
+import { Box } from '@mui/material';
 
 const themeLight = createTheme({
     palette: {
@@ -44,16 +45,18 @@ function App() {
     const [theme, setTheme] = useState(true);
 
     return (
-        <div className="App" style={{ height: '100vh', background: theme ? '#121212' : '#fff' }}>
+        <div className={`App${theme ? ' dark-theme' : ''}`}>
             <ThemeProvider theme={theme ? themeDark : themeLight}>
-                <Header theme={theme}></Header>
-                <Routes>
-                    <Route path="/" element={<Home/>}/>
-                    <Route path="/songlist" element={<SongList/>}/>
-                    <Route path="/login" element={<Login/>}/>
-                    <Route path="/login/:email" element={<Login/>}/>
-                    <Route path="/account/*" element={<Account/>}/>
-                </Routes>
+                <Sidebar theme={theme} setTheme={setTheme} />
+                {/* <Header theme={theme}></Header> */}
+                <Box className="limitWidth">
+                    <Routes>
+                        <Route path="/" element={<Home/>}/>
+                        <Route path="/songlist" element={<SongList/>}/>
+                        <Route path="/login" element={<Login theme={theme} />}/>
+                        <Route path="/account/*" element={<Account/>}/>
+                    </Routes>
+                </Box>
             </ThemeProvider>
         </div>
     );

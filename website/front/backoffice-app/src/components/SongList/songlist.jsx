@@ -79,7 +79,7 @@ const SongList = () => {
                         return (
                             <div key={index} onClick={() => changeSong(song)} className="song">
                                 <div className="left-side">
-                                    <img src={`${song.cover}`}></img>
+                                    <img loading="lazy" src={`${song.cover}`}/>
                                     <div className="text">
                                         <h1>{song.name}</h1>
                                         <h2>{song.artist.join(' & ')}</h2>
@@ -93,7 +93,7 @@ const SongList = () => {
                                             <div className={`bar bar3--${song.difficulty.toLowerCase()}`}></div>
                                             <div className={`bar bar4--${song.difficulty.toLowerCase()}`}></div>
                                         </div>
-                                        <p className="difficulty">{song.difficulty}</p>
+                                        <p className="difficulty">{song.difficulty.charAt(0).toUpperCase() + song.difficulty.slice(1)}</p>
                                     </div>
                                 </div>
                             </div>

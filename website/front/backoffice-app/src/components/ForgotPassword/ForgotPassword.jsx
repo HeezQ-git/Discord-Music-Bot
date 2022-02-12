@@ -15,7 +15,7 @@ import Typography from '@mui/material/Typography';
 import LinearProgress from '@mui/material/LinearProgress';
 import Paper from '@mui/material/Paper';
 import Loading from './../Loading';
-import Password from './../Password';
+import Input from './../Input';
 
 const ForgotPassword = (props) => {
 
@@ -129,7 +129,7 @@ const ForgotPassword = (props) => {
                             <h2>Fill in the fields below:</h2>
                             <div className="form">
                                 <div className="password">
-                                    <Password className="medium-width" inputProps={{ maxLength: 24 }} required value={password} onChange={(event) => setPassword(event.currentTarget.value)} id={`text-field-type-password`} placeholder="New password" label="Password" error={passwordStyles.pass != null ? !passwordStyles.pass : false} />
+                                    <Input className="medium-width" inputProps={{ maxLength: 24 }} required value={password} onChange={(event) => setPassword(event.currentTarget.value)} id={`text-field-type-password`} placeholder="New password" label="Password" error={passwordStyles.pass != null ? !passwordStyles.pass : false} />
                                     {passwordStyles.msg.length > 0 ?
                                         <div className="tips">
                                             {passwordStyles.warning && <p className="warning">{passwordStyles.warning}</p>}
@@ -137,7 +137,7 @@ const ForgotPassword = (props) => {
                                         </div>
                                     : ''}
                                 </div>
-                                <Password className="medium-width" inputProps={{ maxLength: 24 }} required value={confirmPassword} onChange={(event) => setConfirmPassword(event.currentTarget.value)} id={`text-field-type-confirm`} placeholder="Confirm password" label="Confirm" error={confirmPasswordStyles.pass != null ? !confirmPasswordStyles.pass : false} />
+                                <Input className="medium-width" inputProps={{ maxLength: 24 }} required value={confirmPassword} onChange={(event) => setConfirmPassword(event.currentTarget.value)} id={`text-field-type-confirm`} placeholder="Confirm password" label="Confirm" error={confirmPasswordStyles.pass != null ? !confirmPasswordStyles.pass : false} />
                                 
                                 {confirmPasswordStyles.msg && <p className="error"><MdErrorOutline size="20"/>{confirmPasswordStyles.msg}</p>}
                                 <Button onClick={() => changePassword()} variant="contained" startIcon={<MdDone/>}>Submit</Button>

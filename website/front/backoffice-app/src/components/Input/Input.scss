@@ -1,0 +1,20 @@
+@import './../../colors';
+@import './../../vars';
+
+main {
+    .login-paper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        h4 {
+            font-weight: bold;
+        }
+        .forms {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 25px;
+        }
+    }
+}

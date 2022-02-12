@@ -1,0 +1,202 @@
+.Sidebar-content {
+    position: fixed;
+    white-space: nowrap;
+    height: 100%;
+    padding: 10px 14px;
+    top: 0;
+    bottom: 0;
+    z-index: 9999;
+    transition: .3s ease;
+    .logo {
+        display: flex;
+        align-items: center;
+        height: 60px;
+        user-select: none;
+        overflow: hidden;
+        img {
+            width: 60px;
+        }
+        h5 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        h6 {
+            font-size: 16px;
+            font-weight: 400;
+        }
+    }
+    .toggle {
+        position: absolute;
+        top: 50%;
+        right: -30px;
+        transform: translateY(-50%) rotate(-180deg);
+        height: 30px;
+        width: 30px;
+        background: #1a73e8;
+        border-radius: 50%;
+        transition: .3s background ease;
+        cursor: pointer;
+    }
+    .content {
+        height: calc(100% - 90px);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+        .menu {
+            a {
+                text-decoration: none;
+                color: unset;
+            }
+            li {
+                display: flex;
+                align-items: center;
+                height: 50px;
+                margin-top: 10px;
+                border-radius: 6px;
+                transition: .3s all ease;
+                width: 100%;
+                &:hover {
+                    color: rgb(240, 240, 240);
+                    background: #1a73e8;
+                }
+            }
+            span {
+                font-size: 20px;
+            }
+            .user {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                transition: .3s all ease;
+                border-radius: 6px;
+                cursor: pointer;
+                h6 {
+                    font-size: 22px;
+                }
+                &:hover {
+                    background: rgba(240, 240, 240, 0.7);
+                }
+            }
+        }
+    }
+    .icon {
+        min-width: 60px;
+    }
+    .spacing {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        overflow: hidden;
+    }
+    .darkmode {
+        cursor: pointer;
+        user-select: none;
+        background:rgb(228, 228, 228);
+        overflow: hidden;
+    }
+    .toggle-switch {
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        min-width: 60px;
+        transition: .3s ease;
+        .switch {
+            position: relative;
+            height: 22px;
+            width: 44px;
+            border-radius: 25px;
+            background: rgb(80, 80, 80);
+            transition: .3s ease;
+            &:before {
+                content: '';
+                position: absolute;
+                height: 15px;
+                width: 15px;
+                border-radius: 50%;
+                top: 50%;
+                left: 5px;
+                transform: translateY(-50%);
+                background: white;
+                transition: .3s ease;
+            }
+        }
+    }
+}
+
+.dark {
+    transition: .3s ease;
+    .darkmode {
+        background: rgb(66, 66, 66);
+    }
+    .toggle {
+        background: rgb(90, 90, 90);
+    }
+    .content {
+        .menu {
+            li {
+                &:hover {
+                    background: rgb(87, 87, 87);
+                }
+            }
+            .user {
+                &:hover {
+                    background: rgba(70, 70, 70, 0.5);
+                }
+            }
+        }
+    }
+    .toggle-switch {
+        .switch {
+            background: rgb(228, 228, 228);
+            &:before {
+                left: 25px;
+                background: #252525;
+            }
+        }
+    }
+}
+
+.opened {
+    width: 250px;
+    transition: .3s all ease;
+}
+
+.closed {
+    position: fixed;
+    width: 60px;
+    transition: .3s all ease;
+    .logo {
+        height: 60px;
+        h5, h6 {
+            word-break: keep-all;
+            overflow: hidden;
+        }
+    }
+    .toggle {
+        transform: translateY(-50%) rotate(0);
+    }
+    .content {
+        .menu {
+            overflow: hidden;
+            li {
+                width: 60px;
+            }
+        }
+    }
+}
+
+.closed:not(:is(.dark)) {
+    .content {
+        .menu {
+            .user {
+                &:hover {
+                    background: rgb(226, 226, 226);
+                }
+            }
+        }
+    }
+}

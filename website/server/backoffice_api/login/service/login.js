@@ -19,9 +19,9 @@ const loginUser = async (req, res) => {
                 if (result) {
                     response.success = true;
                     response.token = await signToken(user);
-                } else response.msg = 'E-mail or password is incorrect.';
+                } else response.msg = 'Email or password is invalid.';
             } else response.msg = 'Login via Google Account';
-        } else response.msg = 'E-mail or password is incorrect.';
+        } else response.msg = 'Email or password is invalid.';
     } else response.msg = 'Password was not provided.';
 
     return res.status(200).json(response);

@@ -126,16 +126,24 @@ module.exports = {
                 name.splice(0, 1);
                 name = name.join(' ');
                 if (name.includes('/revision/latest/')) name = name.split('/revision/')[0]
-                else if (name.includes('youtu.be/')) {
-                    const info = name.split('youtu.be/')[1].split('?t=');
-                    const id = info[0];
-                    let time = info[1];
-                    let end = '';
-                    if (time.contains('&end=')) {
-                        time = time.split('&end=')[0];
-                        end = time.split('&end=')[1];
-                    }
-                    name = `https://youtube.com/embed/${id}?start=${start}${end ? `&end=${end}` : ''}`;
+                else if (name.includes('youtu.be/') || name.includes('youtube.com')) {
+                    let info, time = 0, end, id;
+                    if (name.includes('youtu.be/')) {
+                        if (name.includes('?t=')) {
+                            info = name.split('youtu.be/')[1].split('?t=');
+                            time = info[1];
+                            if (time.includes('&end=')) {
+                                end = time.split('&end=')[1];
+                                time = time.split('&end=')[0];
+                            }
+                        } else if (name.includes('?end=')) {
+                            info = name.split('youtu.be/')[1].split('?end=');
+                            time = 0;
+                            end = info[1];
+                        } 
+                        id = info[0];
+                    } else id = name.split('?v=')[1];
+                    name = `https://youtube.com/embed/${id}${time ? `?start=${time}` : ''}${end ? parseInt(time) > 0 ? `&end=${end}` : `?end=${end}` : ''}`;
                 }
                 user.song_temp[steps[page]] = [name];
                 await Users.updateOne({ userId: msg.author.id }, user);

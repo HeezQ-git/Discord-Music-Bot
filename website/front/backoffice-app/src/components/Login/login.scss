@@ -1,292 +1,69 @@
 @import './../../colors';
 @import './../../vars';
 
-$boxWidth: 275px;
-
-::-webkit-scrollbar {
-    width: 7.5px;
-}
-::-webkit-scrollbar-track {
-    background: rgba(255,255,255,0.1); 
-    // background: transparent; 
-}
-::-webkit-scrollbar-thumb {
-    background: rgba(255,255,255,0.4); 
-}
-::-webkit-scrollbar-thumb:hover {
-    background: rgba(255,255,255,0.5); 
-}
-
-.Login-content {
-    height: calc(100vh - $headerHeight);
-    width: 100vw;
-    display: flex;
+.login {
+    height: 100%;
+    display: grid;
     align-items: center;
-    justify-content: center;
-    .login-form-content, .paper {
-        height: clamp(450px, 50%, 90%);
+    .login-paper {
         position: relative;
-        user-select: none;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        width: clamp(450px, 450px, 100%);
-        margin: auto;
-        border-radius: 5px;
-        .buttons-styling {
-            position: absolute;
+        height: max-content;
+        padding: 15px 25px;
+        h4 {
+            font-weight: bold;
+        }
+        .forms {
+            width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: $boxWidth;
-            bottom: 35px;
             gap: 15px;
-            .buttons {
+            margin-top: 25px;
+            .message {
                 display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-                width: 100%;
+                flex-direction: column;
+                justify-content: center;
+                .items {
+                    color: $red;
+                    margin-top: 4px;
+                    display: flex;
+                    align-items: center;
+                    gap: 3px;
+                }
+                .meter {
+                    position: relative;
+                    width: 100%;
+                    
+                    &[value="1"]::-webkit-meter-optimum-value { background: #DB4437; };
+                    &[value="1"]::-moz-meter-bar { background: #DB4437; };
+                    
+                    &[value="2"]::-webkit-meter-optimum-value { background: #f47200; };
+                    &[value="2"]::-moz-meter-bar { background: #f47200; };
+                    
+                    &[value="3"]::-webkit-meter-optimum-value { background: #F4B400; };
+                    &[value="3"]::-moz-meter-bar { background: #F4B400; };
+                    
+                    &[value="4"]::-webkit-meter-optimum-value { background: #0F9D58; };
+                    &[value="4"]::-moz-meter-bar { background: #0F9D58; };
+                }
+                meter:is(.dark) {
+                    &::-webkit-meter-bar {
+                        background: #3b3b3b;
+                    }
+                }
             }
         }
-        .error {
-            margin-top: 5px;
-        }
-        .login-inside {
+        .buttons {
+            width: 100%;
+            margin-top: 25px;
             display: flex;
             flex-direction: column;
-            margin: auto;
-            margin-top: 2.5%;
-            max-width: 300px;
-            .title {
-                text-align: center;
-                font-weight: bold;
-                padding: 20px;
-                padding-bottom: 10px;
-            }
-            .protected {
-                display: flex;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                color: #0F9D58;
-                img {
-                    margin-right: 2.5px;
-                    width: 15px;
-                    height: 15px;
-                }
-            }
-            .login-via {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-direction: row;
-                gap: 10px;
-                width: max-content;
-                padding: 10px;
-                border-radius: 0.3rem;
-                transition: 200ms ease;
-                outline: none;
-                border: 0;
-                background: transparent;
-                span {
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    svg {
-                        transform: scale(1.5);
-                    }
-                }
-                &:hover {
-                    background-color: rgba(26, 115, 232, 0.1);
-                    cursor: pointer;
-                }
-            }
-            .resize-box {
-                width: $boxWidth;
-            }
-            .login-form {
-                a { text-decoration: none; }
-                .credentials {
-                    margin-top: 30px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 10px;
-                    input {
-                        width: 300px;
-                    }
-                    .password {
-                        margin-top: 5px;
-                    }
-                }
-                .forgot-password {
-                    margin-top: 10px;
-                    &:hover {
-                        cursor: pointer;
-                        text-decoration: underline;
-                    }
-                }
-                .login-error {
-                    display: flex;
-                    flex-direction: row;
-                    justify-content: flex-start;
-                    gap: 5px;
-                    color: $red;
-                    margin-top: 10px;
-                }
-            }
-            .register-form {
-                .buttons {
-                    bottom: 8.5%;
-                }
-                .credentials {
-                    margin-top: 30px;
-                    display: flex;
-                    flex-direction: column;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 10px;
-                    .meter {
-                        width: $boxWidth;
-                    }
-                    .password-box {
-                        .reg-box {
-                            position: relative;
-                        }
-                    }
-                    .reg-box {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        flex-direction: column;
-                        .iTip {
-                            font-size: 1.05rem;
-                            opacity: .9;
-                            margin-bottom: 15px;
-                        }
-                        .confirmpass {
-                            margin-top: 15px;
-                        }
-                        .centered-box {
-                            display: flex;
-                            flex-direction: row;
-                            align-items: center;
-                            color: $red;
-                        }
-                        .meter {
-                            height: 1rem;
-                        }
-                        .meter[value="1"]::-webkit-meter-optimum-value { background: #DB4437; };
-                        .meter[value="1"]::-moz-meter-bar { background: #DB4437; };
-                        
-                        .meter[value="2"]::-webkit-meter-optimum-value { background: #f47200; };
-                        .meter[value="2"]::-moz-meter-bar { background: #f47200; };
-                        
-                        .meter[value="3"]::-webkit-meter-optimum-value { background: #F4B400; };
-                        .meter[value="3"]::-moz-meter-bar { background: #F4B400; };
-                        
-                        .meter[value="4"]::-webkit-meter-optimum-value { background: #0F9D58; };
-                        .meter[value="4"]::-moz-meter-bar { background: #0F9D58; };
-                        .password {
-                            display: flex;
-                            flex-direction: row;
-                            align-items: center;
-                            .strength {
-                                opacity: .75;
-                                align-self: flex-start;
-                            }
-                            .tips {
-                                z-index: 9998;
-                                width: 30ch;
-                                background-color: black;
-                                color: #fff;
-                                text-align: center;
-                                border-radius: 6px;
-                                padding: 5px;
-                                position: absolute;
-                                z-index: 1;
-                                left: 110%;
-                                top: 20%;
-                                &::after {
-                                    content: "";
-                                    position: absolute;
-                                    top: 50%;
-                                    right: 100%;
-                                    margin-top: -5px;
-                                    border-width: 5px;
-                                    border-style: solid;
-                                    border-color: transparent black transparent transparent;
-                                }
-                                .warning {
-                                    font-weight: bold;
-                                    color: #DB4437;
-                                    opacity: .95;
-                                }
-                                .suggestion {
-                                    color: white;
-                                    opacity: .8;
-                                }
-                            }
-                        }
-                        .login {
-                            text-decoration: underline;
-                            cursor: pointer;
-                            color: $gBlue;
-                            a {
-                                text-decoration: none;
-                            }
-                        }
-                    }
-                }
-            }
+            gap: 10px;
         }
-    }
-}
-
-@media screen and (max-width: 900px) {
-    .Login-content {
-        .login-form-content {
-            .login-inside {
-                .register-form {
-                    .credentials {
-                        .confirmpass {
-                            position: relative;
-                        }
-                        .reg-box {
-                            // position: relative;
-                            .password {
-                                .tips {
-                                    width: 100%;
-                                    background-color: black;
-                                    color: #fff;
-                                    text-align: center;
-                                    border-radius: 6px;
-                                    padding: 5px 0;
-                                    position: absolute;
-                                    z-index: 1;
-                                    top: 100%;
-                                    left: 50%;
-                                    margin-left: -50%;
-                                    &::after {
-                                        content: " ";
-                                        position: absolute;
-                                        top: unset;
-                                        bottom: 100%;
-                                        left: 50%;
-                                        margin-left: -5px;
-                                        border-width: 5px;
-                                        border-style: solid;
-                                        border-color: transparent transparent black transparent;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        .text-below {
+            margin-top: 10px;
         }
     }
 }

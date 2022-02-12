@@ -16,10 +16,21 @@
 }
 
 body {
-    background: #121212;
     height: 100vh;
-    overflow-x: hidden;
-    overflow-y: hidden;
+}
+
+.App {
+    height: 100vh;
+}
+
+.limitWidth {
+    max-width: calc(100% - 88px);
+    margin-left: 88px;
+    height: 100%;
+}
+
+.dark-theme {
+    background: #121212;
 }
 
 .btn-gap {

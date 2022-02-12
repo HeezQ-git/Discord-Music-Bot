@@ -1,0 +1,11 @@
+.userAvatar {
+    user-select: none;
+    .random {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .char {
+            color: rgb(230, 230, 230);
+        }
+    }
+}
