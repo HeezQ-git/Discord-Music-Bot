@@ -32,6 +32,14 @@
                     align-items: center;
                     gap: 3px;
                 }
+                .forgot-password {
+                    color: rgb(22, 132, 206);
+                    cursor: pointer;
+                    width: max-content;
+                    &:hover {
+                        text-decoration: underline rgba(22, 132, 206, 0.6);
+                    }
+                }
                 .meter {
                     position: relative;
                     width: 100%;

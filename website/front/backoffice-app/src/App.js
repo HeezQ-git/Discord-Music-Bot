@@ -45,7 +45,7 @@ function App() {
     const [theme, setTheme] = useState(true);
 
     return (
-        <div className={`App${theme ? ' dark-theme' : ''}`}>
+        <div className={`App${theme ? ' dark_theme' : ''}`}>
             <ThemeProvider theme={theme ? themeDark : themeLight}>
                 <Sidebar theme={theme} setTheme={setTheme} />
                 {/* <Header theme={theme}></Header> */}
@@ -54,7 +54,7 @@ function App() {
                         <Route path="/" element={<Home/>}/>
                         <Route path="/songlist" element={<SongList/>}/>
                         <Route path="/login" element={<Login theme={theme} />}/>
-                        <Route path="/account/*" element={<Account/>}/>
+                        <Route path="/account/*" element={<Account theme={theme}/>}/>
                     </Routes>
                 </Box>
             </ThemeProvider>

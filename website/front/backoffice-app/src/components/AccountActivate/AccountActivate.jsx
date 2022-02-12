@@ -34,7 +34,7 @@ const AccountActivate = () => {
         <div className="AccountActivate-content">
             <div className="aa-content" style={{ height: activated === null ? '400px' : ''}}>
                 <Paper className="paper" elevation={8}>
-                    {activated != null ? !activated ?
+                    {activated != null ? activated ?
                         <div className="approved">
                             <div className="approved-content">
                                 <Typography variant="h4">ACCOUNT ACTIVATION</Typography>

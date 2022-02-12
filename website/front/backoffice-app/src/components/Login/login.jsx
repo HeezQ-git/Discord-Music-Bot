@@ -4,10 +4,11 @@ import { MdLockOutline, MdOutlineLogin, MdOutlineErrorOutline } from 'react-icon
 import { green } from '@mui/material/colors';
 import Input from '../Input';
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import { FcGoogle } from 'react-icons/fc';
 import { GoogleLogin } from 'react-google-login';
 import { loginService } from '../../services/login.service';
-import { useNavigate } from 'react-router';
+import { mailerService } from '../../services/mailer.service';
 import Loading from '../Loading';
 import zxcvbn from 'zxcvbn';
 
@@ -44,7 +45,6 @@ const Login = ({ theme }) => {
     }
 
     const checkPassword = () => {
-        console.log('test')
         if (password.value.length == 0) return setPassword({ ...password, msg: 'You have to provide password' })
         
         const res = zxcvbn(password.value);
@@ -79,32 +79,60 @@ const Login = ({ theme }) => {
     }
 
     const submitForm = async () => {
+        setLoading(true);
+
+        let flag = true;
+
         if (formType) {
-            if (checkEmail() != true || checkPassword() != true) return;
 
-            setLoading(true);
+            flag = checkEmail();
+            flag = flag == true ? checkPassword() : false;
 
-            const res = await loginService.loginUser({ 
-                email: email.value,
-                password: password.value,
-            })
-            
-            if (res.data.success) navigate(`/account/`)
-            else setPassword({ ...password, msg: res.data.msg });
+            if (flag) {
 
-            setLoading(false);
+                const res = await loginService.loginUser({ 
+                    email: email.value,
+                    password: password.value,
+                })
+                
+                if (res.data.success) navigate(`/account/`)
+                else setPassword({ ...password, msg: res.data.msg });
+
+            }
+
         } else {
-            let flag = true;
+
             flag = await checkUsername();
             flag = flag == true ? await checkEmailDatabase() : false;
             flag = flag == true ? checkPassword() : false;
             flag = flag == true ? checkRepeatPass() : false;
-            console.log(flag);
+
+            if (flag) {
+            
+                const res = await mailerService.newPendingUser({ 
+                    username: username.value,
+                    email: email.value,
+                    password: password.value,
+                });
+                
+                if (res.data.success) navigate(`/account/email_sent/${email.value}`);
+            }
         }
+
+        setLoading(false);
     }
 
-    const responseGoogle = (data) => {
-        console.log(data);
+    const responseGoogle = async (data) => {
+        
+        const res = await loginService.loginGoogleUser({
+            email: data.profileObj.email,
+            username: data.profileObj.name,
+            imageUrl: data.profileObj.imageUrl,
+            googleId: data.profileObj.googleId,
+        });
+
+        setPassword({ ...password, msg: res.data.msg });
+
     }
   
     return (
@@ -126,7 +154,8 @@ const Login = ({ theme }) => {
                         { email.msg.length > 0 && <Grid className="items"> <MdOutlineErrorOutline/> { email.msg } </Grid> }
                     </Grid>
                     <Grid className="message">
-                        <Input val="password" label="Password" placeholder="Your password" onChange={(e) => setPassword({...password, value: e.currentTarget.value, msg: ''})} error={password.msg.length > 0 || password.strength != -1 && password.strength <= 1} required fullWidth />
+                        <Input val="password" label="Password" placeholder="Your password" onKeyDown={e => `${e.code}`.toLowerCase() === 'enter' && formType && submitForm()} onChange={(e) => setPassword({...password, value: e.currentTarget.value, msg: ''})} error={password.msg.length > 0 || (password.strength != -1 && (password.strength <= 1 && password.value.length > 0))} required fullWidth />
+                        { formType && <Typography onClick={() => navigate(`/account/forgot_password/${email.value ? email.value : ''}`)} className="forgot-password">Forgot password?</Typography> }
                         { !formType && password.value.length > 0 &&
                         <Grid sx={{ mt: '5px' }}>
                             <Typography variant="p" sx={{ opacity: '.8' }}>{password.strength != -1 && strength[password.strength]}</Typography>
