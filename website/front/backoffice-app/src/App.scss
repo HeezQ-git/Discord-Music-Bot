@@ -17,20 +17,23 @@
 
 body {
     height: 100vh;
+    .App:is(.dark_theme) {
+        background: #121212;
+    }
 }
 
-.App {
-    height: 100vh;
-}
+// .App {
+    // height: 100vh;
+// }
 
-.limitWidth {
-    max-width: calc(100% - 88px);
-    margin-left: 88px;
+html, body, body > #root, .App {
     height: 100%;
 }
 
-.dark_theme {
-    background: #121212;
+.limitWidth {
+    // max-width: calc(100% - 88px);
+    // margin-left: 88px;
+    height: calc(100% - 100px);
 }
 
 .btn-gap {

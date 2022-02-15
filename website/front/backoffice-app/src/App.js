@@ -1,6 +1,7 @@
 import './App.scss';
 import Home from './components/Home';
 import Sidebar from './components/Sidebar';
+import Header from './components/Header';
 import SongList from './components/SongList';
 import Login from './components/Login';
 import Account from './components/Account';
@@ -47,7 +48,7 @@ function App() {
     return (
         <div className={`App${theme ? ' dark_theme' : ''}`}>
             <ThemeProvider theme={theme ? themeDark : themeLight}>
-                <Sidebar theme={theme} setTheme={setTheme} />
+                <Header theme={theme} setTheme={setTheme} />
                 {/* <Header theme={theme}></Header> */}
                 <Box className="limitWidth">
                     <Routes>

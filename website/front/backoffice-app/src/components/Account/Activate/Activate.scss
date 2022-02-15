@@ -1,0 +1,44 @@
+@import './../../../colors';
+@import './../../../vars';
+
+.activate {
+    height: 100%;
+    display: grid;
+    align-items: center;
+    .activate_paper {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: max-content;
+        padding: 15px 25px;
+        h5 {
+            font-weight: bold;
+        }
+        h6 {
+            font-weight: normal;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .contact {
+            opacity: .7;
+            user-select: none;
+            .id {
+                cursor: default;
+                user-select: text;
+                text-decoration: underline;
+            }
+        }
+        .buttons {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+        }
+    }
+}

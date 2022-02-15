@@ -2,14 +2,13 @@ import './ForgotPassword.scss';
 import { useParams } from 'react-router-dom';
 import { MdClose, MdDone, MdOutlineErrorOutline } from 'react-icons/md'
 import React, { useState, useEffect } from 'react';
-import { mailerService } from '../../services/mailer.service';
-import { accountService } from '../../services/account.service';
-import { Link, useNavigate } from 'react-router-dom';
+import { mailerService } from '../../../services/mailer.service';
+import { accountService } from '../../../services/account.service';
+import { useNavigate } from 'react-router-dom';
 import zxcvbn from 'zxcvbn';
 
-import Loading from './../Loading';
-import Input from './../Input';
-import { Container, Typography, Paper, Grid, Box, Alert, AlertTitle, IconButton, Collapse } from '@mui/material';
+import Input from '../../Input';
+import { Container, Typography, Paper, Grid, Box, Alert, IconButton, Collapse } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 
 const ForgotPassword = ({ type, theme }) => {
@@ -17,6 +16,7 @@ const ForgotPassword = ({ type, theme }) => {
     const strength = [ '❌ Terribly bad', '🙁 Bad', '😕 Weak', '👍 Good', '💪 Strong' ];
 
     const delay = async ms => new Promise(res => setTimeout(res, ms));
+    
     const { emailParam, id } = useParams();
     const navigate = useNavigate();
 

@@ -98,11 +98,13 @@ const sendConfirmationEmail = async (toUser, hash) => {
 const sendEmail = async (req, res) => {
     const response = {
         success: false,
+        msg: '',
     }
 
     const user = await PendingUsers.findOne({ email: req.body.email });
     if (user) {
         let flag = true;
+
         if (user.resendemail) {
             const diff = Date.now() - user.resendemail;
             if (diff < 30000) flag = false;
@@ -111,8 +113,9 @@ const sendEmail = async (req, res) => {
             const info = await sendConfirmationEmail(user, user._id);
             if (info.rejected.length <= 0) response.success = true;
             await PendingUsers.updateOne({ email: user.email }, { resendemail: Date.now() });
-        }
-    }
+        } else response.msg = 'Please wait some more time';
+
+    } else response.msg = 'Couldn\'t find user with this email';
 
     return res.status(200).json(response);
 }

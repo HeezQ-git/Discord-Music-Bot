@@ -2,6 +2,7 @@ import './Sidebar.scss';
 import logo from './../../images/logo.png';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { Paper, Grid, Typography, Divider, MenuItem, Fade, styled, Menu, alpha } from '@mui/material';
 import { MdLibraryMusic, MdKeyboardArrowRight, MdLogin, MdLogout, MdPerson, MdSettings, MdHome, MdDisabledVisible } from 'react-icons/md';
 import { FaDiscord } from 'react-icons/fa';
@@ -53,13 +54,25 @@ const Sidebar = ({ theme, setTheme }) => {
     const [sidebar, setSidebar] = useState(false);
     const logged = true;
 
+    const navigate = useNavigate();
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
+
+    const handleClick = (event) => setAnchorEl(event.currentTarget);
+
+    const handleClose = (num) => {
         setAnchorEl(null);
+        switch (num) {
+            case 1:
+                navigate('/account/profile');
+                break;
+            case 2:
+                navigate('/account/settings');
+                break;
+            case 3:
+                break;
+        }
     };
 
     return (
@@ -90,12 +103,12 @@ const Sidebar = ({ theme, setTheme }) => {
                                 <Typography component="span">Songlist</Typography>
                             </li>
                         </Link>
-                        <Link to="/discord">
+                        <a styles={{ textDecoration: 'none' }} target='_blank' href='https://discord.gg/RxeuKWFZbH'>
                             <li>
                                 <FaDiscord size={20} className='icon' />
                                 <Typography component="span">Discord</Typography>
                             </li>
-                        </Link>
+                        </a>
                     </ul>
                 </Grid>
                 <Grid className='menu'>
@@ -115,9 +128,9 @@ const Sidebar = ({ theme, setTheme }) => {
                             sidebar={sidebar.toString()}
                             sx={{ zIndex: '99999', ml: !sidebar ? '5px' : '' }}
                         >
-                            <MenuItem onClick={handleClose} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}><MdPerson size={20}/>Profile</MenuItem>
-                            <MenuItem onClick={handleClose} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}><MdSettings size={20}/>Settings</MenuItem>
-                            <MenuItem onClick={handleClose} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}><MdLogout size={20}/>Logout</MenuItem>
+                            <MenuItem onClick={() => handleClose(1)} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}><MdPerson size={20}/>Profile</MenuItem>
+                            <MenuItem onClick={() => handleClose(2)} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}><MdSettings size={20}/>Settings</MenuItem>
+                            <MenuItem onClick={() => handleClose(3)} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}><MdLogout size={20}/>Logout</MenuItem>
                         </StyledMenu>
                     </>
                     }

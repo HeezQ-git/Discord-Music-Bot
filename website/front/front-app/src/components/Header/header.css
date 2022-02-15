@@ -1,0 +1,46 @@
+.Header-content {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  height: 125px;
+  width: 100%;
+  background-color: #2a292e;
+}
+
+.Header-content .logo {
+  margin-left: 100px;
+  width: 90px;
+  height: 90px;
+  cursor: pointer;
+}
+
+.Header-content h1 {
+  font-size: 26px;
+}
+
+.Header-content .buttons .button {
+  width: 150px;
+  height: 125px;
+  font-size: 1.2rem;
+  background: #2a292e;
+  border: 0;
+  color: white;
+  cursor: pointer;
+  -webkit-transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.Header-content .buttons .button:hover {
+  background-color: #3cb5e5;
+}
+/*# sourceMappingURL=header.css.map */
