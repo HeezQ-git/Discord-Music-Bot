@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const websiteUsersSchema = new Schema({
@@ -9,11 +9,13 @@ const websiteUsersSchema = new Schema({
     username: String,
     email: String,
     password: String,
-    imageUrl: String,
+    avatar: String,
+    userId: String,
+    registerDate: Date,
     googleId: String,
     passwordResetId: String,
     forgotPassEmail: Date,
 });
 
-const WebsiteUsers = mongoose.model('WebsiteUsers', websiteUsersSchema);
+const WebsiteUsers = mongoose.model("WebsiteUsers", websiteUsersSchema);
 module.exports = WebsiteUsers;

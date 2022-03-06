@@ -1,5 +1,5 @@
-@import './../../colors';
-@import './../../vars';
+@import "./../../colors";
+@import "./../../vars";
 
 .login {
     height: 100%;
@@ -40,21 +40,41 @@
                         text-decoration: underline rgba(22, 132, 206, 0.6);
                     }
                 }
+                .remember_me {
+                    margin-top: 5px;
+                    width: max-content;
+                }
                 .meter {
                     position: relative;
                     width: 100%;
-                    
-                    &[value="1"]::-webkit-meter-optimum-value { background: #DB4437; };
-                    &[value="1"]::-moz-meter-bar { background: #DB4437; };
-                    
-                    &[value="2"]::-webkit-meter-optimum-value { background: #f47200; };
-                    &[value="2"]::-moz-meter-bar { background: #f47200; };
-                    
-                    &[value="3"]::-webkit-meter-optimum-value { background: #F4B400; };
-                    &[value="3"]::-moz-meter-bar { background: #F4B400; };
-                    
-                    &[value="4"]::-webkit-meter-optimum-value { background: #0F9D58; };
-                    &[value="4"]::-moz-meter-bar { background: #0F9D58; };
+
+                    &[value="1"]::-webkit-meter-optimum-value {
+                        background: #db4437;
+                    }
+                    &[value="1"]::-moz-meter-bar {
+                        background: #db4437;
+                    }
+
+                    &[value="2"]::-webkit-meter-optimum-value {
+                        background: #f47200;
+                    }
+                    &[value="2"]::-moz-meter-bar {
+                        background: #f47200;
+                    }
+
+                    &[value="3"]::-webkit-meter-optimum-value {
+                        background: #f4b400;
+                    }
+                    &[value="3"]::-moz-meter-bar {
+                        background: #f4b400;
+                    }
+
+                    &[value="4"]::-webkit-meter-optimum-value {
+                        background: #0f9d58;
+                    }
+                    &[value="4"]::-moz-meter-bar {
+                        background: #0f9d58;
+                    }
                 }
                 meter:is(.dark) {
                     &::-webkit-meter-bar {
@@ -65,7 +85,7 @@
         }
         .buttons {
             width: 100%;
-            margin-top: 25px;
+            margin-top: 15px;
             display: flex;
             flex-direction: column;
             gap: 10px;

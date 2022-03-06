@@ -1,31 +1,52 @@
-import './ForgotPassword.scss';
-import { useParams } from 'react-router-dom';
-import { MdClose, MdDone, MdOutlineErrorOutline } from 'react-icons/md'
-import React, { useState, useEffect } from 'react';
-import { mailerService } from '../../../services/mailer.service';
-import { accountService } from '../../../services/account.service';
-import { useNavigate } from 'react-router-dom';
-import zxcvbn from 'zxcvbn';
+import "./ForgotPassword.scss";
+import { useParams } from "react-router-dom";
+import { MdClose, MdDone, MdOutlineErrorOutline } from "react-icons/md";
+import React, { useState, useEffect } from "react";
+import { mailerService } from "../../../services/mailer.service";
+import { accountService } from "../../../services/account.service";
+import { useNavigate } from "react-router-dom";
+import zxcvbn from "zxcvbn";
 
-import Input from '../../Input';
-import { Container, Typography, Paper, Grid, Box, Alert, IconButton, Collapse } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
+import Input from "../../Input";
+import {
+    Container,
+    Typography,
+    Paper,
+    Grid,
+    Box,
+    Alert,
+    IconButton,
+    Collapse,
+} from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 
 const ForgotPassword = ({ type, theme }) => {
+    const strength = [
+        "❌ Terribly bad",
+        "🙁 Bad",
+        "😕 Weak",
+        "👍 Good",
+        "💪 Strong",
+    ];
 
-    const strength = [ '❌ Terribly bad', '🙁 Bad', '😕 Weak', '👍 Good', '💪 Strong' ];
+    const delay = async (ms) => new Promise((res) => setTimeout(res, ms));
 
-    const delay = async ms => new Promise(res => setTimeout(res, ms));
-    
     const { emailParam, id } = useParams();
     const navigate = useNavigate();
 
     const [form, setForm] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const [email, setEmail] = useState({ value: emailParam ? emailParam : '', msg: '' });
-    const [password, setPassword] = useState({ value: '', msg: '', strength: -1 });
-    const [repeatPass, setRepeatPass] = useState({ value: '', msg: '' });
+    const [email, setEmail] = useState({
+        value: emailParam ? emailParam : "",
+        msg: "",
+    });
+    const [password, setPassword] = useState({
+        value: "",
+        msg: "",
+        strength: -1,
+    });
+    const [repeatPass, setRepeatPass] = useState({ value: "", msg: "" });
 
     const [button, setButton] = useState(false);
     const [open, setOpen] = useState(false);
@@ -37,31 +58,49 @@ const ForgotPassword = ({ type, theme }) => {
         if (res.score <= 1) return;
 
         return true;
-    }
-    
+    };
+
     const checkPassword = () => {
-        if (password.value.length == 0) return setPassword({ ...password, msg: 'You have to provide password' })
+        if (password.value.length == 0)
+            return setPassword({
+                ...password,
+                msg: "You have to provide password",
+            });
         return checkStrength();
-    }
+    };
 
     const checkRepeatPass = () => {
-        if (repeatPass.value.length == 0) return setRepeatPass({ ...repeatPass, msg: 'You have to repeat password' })
-        if (password.value != repeatPass.value) return setRepeatPass({ ...repeatPass, msg: 'Passwords don\`t match!' })
+        if (repeatPass.value.length == 0)
+            return setRepeatPass({
+                ...repeatPass,
+                msg: "You have to repeat password",
+            });
+        if (password.value != repeatPass.value)
+            return setRepeatPass({
+                ...repeatPass,
+                msg: "Passwords don`t match!",
+            });
 
         return true;
-    }
+    };
 
     const submit = async () => {
+        if (!email.value.length)
+            return setEmail({ ...email, msg: "This field can't be empty" });
+        if (
+            !String(email.value)
+                .toLowerCase()
+                .match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                )
+        )
+            return setEmail({ ...email, msg: "Invalid email format" });
 
-        if (!email.value.length) return setEmail({ ...email, msg: 'This field can\'t be empty' });
-        if (!String(email.value).toLowerCase().match(/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/)) 
-            return setEmail({ ...email, msg: 'Invalid email format' });
-        
         setLoading(true);
-        setEmail({ ...email, msg: '' });
+        setEmail({ ...email, msg: "" });
 
         const res = await mailerService.sendForgetPassword({
-            email: email.value
+            email: email.value,
         });
 
         setLoading(false);
@@ -71,8 +110,7 @@ const ForgotPassword = ({ type, theme }) => {
             await delay(2000);
             setButton(false);
         } else setEmail({ ...email, msg: res.data.msg });
-
-    }
+    };
 
     const changePassword = async () => {
         setLoading(true);
@@ -83,70 +121,198 @@ const ForgotPassword = ({ type, theme }) => {
         flag = flag == true ? checkRepeatPass() : false;
 
         if (flag) {
-
-            const res = await accountService.changePassword({ 
+            const res = await accountService.changePassword({
                 password: password.value,
-                passwordResetId: id 
+                passwordResetId: id,
             });
-    
-            if (res.data.success) navigate('/login')
+
+            if (res.data.success) navigate("/login");
             else {
                 setLoading(false);
                 setEmail({ ...email, msg: res.data.msg });
-                navigate('/account/forgot_password');
-            };
-
+                navigate("/account/forgot_password");
+            }
         }
-    }
+    };
 
     useEffect(async () => {
         if (type != "reset") return;
 
-        const res = await accountService.checkPasswordReset({ passwordResetId: id });
+        const res = await accountService.checkPasswordReset({
+            passwordResetId: id,
+        });
         setForm(res.data.success);
 
         if (!res.data.success) setOpen(true);
-    }, [])
+    }, []);
 
     return (
         <Grid className="main">
             <Container className="forgotPassword" maxWidth="sm">
                 <Paper className="forgot-paper" elevation={8}>
                     {/* { loading && <Loading/> } */}
-                    { !form && <Grid className="center_form">
-                        <Typography variant="h5">Forgot password?</Typography>
-                        <Typography variant="h6">Reset your password via email</Typography>
-                        <Container className="email_container">
-                            <Input label="Email Address" placeholder="Your email" value={email.value} onChange={(e) => setEmail({...email, value: e.currentTarget.value, msg: ''})} error={email.msg.length > 0} required fullWidth autoFocus />
-                            { !!email.msg.length && <Typography className="items"> <MdOutlineErrorOutline/> { email.msg }</Typography> }
-                            <LoadingButton color={button ? 'success' : 'primary'} loading={loading} loadingPosition="start" variant="contained" startIcon={ <MdDone/> } onClick={() => submit()} >Submit</LoadingButton>
-                        </Container>
-                        <Grid className="bottom_text">
-                            <Typography variant="h6">Logged in with <span>Google Account</span>?</Typography>
-                            <Typography>If you would like to set a password for your account, you can do it in your account settings</Typography>
+                    {!form && (
+                        <Grid className="center_form">
+                            <Typography variant="h5">
+                                Forgot password?
+                            </Typography>
+                            <Typography variant="h6">
+                                Reset your password via email
+                            </Typography>
+                            <Container className="email_container">
+                                <Input
+                                    label="Email Address"
+                                    placeholder="Your email"
+                                    value={email.value}
+                                    onChange={(e) =>
+                                        setEmail({
+                                            ...email,
+                                            value: e.currentTarget.value,
+                                            msg: "",
+                                        })
+                                    }
+                                    error={email.msg.length > 0}
+                                    required
+                                    fullWidth
+                                    autoFocus
+                                />
+                                {!!email.msg.length && (
+                                    <Typography className="items">
+                                        {" "}
+                                        <MdOutlineErrorOutline /> {email.msg}
+                                    </Typography>
+                                )}
+                                <LoadingButton
+                                    color={button ? "success" : "primary"}
+                                    loading={loading}
+                                    loadingPosition="start"
+                                    variant="contained"
+                                    startIcon={<MdDone />}
+                                    onClick={() => submit()}
+                                >
+                                    Submit
+                                </LoadingButton>
+                            </Container>
+                            <Grid className="bottom_text">
+                                <Typography variant="h6">
+                                    Logged in with <span>Google Account</span>?
+                                </Typography>
+                                <Typography>
+                                    If you would like to set a password for your
+                                    account, you can do it in your account
+                                    settings
+                                </Typography>
+                            </Grid>
                         </Grid>
-                    </Grid> }
-                    { form && <Grid className="center_form password_reset">
-                        <Typography variant="h5">Password Reset</Typography>
-                        <Typography variant="h6">Fill in the fields below</Typography>
-                        <Grid className="limit_width">
-                            <Box sx={{ width: '100%' }}>
-                                <Input val="password" label="Password" placeholder="Your password" onChange={(e) => setPassword({...password, value: e.currentTarget.value, msg: ''})} error={password.msg.length > 0 || (password.strength != -1 && (password.strength <= 1 && password.value.length > 0))} required fullWidth />
-                                { !!password.value.length && <Grid sx={{ marginTop: '5px', width: '100%' }}>
-                                    <Typography variant="p" sx={{ opacity: '.8' }}>{password.strength != -1 && strength[password.strength]}</Typography>
-                                    <meter max={4} value={password.strength} className={`meter ${theme ? 'dark' : ''}`}/>
-                                </Grid> }
-                                { !!password.msg.length && <Grid className="items"> <MdOutlineErrorOutline/> { password.msg } </Grid> }
-                            </Box>
-                            <Input val="password" label="Repeat Password" placeholder="Repeat password" onChange={(e) => setRepeatPass({...repeatPass, value: e.currentTarget.value, msg: ''})} required fullWidth error={repeatPass.msg.length > 0} required fullWidth />
-                            <LoadingButton loading={loading} loadingPosition="start" variant="contained" startIcon={ <MdDone/> } onClick={() => changePassword()} fullWidth>Submit</LoadingButton>
+                    )}
+                    {form && (
+                        <Grid className="center_form password_reset">
+                            <Typography variant="h5">Password Reset</Typography>
+                            <Typography variant="h6">
+                                Fill in the fields below
+                            </Typography>
+                            <Grid className="limit_width">
+                                <Box sx={{ width: "100%" }}>
+                                    <Input
+                                        val="password"
+                                        label="Password"
+                                        placeholder="Your password"
+                                        onChange={(e) =>
+                                            setPassword({
+                                                ...password,
+                                                value: e.currentTarget.value,
+                                                msg: "",
+                                            })
+                                        }
+                                        error={
+                                            password.msg.length > 0 ||
+                                            (password.strength != -1 &&
+                                                password.strength <= 1 &&
+                                                password.value.length > 0)
+                                        }
+                                        required
+                                        fullWidth
+                                    />
+                                    {!!password.value.length && (
+                                        <Grid
+                                            sx={{
+                                                marginTop: "5px",
+                                                width: "100%",
+                                            }}
+                                        >
+                                            <Typography
+                                                variant="p"
+                                                sx={{ opacity: ".8" }}
+                                            >
+                                                {password.strength != -1 &&
+                                                    strength[password.strength]}
+                                            </Typography>
+                                            <meter
+                                                max={4}
+                                                value={password.strength}
+                                                className={`meter ${
+                                                    theme ? "dark" : ""
+                                                }`}
+                                            />
+                                        </Grid>
+                                    )}
+                                    {!!password.msg.length && (
+                                        <Grid className="items">
+                                            {" "}
+                                            <MdOutlineErrorOutline />{" "}
+                                            {password.msg}{" "}
+                                        </Grid>
+                                    )}
+                                </Box>
+                                <Input
+                                    val="password"
+                                    label="Repeat Password"
+                                    placeholder="Repeat password"
+                                    onChange={(e) =>
+                                        setRepeatPass({
+                                            ...repeatPass,
+                                            value: e.currentTarget.value,
+                                            msg: "",
+                                        })
+                                    }
+                                    required
+                                    fullWidth
+                                    error={repeatPass.msg.length > 0}
+                                />
+                                <LoadingButton
+                                    loading={loading}
+                                    loadingPosition="start"
+                                    variant="contained"
+                                    startIcon={<MdDone />}
+                                    onClick={() => changePassword()}
+                                    fullWidth
+                                >
+                                    Submit
+                                </LoadingButton>
+                            </Grid>
                         </Grid>
-                    </Grid> }
+                    )}
                 </Paper>
             </Container>
             <Collapse in={open} className="alert">
-                <Alert severity='error' action={ <IconButton aria-label="close" color="inherit" size="small" onClick={() => { setOpen(false) }} > <MdClose /> </IconButton> } sx={{ mb: 2 }} >
-                Reset password ID is invalid or expired!
+                <Alert
+                    severity="error"
+                    action={
+                        <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                                setOpen(false);
+                            }}
+                        >
+                            {" "}
+                            <MdClose />{" "}
+                        </IconButton>
+                    }
+                    sx={{ mb: 2 }}
+                >
+                    Reset password ID is invalid or expired!
                 </Alert>
             </Collapse>
         </Grid>
@@ -191,7 +357,7 @@ const ForgotPassword = ({ type, theme }) => {
         //                             : ''}
         //                         </div>
         //                         <Input className="medium-width" inputProps={{ maxLength: 24 }} required value={confirmPassword} onChange={(event) => setConfirmPassword(event.currentTarget.value)} id={`text-field-type-confirm`} placeholder="Confirm password" label="Confirm" error={confirmPasswordStyles.pass != null ? !confirmPasswordStyles.pass : false} />
-                                
+
         //                         {confirmPasswordStyles.msg && <p className="error"><MdErrorOutline size="20"/>{confirmPasswordStyles.msg}</p>}
         //                         <Button onClick={() => changePassword()} variant="contained" startIcon={<MdDone/>}>Submit</Button>
         //                     </div>
@@ -213,14 +379,14 @@ const ForgotPassword = ({ type, theme }) => {
         //                     </div>
         //                 </div>}
         //             </div>
-        //         : 
+        //         :
         //             <div>
         //                 <Loading content/>
         //             </div>
         //         }
         //     </Paper>
         // </div>
-    )
-}
+    );
+};
 
 export default ForgotPassword;

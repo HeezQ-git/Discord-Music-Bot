@@ -5,13 +5,14 @@
 // );
 // @use 'react-md' as *;
 // @include react-md-utils;
-@import './reset';
-@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
-@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
-@import './colors';
+@import "./reset";
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
+@import "./colors";
 
-*, body {
-    font-family: 'Lato', sans-serif;
+*,
+body {
+    font-family: "Lato", sans-serif;
     scroll-behavior: smooth;
 }
 
@@ -23,16 +24,17 @@ body {
 }
 
 // .App {
-    // height: 100vh;
+// height: 100vh;
 // }
 
-html, body, body > #root, .App {
+html,
+body,
+body > #root,
+.App {
     height: 100%;
 }
 
 .limitWidth {
-    // max-width: calc(100% - 88px);
-    // margin-left: 88px;
     height: calc(100% - 100px);
 }
 

@@ -1,7 +1,171 @@
-@import './../../../colors';
-@import './../../../vars';
+@import "./../../../colors";
+@import "./../../../vars";
 
-.profile {
+.avatar_select_file {
+    .file_input {
+        width: 500px;
+        text-align: center;
+        .file_paper {
+            // margin-top: -200px;
+            width: 500px;
+            height: 200px;
+        }
+        #drop-zone {
+            padding: 10px;
+            height: 200px;
+            z-index: 9999;
+            background: #121212;
+            box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
+                0px 1px 1px 0px rgb(0 0 0 / 14%),
+                0px 1px 3px 0px rgb(0 0 0 / 12%);
+            background-image: linear-gradient(
+                rgba(255, 255, 255, 0.05),
+                rgba(255, 255, 255, 0.05)
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            p {
+                .drop_text {
+                    user-select: none;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 3px;
+                    .text {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        .title {
+                            font-size: 22px;
+                        }
+                    }
+                    .info {
+                        opacity: 0.6;
+                    }
+                }
+            }
+        }
+        input[type="file"] {
+            display: none;
+        }
+    }
+    .image_info {
+        margin-top: 15px;
+        border: 2px solid rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 0, 0.2);
+        padding: 3px;
+        display: flex;
+        align-items: center;
+        border-radius: 6px;
+        color: rgba(255, 255, 255, 0.85);
+        user-select: none;
+        text-align: center;
+        .image {
+            width: 75px;
+            aspect-ratio: 1;
+            object-fit: contain;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+        }
+        .text_container {
+            margin-left: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+    }
+    .error {
+        justify-content: flex-start;
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+.profile-component {
+    position: relative;
     height: 100%;
-    
+    margin-top: 25px;
+    .profile_paper {
+        height: 250px;
+        .user_info {
+            position: absolute;
+            margin-left: 205px;
+            bottom: 25px;
+            .username {
+                padding: 10px;
+                font-size: 28px;
+                // font-weight: 500;
+                background: rgba(0, 0, 0, 0.4);
+                margin-bottom: 7px;
+            }
+            .role {
+                padding: 10px;
+                padding-top: 5px;
+                font-size: 18px;
+                background: rgba(0, 0, 0, 0.4);
+                color: rgb(32, 136, 255);
+            }
+        }
+        .top_bar {
+            height: 100%;
+            position: relative;
+            .avatar {
+                position: absolute;
+                margin-left: 25px;
+                margin-top: 175px;
+                border-radius: 50%;
+                height: 150px;
+                width: 150px;
+                background-color: rgba(255, 255, 255, 0.85);
+                border: 2px solid rgba(255, 255, 255, 0.4);
+                transition: 0.3s ease;
+                cursor: pointer;
+                .iconBox {
+                    height: 100%;
+                    width: 100%;
+                    position: relative;
+                    .userAvatar {
+                        position: absolute;
+                        border-radius: 50%;
+                        transition: 0.3s ease;
+                    }
+                    .icon {
+                        height: 100%;
+                        width: 100%;
+                        position: absolute;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        opacity: 0;
+                        transition: 0.3s ease;
+                    }
+                    &:hover {
+                        .icon {
+                            opacity: 1;
+                        }
+                        .userAvatar {
+                            opacity: 0.7;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .content_paper {
+        height: 200px;
+    }
+}
+
+@media screen and (max-width: 615px) {
+    .avatar_select_file {
+        white-space: nowrap;
+        .file_input {
+            width: max-content;
+            .file_paper {
+                width: 100%;
+            }
+        }
+    }
 }
