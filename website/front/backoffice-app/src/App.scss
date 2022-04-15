@@ -6,36 +6,45 @@
 // @use 'react-md' as *;
 // @include react-md-utils;
 @import "./reset";
-@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 @import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap");
 @import "./colors";
 
 *,
 body {
-    font-family: "Lato", sans-serif;
+    font-family: "Lato";
     scroll-behavior: smooth;
 }
-
-body {
-    height: 100vh;
-    .App:is(.dark_theme) {
-        background: #121212;
-    }
-}
-
-// .App {
-// height: 100vh;
-// }
 
 html,
 body,
 body > #root,
 .App {
-    height: 100%;
+    --transition-primary: 0.15s ease;
+    &.dark_theme {
+        --background-primary: #121212;
+        --background-secondary: #1e1e1e;
+        --background-third: #272727;
+        --text-primary: #f0f0f0;
+    }
+    &:not(.dark_theme) {
+        --background-primary: #f1f1f1;
+        --background-secondary: rgb(250, 250, 250);
+        --background-third: rgb(237, 237, 237);
+        --text-primary: #181818;
+    }
+}
+
+body {
+    background: #121212;
+    .App:not(.dark_theme) {
+        background: #f1f1f1;
+    }
 }
 
 .limitWidth {
-    height: calc(100% - 100px);
+    height: 100vh;
+    width: calc(100% - 88px);
+    margin-left: 88px;
 }
 
 .btn-gap {

@@ -18,6 +18,7 @@ import UserAvatar from "../UserAvatar";
 import {
     MdArrowDropDown,
     MdLogout,
+    MdOutlineDashboard,
     MdPerson,
     MdSettings,
 } from "react-icons/md";
@@ -170,15 +171,9 @@ const Header = ({ theme }) => {
                                         }
                                     >
                                         <ListItemIcon>
-                                            <MdPerson size={22} />
+                                            <MdOutlineDashboard size={22} />
                                         </ListItemIcon>
-                                        Profile
-                                    </MenuItem>
-                                    <MenuItem>
-                                        <ListItemIcon>
-                                            <MdSettings size={22} />
-                                        </ListItemIcon>
-                                        Settings
+                                        Dashboard
                                     </MenuItem>
                                     <Divider />
                                     <MenuItem onClick={() => logout()}>

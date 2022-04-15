@@ -74,9 +74,11 @@ const checkSession = async (req, res) => {
     };
 
     if (token) {
-        const verify = jwt.verify(token, "[S(X(Cx8r2.=fBUT");
-        response.success = !!verify.user;
-        response.user = verify.user;
+        try {
+            const verify = jwt.verify(token, "[S(X(Cx8r2.=fBUT");
+            response.success = !!verify.user;
+            response.user = verify.user;
+        } catch (error) {}
     }
 
     return res.status(200).json(response);

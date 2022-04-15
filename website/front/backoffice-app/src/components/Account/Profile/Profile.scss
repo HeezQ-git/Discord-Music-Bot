@@ -52,6 +52,7 @@
         }
     }
     .image_info {
+        max-width: 490px;
         margin-top: 15px;
         border: 2px solid rgba(0, 0, 0, 0.3);
         background: rgba(0, 0, 0, 0.2);
@@ -70,10 +71,16 @@
             border-radius: 6px;
         }
         .text_container {
-            margin-left: 10px;
             display: flex;
-            flex-direction: column;
-            gap: 5px;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            .text_container_inside {
+                margin-left: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
         }
     }
     .error {

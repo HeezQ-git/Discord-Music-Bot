@@ -18,7 +18,7 @@ const Account = (props) => {
             }}
         >
             <Routes>
-                <Route path="/profile" element={<Profile />} />
+                {/* <Route path="/profile" element={<Profile />} /> */}
                 <Route path="/activate/:id" element={<Activate />} />
                 <Route path="/email_sent/:email" element={<EmailSent />} />
                 <Route

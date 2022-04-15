@@ -146,8 +146,10 @@ const Profile = () => {
                                     onDragStart={(e) => e.preventDefault()}
                                 />
                                 <div className="text_container">
-                                    <p>{images?.fileName}</p>
-                                    <p>{fixFileSize(images?.ofileSize)}</p>
+                                    <div className="text_container_inside">
+                                        <p>{images?.fileName}</p>
+                                        <p>{fixFileSize(images?.ofileSize)}</p>
+                                    </div>
                                 </div>
                             </div>
                         )}
