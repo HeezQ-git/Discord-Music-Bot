@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const songsSchema = new Schema({
@@ -57,8 +57,8 @@ const songsSchema = new Schema({
     preview: {
         type: String,
         required: false,
-    }
+    },
 });
 
-const Message = mongoose.model('Songs', songsSchema);
+const Message = mongoose.model("Songs", songsSchema);
 module.exports = Message;

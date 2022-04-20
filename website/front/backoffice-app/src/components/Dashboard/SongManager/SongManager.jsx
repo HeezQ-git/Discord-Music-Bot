@@ -2,16 +2,19 @@ import React, { useState, useEffect } from "react";
 import "./SongManager.scss";
 import { songsService } from "../../../services/songs.service";
 import {
+    Button,
     CircularProgress,
     IconButton,
     Pagination,
     Tooltip,
 } from "@mui/material";
-import { MdOutlineDelete, MdRefresh } from "react-icons/md";
+import { MdOutlineAdd, MdOutlineDelete, MdRefresh } from "react-icons/md";
 import { FaRegEdit } from "react-icons/fa";
+import { FcSearch } from "react-icons/fc";
 import Input from "../../Input";
 import { paginate, getPage } from "../../../utils/pagination";
 import { delay } from "../../../utils/functions";
+import { useNavigate } from "react-router";
 
 const SongManager = () => {
     const [allSongs, setAllSongs] = useState();
@@ -21,6 +24,7 @@ const SongManager = () => {
     const [loading, setLoading] = useState(false);
     const [classes, setClasses] = useState(true);
 
+    const navigate = useNavigate();
     const amountPerPage = 5;
 
     const getSongs = async () => {
@@ -38,19 +42,17 @@ const SongManager = () => {
         }
 
         setLoading(false);
-        return;
     };
 
     const changePage = async (num) => {
         if (num === page || num <= 0 || num > paginated.length) return;
 
         setClasses(false);
+        await delay(1);
+        setClasses(true);
 
         setSongsDisplay(getPage(paginated, num));
         setPage(num);
-
-        await delay(1);
-        setClasses(true);
     };
 
     const searchSong = (value) => {
@@ -59,11 +61,7 @@ const SongManager = () => {
         const foundSongs = allSongs.filter(
             (song) =>
                 song.name.toLowerCase().includes(val) ||
-                song.artist.join(" ").toLowerCase().includes(val) ||
-                song.dancemode.toLowerCase().includes(val) ||
-                song.effort.toLowerCase().includes(val) ||
-                song.game.toLowerCase().includes(val) ||
-                song.times.toLowerCase().includes(val)
+                song.artist.join(" ").toLowerCase().includes(val)
         );
 
         if (foundSongs) {
@@ -105,35 +103,41 @@ const SongManager = () => {
                         return (
                             <div
                                 key={index}
-                                className={`song ${classes ? "animate" : ""}`}
-                                style={{ animationDelay: `0.${index}s` }}
+                                className="song_outer hover:drop-shadow-md"
                             >
-                                <div className="items_left">
-                                    <img
-                                        loading="lazy"
-                                        className="song_img drop-shadow-xl"
-                                        src={song.cover}
-                                    />
-                                    <div className="song_info">
-                                        <h2 className="title text-base">
-                                            {song.name}
-                                        </h2>
-                                        <span className="artist text-sm">
-                                            {song.artist.join(" & ")}
-                                        </span>
+                                <div
+                                    className={`song ${
+                                        classes ? "animate" : ""
+                                    }`}
+                                    style={{ animationDelay: `0.${index}s` }}
+                                >
+                                    <div className="items_left">
+                                        <img
+                                            loading="lazy"
+                                            className="song_img drop-shadow-xl"
+                                            src={song.cover}
+                                        />
+                                        <div className="song_info">
+                                            <h2 className="title text-base">
+                                                {song.name}
+                                            </h2>
+                                            <span className="artist text-sm">
+                                                {song.artist.join(" & ")}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="items_right">
-                                    <Tooltip title="Edit">
-                                        <IconButton>
-                                            <FaRegEdit />
-                                        </IconButton>
-                                    </Tooltip>
-                                    <Tooltip title="Delete">
-                                        <IconButton>
-                                            <MdOutlineDelete />
-                                        </IconButton>
-                                    </Tooltip>
+                                    <div className="items_right">
+                                        <Tooltip title="Edit">
+                                            <IconButton>
+                                                <FaRegEdit />
+                                            </IconButton>
+                                        </Tooltip>
+                                        <Tooltip title="Delete">
+                                            <IconButton>
+                                                <MdOutlineDelete />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </div>
                                 </div>
                             </div>
                         );
@@ -151,6 +155,23 @@ const SongManager = () => {
                         />
                     </div>
                 )}
+                {!songsDisplay && !loading && (
+                    <div className="nothing_found flex items-center justify-center gap-[5px] my-[50px]">
+                        <FcSearch size={25} />
+                        <span>No results were found</span>
+                    </div>
+                )}
+                <div className="w-full flex items-end justify-end">
+                    <Button
+                        variant="contained"
+                        startIcon={<MdOutlineAdd />}
+                        onClick={() =>
+                            navigate("/dashboard/song-manager/add-song")
+                        }
+                    >
+                        Add song
+                    </Button>
+                </div>
             </div>
         </div>
     );

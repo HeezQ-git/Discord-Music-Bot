@@ -1,0 +1,219 @@
+.image_select_file {
+    .file_input {
+        width: 500px;
+        text-align: center;
+        .file_paper {
+            // margin-top: -200px;
+            width: 500px;
+            height: 200px;
+        }
+        #drop-zone {
+            padding: 10px;
+            height: 200px;
+            z-index: 9999;
+            background: #121212;
+            box-shadow: 0px 2px 1px -1px rgb(0 0 0 / 20%),
+                0px 1px 1px 0px rgb(0 0 0 / 14%),
+                0px 1px 3px 0px rgb(0 0 0 / 12%);
+            background-image: linear-gradient(
+                rgba(255, 255, 255, 0.05),
+                rgba(255, 255, 255, 0.05)
+            );
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            p {
+                .drop_text {
+                    user-select: none;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 3px;
+                    .text {
+                        display: flex;
+                        align-items: center;
+                        gap: 6px;
+                        .title {
+                            font-size: 22px;
+                        }
+                    }
+                    .info {
+                        opacity: 0.6;
+                    }
+                }
+            }
+        }
+        input[type="file"] {
+            display: none;
+        }
+    }
+    .image_info {
+        max-width: 500px;
+        margin-top: 15px;
+        border: 2px solid rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 0, 0.2);
+        padding: 3px;
+        display: flex;
+        align-items: center;
+        border-radius: 6px;
+        color: rgba(255, 255, 255, 0.85);
+        user-select: none;
+        text-align: center;
+        .image {
+            width: 75px;
+            aspect-ratio: 1;
+            object-fit: contain;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 6px;
+        }
+        .text_container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            .text_container_inside {
+                margin-left: 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    }
+    .error {
+        justify-content: flex-start;
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+.songmanager_addsong_main {
+    animation: slide-top 0.5s both;
+
+    .songmanager_addsong_container {
+        width: 100%;
+        background: var(--background-secondary);
+        padding: 25px;
+        border-radius: 10px;
+        .inputs {
+            margin-top: 25px;
+            .song_cover {
+                min-height: 100px;
+                min-width: 100px;
+                width: 100px;
+                border-radius: 10px;
+                transition: var(--transition-primary);
+                .image {
+                    height: 100px;
+                    width: 100px;
+                    object-fit: cover;
+                    border-radius: 10px;
+                }
+            }
+            .done {
+                position: relative;
+                // animation: flip-horizontal-bottom 0.4s both;
+                &:after {
+                    position: absolute;
+                    content: "✔";
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    border-radius: 10px;
+                    top: -10px;
+                    right: -10px;
+                    height: 20px;
+                    width: 20px;
+                    background: rgb(59, 197, 32);
+                    font-size: 12px;
+                    opacity: 0.4;
+                }
+            }
+        }
+        .summary_panel {
+            background: var(--background-third);
+            padding: 15px;
+            margin-block: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 25px;
+            .items {
+                display: flex;
+                gap: 30px;
+                flex-wrap: wrap;
+            }
+            .image {
+                border-radius: 10px;
+                width: 85px;
+                height: 85px;
+            }
+            .summary_container {
+                display: flex;
+                justify-content: center;
+                flex-direction: column-reverse;
+                white-space: nowrap;
+                gap: 4px;
+                min-height: 40px;
+                min-width: 100px;
+                h2 {
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+                span {
+                    opacity: 0.7;
+                }
+            }
+            .summary_list {
+                span {
+                    font-weight: 600;
+                    font-size: 17px;
+                    opacity: 0.8;
+                }
+                .summary_items {
+                    display: flex;
+                    flex-wrap: wrap;
+                    margin-top: 3px;
+                    margin-left: -3px;
+                    .summary_item {
+                        position: relative;
+                        cursor: default;
+                        margin: 5px;
+                        padding-inline: 10px;
+                        padding-block: 7px;
+                        border-radius: 10px;
+                        &:is(.new_mark) {
+                            &:after {
+                                position: absolute;
+                                content: "N";
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                border-radius: 10px;
+                                top: -9px;
+                                right: -9px;
+                                height: 18px;
+                                width: 18px;
+                                background: rgb(197, 32, 32);
+                                font-size: 12px;
+                                opacity: 0.4;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@keyframes slide-top {
+    0% {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}

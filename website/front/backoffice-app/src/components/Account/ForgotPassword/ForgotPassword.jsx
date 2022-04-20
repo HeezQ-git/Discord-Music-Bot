@@ -133,6 +133,8 @@ const ForgotPassword = ({ type, theme }) => {
                 navigate("/account/forgot_password");
             }
         }
+
+        setLoading(false);
     };
 
     useEffect(async () => {
@@ -149,7 +151,7 @@ const ForgotPassword = ({ type, theme }) => {
     return (
         <Grid className="main">
             <Container className="forgotPassword" maxWidth="sm">
-                <Paper className="forgot-paper" elevation={8}>
+                <div className="forgot-paper drop-shadow-xl" elevation={8}>
                     {/* { loading && <Loading/> } */}
                     {!form && (
                         <Grid className="center_form">
@@ -177,10 +179,10 @@ const ForgotPassword = ({ type, theme }) => {
                                     autoFocus
                                 />
                                 {!!email.msg.length && (
-                                    <Typography className="items">
+                                    <div className="error_items mt-[-5px]">
                                         {" "}
                                         <MdOutlineErrorOutline /> {email.msg}
-                                    </Typography>
+                                    </div>
                                 )}
                                 <LoadingButton
                                     color={button ? "success" : "primary"}
@@ -257,11 +259,11 @@ const ForgotPassword = ({ type, theme }) => {
                                         </Grid>
                                     )}
                                     {!!password.msg.length && (
-                                        <Grid className="items">
+                                        <div className="error_items mt-[8px]">
                                             {" "}
                                             <MdOutlineErrorOutline />{" "}
                                             {password.msg}{" "}
-                                        </Grid>
+                                        </div>
                                     )}
                                 </Box>
                                 <Input
@@ -292,7 +294,7 @@ const ForgotPassword = ({ type, theme }) => {
                             </Grid>
                         </Grid>
                     )}
-                </Paper>
+                </div>
             </Container>
             <Collapse in={open} className="alert">
                 <Alert

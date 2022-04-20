@@ -1,69 +1,73 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const songsSchema = new Schema({
-    songID: Number,
     name: {
         type: String,
         required: true,
-        default: "",
     },
     artist: {
         type: [{ type: String }],
         required: true,
-        default: "",
+    },
+    version: {
+        type: Number,
+        default: 1,
     },
     game: {
         type: String,
         required: true,
-        default: "",
     },
     dancemode: {
-        type: String,
+        type: Number,
         required: true,
-        default: "",
     },
     xboxbrokenlevel: {
-        type: String,
+        type: Number,
         required: true,
-        default: "",
     },
     difficulty: {
         type: String,
         required: true,
-        default: "",
     },
     effort: {
-        type: String,
+        type: Number,
         required: true,
-        default: "",
     },
     times: {
         type: String,
         required: false,
-        default: "",
     },
     genre: {
-        type: String,
+        type: [{ type: Number }],
         required: false,
-        default: "",
     },
     tags: {
-        type: [{ type: String }],
+        type: [{ type: Number }],
         required: false,
-        default: "",
     },
     duration: {
         type: String,
         required: false,
-        default: "",
     },
+    type: String,
     cover: {
         type: String,
         required: true,
-        default: "",
-    }
+    },
+    preview: {
+        type: String,
+        required: false,
+    },
+    released: {
+        type: Boolean,
+        required: true,
+    },
+    excluded: {
+        type: Boolean,
+        required: false,
+    },
 });
 
-const Message = mongoose.model('Songs', songsSchema);
+const Message = mongoose.model("Songs", songsSchema);
 module.exports = Message;

@@ -6,7 +6,7 @@ import {
     FormControlLabel,
     Grid,
     Paper,
-    Typography,
+    span,
 } from "@mui/material";
 import {
     MdLockOutline,
@@ -41,8 +41,7 @@ const Login = ({ theme }) => {
         strength: -1,
     });
     const [repeatPass, setRepeatPass] = useState({ value: "", msg: "" });
-    // const [rememberMe, setRememberMe] = useState(true);
-    const rememberRef = React.createRef();
+    const [rememberMe, setRememberMe] = useState(true);
 
     const strength = [
         "❌ Terribly bad",
@@ -139,8 +138,6 @@ const Login = ({ theme }) => {
     const submitForm = async () => {
         setLoading(true);
 
-        const checked = rememberRef.current.checked || true;
-
         let flag = true;
 
         if (formType) {
@@ -156,7 +153,7 @@ const Login = ({ theme }) => {
                 if (res.data.success) {
                     setCookie("token", res.data.token, {
                         path: "/",
-                        maxAge: !checked ? 2592000 : 3600,
+                        maxAge: rememberMe ? 2592000 : 3600,
                     });
                     window.location.reload(true);
                     navigate(`/account/`);
@@ -194,7 +191,7 @@ const Login = ({ theme }) => {
         if (res.data.success) {
             setCookie("token", res.data.token, {
                 path: "/",
-                maxAge: !rememberRef.current.checked || true ? 2592000 : 3600,
+                maxAge: rememberMe ? 2592000 : 3600,
             });
         }
 
@@ -207,25 +204,14 @@ const Login = ({ theme }) => {
 
     return (
         <Container component="main" className="login" maxWidth="xs">
-            <Paper className="login-paper" elevation={8}>
+            <div className="login-paper drop-shadow-xl">
                 {loading && <Loading />}
-                <Typography variant="h4" fontSize="25px">
+                <span className="text-[22px] font-bold">
                     {formType ? "Sign In" : "Sign Up"}
-                </Typography>
-                <div
-                    style={{
-                        display: "flex",
-                        alignItems: "center",
-                        color: green[700],
-                        userSelect: "none",
-                        gap: "3px",
-                        marginTop: "5px",
-                    }}
-                >
+                </span>
+                <div className="flex items-center gap-[3px] mt-[5px] select-none text-green-700">
                     <MdLockOutline size={20} />
-                    <Typography variant="p" fontSize="15px">
-                        Your data is protected.
-                    </Typography>
+                    <span fontSize="15px">Your data is protected.</span>
                 </div>
                 <Grid className="forms">
                     {!formType && (
@@ -306,7 +292,7 @@ const Login = ({ theme }) => {
                             fullWidth
                         />
                         {formType && (
-                            <Typography
+                            <span
                                 onClick={() =>
                                     navigate(
                                         `/account/forgot_password/${
@@ -314,17 +300,19 @@ const Login = ({ theme }) => {
                                         }`
                                     )
                                 }
-                                className="forgot-password"
+                                className="forgot-password text-blue-500"
                             >
                                 Forgot password?
-                            </Typography>
+                            </span>
                         )}
                         {formType && (
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        defaultChecked
-                                        inputRef={rememberRef}
+                                        checked={rememberMe}
+                                        onChange={(e, newValue) =>
+                                            setRememberMe(newValue)
+                                        }
                                     />
                                 }
                                 label="Remember me"
@@ -333,10 +321,10 @@ const Login = ({ theme }) => {
                         )}
                         {!formType && password.value.length > 0 && (
                             <Grid sx={{ mt: "5px" }}>
-                                <Typography variant="p" sx={{ opacity: ".8" }}>
+                                <span sx={{ opacity: ".8" }}>
                                     {password.strength !== -1 &&
                                         strength[password.strength]}
-                                </Typography>
+                                </span>
                                 <meter
                                     max={4}
                                     value={password.strength}
@@ -406,15 +394,15 @@ const Login = ({ theme }) => {
                         />
                     )}
                 </Grid>
-                <Typography className="text-below" variant="p">
+                <span className="text-below">
                     {formType
                         ? `Don't have an account yet?`
                         : `Already have an account?`}{" "}
                     <Button size="small" onClick={() => switchForm()}>
                         Sign {formType ? `Up` : `In`}
                     </Button>
-                </Typography>
-            </Paper>
+                </span>
+            </div>
         </Container>
     );
 };

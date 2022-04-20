@@ -7,6 +7,8 @@ import "./Dashboard.scss";
 import { Route, Routes } from "react-router";
 import SongManager from "./SongManager/SongManager";
 import { songsService } from "../../services/songs.service";
+import AddSong from "./AddSong/AddSong";
+import CheckSession from "../CheckSession";
 
 const Dashboard = () => {
     const [tiles, setTiles] = useState([]);
@@ -49,6 +51,7 @@ const Dashboard = () => {
 
     return (
         <div className="dashboard_main">
+            <CheckSession />
             <div className="dashboard_top-feed">
                 {tiles.map(
                     ({ label, count, color, icon, dots, stronger }, index) => {
@@ -87,6 +90,7 @@ const Dashboard = () => {
 
             <Routes>
                 <Route path="/song-manager/" element={<SongManager />} />
+                <Route path="/song-manager/add-song" element={<AddSong />} />
             </Routes>
         </div>
     );

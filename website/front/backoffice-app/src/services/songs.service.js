@@ -1,9 +1,8 @@
-import axios from 'axios';
+import axios from "axios";
 
 const songsService = {
-    getSongs: (data) => {
-        return axios.get('/api/backoffice/songs', data);
-    },
-}
+    getSongs: (data) => axios.get("/api/backoffice/songs", data),
+    filloutData: () => axios.post("/api/backoffice/filloutData"),
+};
 
 export { songsService };

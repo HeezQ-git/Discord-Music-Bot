@@ -137,6 +137,7 @@ module.exports =  {
                     if (`${interaction.values[0]}`.includes('clear')) {
                         userProfile.song_temp['tags'] = [];
                     } else {
+                        console.log(interaction.values[0])
                         if (!userProfile.song_temp['tags'].includes(`${interaction.values[0]}`)) userProfile.song_temp['tags'].push(`${interaction.values[0]}`)
                         else userProfile.song_temp['tags'].splice(userProfile.song_temp['tags'].indexOf(`${interaction.values[0]}`), 1);
                     }
