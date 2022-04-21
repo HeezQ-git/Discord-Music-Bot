@@ -1,6 +1,6 @@
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
-module.exports = function(app) {
+module.exports = function (app) {
   app.use(
     [
       '/api/backoffice/songs',
@@ -9,7 +9,7 @@ module.exports = function(app) {
       '/api/backoffice/account/',
     ],
     createProxyMiddleware({
-      target: 'http://localhost:8080',
+      target: 'http://localhost:8000',
       changeOrigin: true,
     })
   );
