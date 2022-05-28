@@ -67,6 +67,7 @@ const songsSchema = new Schema({
         type: Boolean,
         required: false,
     },
+    errorCount: Number,
 });
 
 const Message = mongoose.model("Songs", songsSchema);

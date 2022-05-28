@@ -7,7 +7,7 @@ import Login from "./components/Login";
 import Account from "./components/Account";
 import { Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { blue, red, grey } from "@mui/material/colors";
+import { blue, red, grey, purple } from "@mui/material/colors";
 import { useState } from "react";
 import Dashboard from "./components/Dashboard/Dashboard";
 

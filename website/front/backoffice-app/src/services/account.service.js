@@ -1,15 +1,10 @@
 import axios from "axios";
 
 const accountService = {
-    activateAccount: (data) => {
-        return axios.post("/api/backoffice/account/activate", data);
-    },
-    checkPasswordReset: (data) => {
-        return axios.post("/api/backoffice/account/checkPasswordReset", data);
-    },
-    changePassword: (data) => {
-        return axios.post("/api/backoffice/account/changePassword", data);
-    },
+    activateAccount: (data) => axios.post("/api/account/activate", data),
+    checkPasswordReset: (data) =>
+        axios.post("/api/account/check-password-reset", data),
+    changePassword: (data) => axios.post("/api/account/change-password", data),
 };
 
 export { accountService };

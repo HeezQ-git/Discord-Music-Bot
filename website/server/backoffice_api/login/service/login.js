@@ -23,7 +23,10 @@ const loginUser = async (req, res) => {
 
                 if (result) {
                     response.success = true;
-                    response.token = signToken(user);
+                    response.token = signToken({
+                        username: user.username,
+                        email: user.email,
+                    });
                 } else response.msg = "Email or password is invalid.";
             } else response.msg = "Login via Google Account";
         } else response.msg = "Email or password is invalid.";

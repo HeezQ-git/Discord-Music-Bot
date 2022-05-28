@@ -20,16 +20,30 @@ body,
 body > #root,
 .App {
     --transition-primary: 0.15s ease;
+    //     --background-primary: #111936;
+    //     --background-secondary: #212946;
+    //     --background-button-accent: #29314f;
+    //     --background-third: #272727;
+    //     --button-color: #7c4dff;
+    //     --button-hover: #651fff;
+    //     --error: #fe4232;
+    //     --error-opacity: rgba(255, 40, 40, 0.4);
+    //     --text-primary: #bdc8f0;
+    //     --text-accent: #7c4dff;
     &.dark_theme {
         --background-primary: #121212;
         --background-secondary: #1e1e1e;
         --background-third: #272727;
+        --error: #c23b2f;
+        --error-opacity: rgba(255, 40, 40, 0.4);
         --text-primary: #f0f0f0;
     }
     &:not(.dark_theme) {
         --background-primary: #f1f1f1;
         --background-secondary: rgb(250, 250, 250);
         --background-third: rgb(243, 243, 243);
+        --error: #fe4232;
+        --error-opacity: rgba(255, 40, 40, 0.4);
         --text-primary: #181818;
     }
 }

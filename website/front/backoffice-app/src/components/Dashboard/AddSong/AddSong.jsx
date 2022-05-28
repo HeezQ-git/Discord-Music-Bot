@@ -200,6 +200,7 @@ const AddSong = () => {
 
     const filloutForm = async () => {
         const res = await songsService.filloutData();
+        console.log(res);
     };
 
     useEffect(() => {

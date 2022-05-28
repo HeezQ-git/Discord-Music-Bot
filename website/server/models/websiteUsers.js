@@ -15,6 +15,10 @@ const websiteUsersSchema = new Schema({
     googleId: String,
     passwordResetId: String,
     forgotPassEmail: Date,
+    actions: {
+        type: Number,
+        default: 0,
+    },
 });
 
 const WebsiteUsers = mongoose.model("WebsiteUsers", websiteUsersSchema);

@@ -11,6 +11,9 @@
         justify-content: center;
         justify-items: center;
         padding: 40px;
+        .dashboard_plate_animation {
+            animation: slide-bottom 0.5s both;
+        }
         .dashboard_plate {
             display: flex;
             align-items: center;
@@ -21,7 +24,6 @@
             background-color: var(--background-secondary);
             transition: var(--transition-primary);
             cursor: default;
-            animation: slide-bottom 0.5s both;
             .icon {
                 display: flex;
                 align-items: center;

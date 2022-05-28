@@ -1,21 +1,11 @@
 import axios from "axios";
 
 const loginService = {
-    loginUser: (data) => {
-        return axios.post("/api/backoffice/login", data);
-    },
-    loginGoogleUser: (data) => {
-        return axios.post("/api/backoffice/login/googleUser", data);
-    },
-    checkSession: (data) => {
-        return axios.post("/api/backoffice/login/checkSession", data);
-    },
-    checkUser: (data) => {
-        return axios.post("/api/backoffice/login/checkUser", data);
-    },
-    checkEmail: (data) => {
-        return axios.post("/api/backoffice/login/checkEmail", data);
-    },
+    loginUser: (data) => axios.post("/api/login", data),
+    loginGoogleUser: (data) => axios.post("/api/login/google-user", data),
+    checkSession: (data) => axios.post("/api/login/check-session", data),
+    checkUser: (data) => axios.post("/api/login/check-user", data),
+    checkEmail: (data) => axios.post("/api/login/check-email", data),
 };
 
 export { loginService };

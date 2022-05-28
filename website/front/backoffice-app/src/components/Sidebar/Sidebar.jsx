@@ -28,6 +28,7 @@ import { FaDiscord, FaUserFriends } from "react-icons/fa";
 import { FiMoon } from "react-icons/fi";
 import { BsSun } from "react-icons/bs";
 import UserAvatar from "./../UserAvatar";
+import { useCookies } from "react-cookie";
 
 const StyledMenu = styled((props) => (
     <Menu
@@ -72,6 +73,7 @@ const StyledMenu = styled((props) => (
 
 const Sidebar = ({ theme, setTheme }) => {
     const [sidebar, setSidebar] = useState(false);
+    const [cookies, setCookie, removeCookie] = useCookies();
     const [isAdmin, setAdmin] = useState(true);
     const logged = true;
 
@@ -92,6 +94,7 @@ const Sidebar = ({ theme, setTheme }) => {
                 navigate("/account/settings");
                 break;
             case 3:
+                removeCookie("token", { path: "/" });
                 break;
         }
     };

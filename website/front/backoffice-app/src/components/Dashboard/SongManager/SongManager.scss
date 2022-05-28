@@ -9,6 +9,25 @@
         border-radius: 10px;
         .song_outer {
             height: 90px;
+            position: relative;
+            .badge {
+                &_error {
+                    position: absolute;
+                    height: 25px;
+                    width: 25px;
+                    background: var(--error);
+                    top: -12.5px;
+                    left: -12.5px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    user-select: none;
+                }
+            }
+            .song_error {
+                border: 1px solid var(--error-opacity);
+            }
             .song {
                 height: 85px;
                 display: flex;

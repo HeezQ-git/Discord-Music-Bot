@@ -1,15 +1,10 @@
-import axios from 'axios';
+import axios from "axios";
 
 const mailerService = {
-    newPendingUser: (data) => {
-        return axios.post('/api/backoffice/mailer/newPendingUser', data);
-    },
-    sendEmail: (data) => {
-        return axios.post('/api/backoffice/mailer/sendEmail', data);
-    },
-    sendForgetPassword: (data) => {
-        return axios.post('/api/backoffice/mailer/sendForgetPassword', data);
-    },
-}
+    newPendingUser: (data) => axios.post("/api/mailer/new-pending-user", data),
+    sendEmail: (data) => axios.post("/api/mailer/send-email", data),
+    sendForgetPassword: (data) =>
+        axios.post("/api/mailer/send-forget-password", data),
+};
 
 export { mailerService };
