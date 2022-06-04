@@ -121,6 +121,10 @@ const Dashboard = () => {
             <Routes>
                 <Route path="/song-manager/" element={<SongManager />} />
                 <Route path="/song-manager/add-song" element={<AddSong />} />
+                <Route
+                    path="/song-manager/edit-song/:songId"
+                    element={<AddSong editMode />}
+                />
             </Routes>
         </div>
     );

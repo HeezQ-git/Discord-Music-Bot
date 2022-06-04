@@ -61,10 +61,12 @@ const songsSchema = new Schema({
     },
     released: {
         type: Boolean,
+        default: true,
         required: true,
     },
     excluded: {
         type: Boolean,
+        default: false,
         required: false,
     },
     errorCount: Number,

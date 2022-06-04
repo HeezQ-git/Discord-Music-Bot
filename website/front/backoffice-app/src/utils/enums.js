@@ -41,8 +41,8 @@ export const difficulties = [
 
 export const efforts = [
     { label: "LOW", id: 1 },
-    { label: "MODERATE", id: 1 },
-    { label: "INTENSE", id: 1 },
+    { label: "MODERATE", id: 2 },
+    { label: "INTENSE", id: 3 },
 ];
 export const times = [
     "2020s",

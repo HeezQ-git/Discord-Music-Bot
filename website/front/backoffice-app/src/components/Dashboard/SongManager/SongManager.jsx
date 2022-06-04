@@ -7,6 +7,8 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
+    DialogContentText,
+    DialogTitle,
     Divider,
     IconButton,
     Pagination,
@@ -14,6 +16,7 @@ import {
 } from "@mui/material";
 import {
     MdClose,
+    MdDelete,
     MdDone,
     MdErrorOutline,
     MdOutlineAdd,
@@ -26,6 +29,8 @@ import Input from "../../Input";
 import { paginate, getPage } from "../../../utils/pagination";
 import { delay } from "../../../utils/functions";
 import { useNavigate } from "react-router";
+import { Store } from "react-notifications-component";
+import SongInfo from "./../SongInfo/SongInfo";
 
 const SongManager = () => {
     const [allSongs, setAllSongs] = useState();
@@ -35,6 +40,8 @@ const SongManager = () => {
     const [loading, setLoading] = useState(false);
     const [loadingChanges, setLoadingChanges] = useState(false);
     const [classes, setClasses] = useState(true);
+    const [confirmDelete, setConfirmDelete] = useState();
+    const [songInfo, setSongInfo] = useState();
 
     const navigate = useNavigate();
     const amountPerPage = 5;
@@ -143,6 +150,29 @@ const SongManager = () => {
         return error;
     };
 
+    const handleDeleteSong = async (songId) => {
+        const result = await songsService.deleteSong({ songId });
+
+        if (result.data.success) {
+            getSongs();
+            Store.addNotification({
+                title: "Success!",
+                message: "Song deleted successfully!",
+                type: "success",
+                insert: "top",
+                container: "top-right",
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                    duration: 5000,
+                    onScreen: true,
+                    showIcon: true,
+                    pauseOnHover: true,
+                },
+            });
+        }
+    };
+
     useEffect(() => {
         getSongs();
     }, []);
@@ -245,6 +275,36 @@ const SongManager = () => {
                         </DialogActions>
                     </Dialog>
                 )}
+                <Dialog
+                    open={!!confirmDelete}
+                    onClose={() => setConfirmDelete()}
+                >
+                    <DialogTitle>Confirm the action</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            Are you sure you want to delete this song?
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setConfirmDelete()}>
+                            Cancel
+                        </Button>
+                        <Button
+                            onClick={() => {
+                                handleDeleteSong(confirmDelete);
+                                setConfirmDelete();
+                            }}
+                            startIcon={<MdDelete />}
+                            variant="contained"
+                            autoFocus
+                        >
+                            Confirm
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Dialog open={!!songInfo} onClose={() => setSongInfo()}>
+                    <SongInfo song={songInfo} />
+                </Dialog>
                 {loading && !loadingChanges && (
                     <div className="flex items-center gap-[25px] mt-[15px]">
                         <CircularProgress />{" "}
@@ -261,6 +321,7 @@ const SongManager = () => {
                                     classes ? "animate" : ""
                                 }`}
                                 style={{ animationDelay: `0.${index}s` }}
+                                onClick={() => setSongInfo(song)}
                             >
                                 {song?.errorCount > 0 && (
                                     <div className="badge_error">
@@ -289,12 +350,22 @@ const SongManager = () => {
                                     </div>
                                     <div className="items_right">
                                         <Tooltip title="Edit">
-                                            <IconButton>
+                                            <IconButton
+                                                onClick={() =>
+                                                    navigate(
+                                                        `edit-song/${song._id}`
+                                                    )
+                                                }
+                                            >
                                                 <FaRegEdit />
                                             </IconButton>
                                         </Tooltip>
                                         <Tooltip title="Delete">
-                                            <IconButton>
+                                            <IconButton
+                                                onClick={() =>
+                                                    setConfirmDelete(song)
+                                                }
+                                            >
                                                 <MdOutlineDelete />
                                             </IconButton>
                                         </Tooltip>

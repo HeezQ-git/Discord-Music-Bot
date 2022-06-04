@@ -37,7 +37,7 @@ import {
     tags,
     brokenLevelLabels,
 } from "../../../utils/enums";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import Input from "../../Input";
 import "./AddSong.scss";
 import {
@@ -45,14 +45,16 @@ import {
     MdDone,
     MdHighlightOff,
     MdLink,
+    MdOutlineAccessTime,
     MdOutlineArticle,
     MdOutlineErrorOutline,
     MdSave,
     MdUploadFile,
 } from "react-icons/md";
 import ReactImageBase64 from "react-image-base64";
+import { Store } from "react-notifications-component";
 
-const AddSong = () => {
+const AddSong = ({ editMode }) => {
     //? STEP 1
     const [songName, setSongName] = useState("");
     const [allArtists, setAllArtists] = useState([]);
@@ -120,6 +122,9 @@ const AddSong = () => {
     const steps = ["Basic info", "Fill-in", "Genre & Images", "Finish off"];
     const [activeStep, setActiveStep] = useState(0);
 
+    //? OTHER
+    const { songId } = useParams();
+
     const handleNext = () => {
         if (activeStep + 1 < steps.length) {
             switch (activeStep) {
@@ -171,7 +176,10 @@ const AddSong = () => {
         setAllArtists(alphabeticalOrder(_));
     };
 
-    const submitSong = () => {
+    const findValue = (id, array) =>
+        array.find((item) => item.id == id) || undefined;
+
+    const submitSong = async () => {
         setSummaryLoading(true);
 
         const data = {
@@ -188,12 +196,35 @@ const AddSong = () => {
             type,
             songCover,
             brokenLevel,
-            duration,
+            duration: !duration.includes(":") ? formatTime(duration) : duration,
             released,
             excluded,
         };
 
-        console.table(data);
+        let response;
+
+        if (editMode)
+            response = await songsService.editSong({ songId, ...data });
+        else response = await songsService.addSong(data);
+
+        if (response.data.success) {
+            Store.addNotification({
+                title: "Success!",
+                message: `Song ${editMode ? "edited" : "added"} successfully!`,
+                type: "success",
+                showIcon: true,
+                insert: "top",
+                container: "top-right",
+                animationIn: ["animated", "fadeIn"],
+                animationOut: ["animated", "fadeOut"],
+                dismiss: {
+                    duration: 5000,
+                    onScreen: true,
+                },
+            });
+
+            navigate(-1);
+        }
 
         setSummaryLoading(false);
     };
@@ -205,6 +236,36 @@ const AddSong = () => {
 
     useEffect(() => {
         getSongs();
+
+        (async () => {
+            if (!editMode) return;
+
+            {
+                const { ...song } = (await songsService.getSong({ songId }))
+                    .data.song;
+
+                console.log(song);
+
+                if (!song) return;
+                else {
+                    setSongName(song.name);
+                    setArtist(song.artist);
+                    setVersion(findValue(song.version, versions));
+                    setGame(song.game);
+                    setDancemode(findValue(song.dancemode, dancemodes));
+                    setDifficulty(findValue(song.difficulty, difficulties));
+                    setEffort(findValue(song.effort, efforts));
+                    setTime(song.times);
+                    setGenre(song.genre.map((_) => findValue(_, genres)));
+                    setTag(song.tags.map((_) => findValue(_, tags)));
+                    setSongCover(song.cover);
+                    setDuration(song.duration);
+                    setBrokenLevel(song.xboxbrokenlevel);
+                    setReleased(song.released);
+                    setExcluded(song.excluded);
+                }
+            }
+        })();
     }, []);
 
     useEffect(() => {
@@ -976,6 +1037,12 @@ const AddSong = () => {
                                             </div>
                                         </div>
                                     )}
+                                    <div className="summary_container">
+                                        <div className="flex items-center gap-[5px]">
+                                            <MdOutlineAccessTime size={20} />
+                                            <span>Duration: {duration}</span>
+                                        </div>
+                                    </div>
                                     <div className="summary_container">
                                         <span>
                                             {brokenLevelLabels[brokenLevel]}

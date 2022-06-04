@@ -1,15 +1,15 @@
 import "./App.scss";
-import Home from "./components/Home";
 import Sidebar from "./components/Sidebar";
-// import Header from "./components/Header";
 import SongList from "./components/SongList";
 import Login from "./components/Login";
 import Account from "./components/Account";
 import { Routes, Route } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-import { blue, red, grey, purple } from "@mui/material/colors";
+import { blue, red, grey } from "@mui/material/colors";
 import { useState } from "react";
 import Dashboard from "./components/Dashboard/Dashboard";
+import { ReactNotifications } from "react-notifications-component";
+import "react-notifications-component/dist/theme.css";
 
 const themeLight = createTheme({
     palette: {
@@ -46,11 +46,11 @@ function App() {
 
     return (
         <div className={`App${theme ? " dark_theme" : ""}`}>
+            <ReactNotifications />
             <ThemeProvider theme={theme ? themeDark : themeLight}>
                 <Sidebar theme={theme} setTheme={setTheme} />
                 <div className="limitWidth">
                     <Routes>
-                        <Route path="/" element={<Home />} />
                         <Route path="/songlist" element={<SongList />} />
                         <Route
                             path="/login"

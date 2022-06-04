@@ -5,7 +5,10 @@ const filloutSchema = new Schema({
     name: String,
     game: String,
     version: Number,
-    user: String,
+    user: {
+        type: String,
+        default: "",
+    },
     done: {
         type: Boolean,
         default: false,

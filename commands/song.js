@@ -407,6 +407,13 @@ module.exports = {
                     msg.delete();
 
                     const embed = await songsHandler("find", song[0], msg);
+                    const attachment = new Discord.MessageAttachment(
+                        Buffer.from(song[0].cover.split(",")[1], "base64"),
+                        "cover.png"
+                    );
+
+                    embed.setThumbnail("attachment://cover.png");
+
                     if (embed)
                         msg.channel.send({
                             content:
@@ -416,6 +423,7 @@ module.exports = {
                                       } more results matching given query...`
                                     : null,
                             embeds: [embed],
+                            files: [attachment],
                         });
                     else
                         msg.channel.send(

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router";
 import { loginService } from "../services/login.service";
@@ -8,7 +8,6 @@ const CheckSession = () => {
     const navigate = useNavigate();
 
     const checkSession = async () => {
-        console.log("check");
         if (
             !(
                 await loginService.checkSession({
