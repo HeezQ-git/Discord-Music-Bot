@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import "./SongManager.scss";
-import { songsService } from "../../../services/songs.service";
+import React, { useState, useEffect } from 'react';
+import './SongManager.scss';
+import { songsService } from '../../../services/songs.service';
 import {
     Button,
     CircularProgress,
@@ -13,24 +13,26 @@ import {
     IconButton,
     Pagination,
     Tooltip,
-} from "@mui/material";
+} from '@mui/material';
 import {
     MdClose,
     MdDelete,
     MdDone,
+    MdEdit,
     MdErrorOutline,
     MdOutlineAdd,
     MdOutlineDelete,
+    MdOutlineFilterList,
     MdRefresh,
-} from "react-icons/md";
-import { FaRegEdit } from "react-icons/fa";
-import { FcSearch } from "react-icons/fc";
-import Input from "../../Input";
-import { paginate, getPage } from "../../../utils/pagination";
-import { delay } from "../../../utils/functions";
-import { useNavigate } from "react-router";
-import { Store } from "react-notifications-component";
-import SongInfo from "./../SongInfo/SongInfo";
+} from 'react-icons/md';
+import { FaRegEdit } from 'react-icons/fa';
+import { FcSearch } from 'react-icons/fc';
+import Input from '../../Input';
+import { paginate, getPage } from '../../../utils/pagination';
+import { delay, newNotification } from '../../../utils/functions';
+import { useNavigate } from 'react-router';
+import { Store } from 'react-notifications-component';
+import SongInfo from './../SongInfo/SongInfo';
 
 const SongManager = () => {
     const [allSongs, setAllSongs] = useState();
@@ -81,7 +83,7 @@ const SongManager = () => {
         const foundSongs = allSongs.filter(
             (song) =>
                 song.name.toLowerCase().includes(val) ||
-                song.artist.join(" ").toLowerCase().includes(val)
+                song.artist.join(' ').toLowerCase().includes(val)
         );
 
         if (foundSongs) {
@@ -114,17 +116,28 @@ const SongManager = () => {
         try {
             const res = await songsService.updateSongs({ songs });
 
-            if (res.data.success)
+            if (res.data.success) {
                 setLoadingChanges({
                     step: 3,
                     succeed: res.data.succeed,
                     max: allSongs.length,
                 });
-            else
+                newNotification(
+                    'success',
+                    'Success',
+                    'All songs have been checked'
+                );
+            } else {
                 setLoadingChanges({
                     step: 3,
                     succeed: -1,
                 });
+                newNotification(
+                    'danger',
+                    'Error!',
+                    'Something went wrong while checking songs'
+                );
+            }
         } catch (e) {}
     };
 
@@ -143,7 +156,7 @@ const SongManager = () => {
             !song.xboxbrokenlevel,
         ].forEach((_) => _ && error++);
 
-        (song?.type == "link" || !song.type) &&
+        (song?.type == 'link' || !song.type) &&
             !(await fetch(song.cover)).ok &&
             error++;
 
@@ -156,13 +169,13 @@ const SongManager = () => {
         if (result.data.success) {
             getSongs();
             Store.addNotification({
-                title: "Success!",
-                message: "Song deleted successfully!",
-                type: "success",
-                insert: "top",
-                container: "top-right",
-                animationIn: ["animated", "fadeIn"],
-                animationOut: ["animated", "fadeOut"],
+                title: 'Success!',
+                message: 'Song deleted successfully!',
+                type: 'success',
+                insert: 'top',
+                container: 'top-right',
+                animationIn: ['animated', 'fadeIn'],
+                animationOut: ['animated', 'fadeOut'],
                 dismiss: {
                     duration: 5000,
                     onScreen: true,
@@ -173,6 +186,8 @@ const SongManager = () => {
         }
     };
 
+    const openFilters = () => {};
+
     useEffect(() => {
         getSongs();
     }, []);
@@ -182,7 +197,7 @@ const SongManager = () => {
             <div className="songmanager_container drop-shadow-xl">
                 <h2 className="text-xl opacity-90 text-center">Song Manager</h2>
                 <Divider className="my-[15px]" />
-                <div className="head flex items-center gap-[10px]">
+                <div className="head flex items-center gap-[10px] mb-6">
                     <Input
                         size="small"
                         label="🔎 Search..."
@@ -208,6 +223,11 @@ const SongManager = () => {
                                 }
                             >
                                 <MdErrorOutline />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Filter">
+                            <IconButton onClick={() => openFilters()}>
+                                <MdOutlineFilterList />
                             </IconButton>
                         </Tooltip>
                     </div>
@@ -241,8 +261,8 @@ const SongManager = () => {
                                 {loadingChanges?.step == 3 &&
                                     loadingChanges?.succeed > 0 && (
                                         <span className="text-lg">
-                                            Changes updated! Updated{" "}
-                                            {loadingChanges?.succeed} out of{" "}
+                                            Changes updated! Updated{' '}
+                                            {loadingChanges?.succeed} out of{' '}
                                             {loadingChanges?.max} songs
                                         </span>
                                     )}
@@ -302,12 +322,27 @@ const SongManager = () => {
                         </Button>
                     </DialogActions>
                 </Dialog>
-                <Dialog open={!!songInfo} onClose={() => setSongInfo()}>
-                    <SongInfo song={songInfo} />
+                <Dialog open={!!songInfo} onClose={() => setSongInfo(false)}>
+                    <DialogContent>
+                        <div className="p-7 bg-slate-200 dark:bg-zinc-800 rounded-md">
+                            {songInfo && <SongInfo song={songInfo} />}
+                        </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={() =>
+                                navigate(`edit-song/${songInfo._id}`)
+                            }
+                            startIcon={<MdEdit />}
+                            variant="outlined"
+                        >
+                            Edit
+                        </Button>
+                    </DialogActions>
                 </Dialog>
                 {loading && !loadingChanges && (
                     <div className="flex items-center gap-[25px] mt-[15px]">
-                        <CircularProgress />{" "}
+                        <CircularProgress />{' '}
                         <span className="text-lg">Loading songs...</span>
                     </div>
                 )}
@@ -318,10 +353,9 @@ const SongManager = () => {
                             <div
                                 key={index}
                                 className={`song_outer hover:drop-shadow-md ${
-                                    classes ? "animate" : ""
+                                    classes ? 'animate' : ''
                                 }`}
                                 style={{ animationDelay: `0.${index}s` }}
-                                onClick={() => setSongInfo(song)}
                             >
                                 {song?.errorCount > 0 && (
                                     <div className="badge_error">
@@ -330,10 +364,13 @@ const SongManager = () => {
                                 )}
                                 <div
                                     className={`song ${
-                                        song?.errorCount > 0 ? "song_error" : ""
+                                        song?.errorCount > 0 ? 'song_error' : ''
                                     }`}
                                 >
-                                    <div className="items_left">
+                                    <div
+                                        className="items_left cursor-pointer"
+                                        onClick={() => setSongInfo(song)}
+                                    >
                                         <img
                                             loading="lazy"
                                             className="song_img drop-shadow-xl"
@@ -344,7 +381,7 @@ const SongManager = () => {
                                                 {song.name}
                                             </h2>
                                             <span className="artist text-sm">
-                                                {song.artist.join(" & ")}
+                                                {song.artist.join(' & ')}
                                             </span>
                                         </div>
                                     </div>
@@ -400,7 +437,7 @@ const SongManager = () => {
                         onClick={() =>
                             !loading &&
                             !loadingChanges &&
-                            navigate("/dashboard/song-manager/add-song")
+                            navigate('/dashboard/song-manager/add-song')
                         }
                     >
                         Add song

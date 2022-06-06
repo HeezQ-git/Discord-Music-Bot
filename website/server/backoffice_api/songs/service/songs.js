@@ -1,5 +1,5 @@
-const Songs = require("./../../../models/songs");
-const Fillout = require("./../../../models/fillout");
+const Songs = require('./../../../models/songs');
+const Fillout = require('./../../../models/fillout');
 
 const getSongs = async (req, res) => {
     const response = {
@@ -18,14 +18,16 @@ const getSongs = async (req, res) => {
 
 const getSong = async (req, res) => {
     const response = {
-        success: true,
+        success: false,
         song: {},
     };
 
-    const song = await Songs.findOne({ _id: req.body.songId });
-    if (song) {
-        response.success = true;
-        response.song = song;
+    if (req.body.songId.length >= 24) {
+        const song = await Songs.findOne({ _id: req.body.songId });
+        if (song) {
+            response.success = true;
+            response.song = song;
+        }
     }
 
     return res.status(200).json(response);
