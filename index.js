@@ -64,11 +64,6 @@ let spotifyoptions = {
     emitEventsAfterFetching: true,
 }
 
-spotifyoptions.api = {
-    clientId: config.spotify_api.clientID,
-    clientSecret: config.spotify_api.clientSECRET,
-}
-
 client.distube = new DisTube.default(client, {
     emitNewSongOnly: false,
     leaveOnEmpty: true,
