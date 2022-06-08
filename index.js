@@ -52,7 +52,7 @@ for (const file of eventFiles) {
     client.on(event.name, (...args) => event.execute(...args, commands));
 }
 
-mongoose.connect(config.MONGODB_SRV.replace(\<password>\g, process.env.DB_PASSWORD), {
+mongoose.connect(config.MONGODB_SRV.replace(\password\g, process.env.DB_PASSWORD), {
    useNewUrlParser: true,
    useUnifiedTopology: true
 })
