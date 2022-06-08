@@ -11,6 +11,7 @@ const emoji = require('./config/emojis.json');
 const mongoose = require('mongoose');
 
 const { Client, Intents } = require('discord.js');
+require("dotenv").config();
 
 const client = new Client({ 
     intents: [
@@ -156,4 +157,4 @@ client.on('messageCreate', async (msg) => {
     }
 })
 
-client.login(config.token);
+client.login(process.env.TOKEN);
